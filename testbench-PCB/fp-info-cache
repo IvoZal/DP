@@ -1,4 +1,4 @@
-22411110826114787
+22409412273129657
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -92485,15 +92485,8 @@ varistor
 2
 kit_modules
 ATmega328P_Xplained_Mini
-
-
-0
-0
-0
-kit_modules
-Arduino_Uno_R3_Shield
 https://docs.arduino.cc/hardware/uno-rev3
 
 0
-38
-37
+32
+32
