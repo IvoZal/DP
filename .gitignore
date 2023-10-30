@@ -1,2 +1,2 @@
 # Ignore the content of the testbench-backups folder under testbench-PCB
-testbench-PCB/testbench-backups-backups/*
+testbench-PCB/testbench-backups/*
