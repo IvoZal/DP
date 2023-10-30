@@ -247,7 +247,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "PCB.kicad_pro",
+    "filename": "testbench-backups.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -323,6 +323,14 @@
     "subpart_id_separator": 0
   },
   "sheets": [
+    [
+      "85a3a829-d3a3-466d-ad77-bb3f90e9de82",
+      "Power supply"
+    ],
+    [
+      "7b396cf3-5498-47d9-a833-b019c7b30186",
+      "Kit modules"
+    ],
     [
       "3ac6901d-218d-4b34-8c4a-bf7c417c33bc",
       ""
