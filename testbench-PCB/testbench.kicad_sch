@@ -206,7 +206,7 @@
     (pin "8" (uuid 184dc355-b70d-4e7c-8d1e-0a175a8c9c68))
     (pin "9" (uuid 1843c9e8-9cd2-490d-a2eb-e20a89ce34f0))
     (instances
-      (project "testbench-backups"
+      (project "testbench"
         (path "/3ac6901d-218d-4b34-8c4a-bf7c417c33bc"
           (reference "U5") (unit 1)
         )
@@ -225,7 +225,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "testbench-backups"
+      (project "testbench"
         (path "/3ac6901d-218d-4b34-8c4a-bf7c417c33bc" (page "4"))
       )
     )
@@ -242,7 +242,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "testbench-backups"
+      (project "testbench"
         (path "/3ac6901d-218d-4b34-8c4a-bf7c417c33bc" (page "3"))
       )
     )
@@ -259,7 +259,7 @@
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
-      (project "testbench-backups"
+      (project "testbench"
         (path "/3ac6901d-218d-4b34-8c4a-bf7c417c33bc" (page "2"))
       )
     )
