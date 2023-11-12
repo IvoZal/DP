@@ -1,0 +1,3 @@
+[submodule "MyKiCadLib"]
+	path = MyKiCadLib
+	url = https://github.com/IvoZal/MyKiCadLib.git
