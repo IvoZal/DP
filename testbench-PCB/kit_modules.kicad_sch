@@ -1999,7 +1999,7 @@
     (property "Value" "Thermistor_module" (at 222.25 88.9 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Horizontal" (at 210.82 95.25 0)
+    (property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical" (at 210.82 95.25 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (at 210.82 95.25 0)
