@@ -2038,8 +2038,8 @@
     (property "Datasheet" "~" (at 99.06 57.15 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "1" (uuid 589722aa-9c73-4866-8b91-8207d73908e8))
-    (pin "2" (uuid d3d6ba0b-f824-4476-a2a8-225769a8dac7))
+    (pin "1" (uuid e5c3f5f2-9d1d-451e-8cbd-e19c7332fc44))
+    (pin "2" (uuid f15832d4-6538-4f29-819f-c95377249982))
     (instances
       (project "testbench"
         (path "/3ac6901d-218d-4b34-8c4a-bf7c417c33bc/85a3a829-d3a3-466d-ad77-bb3f90e9de82"
