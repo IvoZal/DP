@@ -1,8 +1,8 @@
 /*
  * UartComm.c
  *
- * Created: 11.04.2023 21:44:08
- *  Author: Ivo Zaludek
+ * Created: 09.12.2023 21:44:08
+ * Author: Ivo Zaludek
  */ 
 
 #include "UartComm.h"

@@ -1,8 +1,8 @@
 /*
  * uart.h - library for UART communication
  *
- * Created: 16.03.2023 23:43:56
- *  Author: Ivo Zaludek
+ * Created: 05.12.2023 23:43:56
+ * Author: Ivo Zaludek
  */ 
 
 
