@@ -12,7 +12,6 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include <avr/sfr_defs.h>
-#include "lcd.h"
 
 /* UART buffer size. */
 #define BUFFER_SIZE 24

@@ -17,9 +17,15 @@
 #ifndef DIO_H_
 #define DIO_H_
 
-bool dio_read();
+#include <stdbool.h>
 
-void dio_write();
+bool dio_read(char* cmd);
+
+void dio_write(bool value, uint8_t pin, char port);
+
+void dio_write_high(char* cmd);
+
+void dio_write_low(char* cmd);
 
 
 #endif /* DIO_H_ */
