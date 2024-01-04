@@ -15,11 +15,16 @@ void adc_init()
 	ADCSRA = (1 << ADEN) | (0b00000111);	// ADC enable | prescaler 128
 }
 
-uint16_t adc_read(uint8_t u8Channel)
+uint16_t adc_read_from_ch(uint8_t u8Channel)
 {
 	DIDR0 |= (1 << u8Channel);		// digital input on pin "u8Channel" disable
 	ADMUX = u8Channel | (0xF0 & ADMUX);		// select "u8Channel"
 	ADCSRA |= (1 << ADSC);			// start ADC
 	while((ADCSRA & (1 << ADIF)) == 0) {}	// wait for result
 	return ADC;
+}
+
+uint16_t adc_read(char* cmd)
+{
+	return adc_read_from_ch(cmd[11] - 0x30);
 }

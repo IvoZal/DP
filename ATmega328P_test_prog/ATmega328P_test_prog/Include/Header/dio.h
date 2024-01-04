@@ -17,12 +17,16 @@
 #ifndef DIO_H_
 #define DIO_H_
 
+#include <avr/io.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include "uart.h"
 
 bool dio_read(char* cmd);
 
 void dio_write(bool value, uint8_t pin, char port);
 
+/* Example cmd format: dio_high_PC1 */
 void dio_write_high(char* cmd);
 
 void dio_write_low(char* cmd);

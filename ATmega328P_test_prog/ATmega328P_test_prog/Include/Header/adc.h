@@ -23,8 +23,9 @@
 void adc_init();
 
 /* Read value from ADC port on channel specified by variable "u8Channel". */
-uint16_t adc_read(uint8_t u8Channel);
+uint16_t adc_read_from_ch(uint8_t u8Channel);
 
+uint16_t adc_read(char* cmd);
 
 
 #endif /* ADC_H_ */
