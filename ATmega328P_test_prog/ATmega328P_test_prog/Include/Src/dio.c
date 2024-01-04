@@ -9,11 +9,12 @@
 bool dio_read(char* cmd) 
 {
 	uint8_t pin = cmd[11] - 0x30;
+	uint8_t pin_mask = 1 << pin;
 	uint8_t port = cmd[10];
 	uint8_t* portx = NULL;
 	uint8_t* ddrx = NULL;
 	uint8_t* pinx = NULL;
-	bool value = false;
+	uint8_t value = false;
 	switch(port)
 	{
 		case 'B':
@@ -40,9 +41,10 @@ bool dio_read(char* cmd)
 	}
 	if (portx != NULL && ddrx != NULL && pin <= 0x7)
 	{
-		*portx &= !(1 << pin);
-		*ddrx &= !(1 << pin);
-		value = pinx[pin];
+		*portx &= !pin_mask;
+		*ddrx &= !pin_mask;
+		value = (*pinx >> pin) & 1;
+		printf("P%c%u=%u\n", port, pin, value);
 	}
 	else
 		printf("ERROR: Wrong pin number!\n");
