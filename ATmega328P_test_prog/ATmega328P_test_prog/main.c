@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <avr/interrupt.h>
 #include <avr/sfr_defs.h>
+#include <string.h>
 #include "dio.h"
 #include "adc.h"
 #include "uart.h"
@@ -60,7 +61,7 @@ int main(void)
 			}
 			for(uint8_t i=0; i < sizeof(cmd_lut) / sizeof(UART_CMD_T); i++)
 			{
-				if(sub_str_cmp(input_string, cmd_lut[i].cmd))
+				if(strstr(input_string,cmd_lut[i].cmd) != NULL)
 				{
 					cmd_lut[i].cb(input_string);
 				}
