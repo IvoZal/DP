@@ -20,19 +20,19 @@ bool dio_read(char* cmd)
 		case 'B':
 		portx = (uint8_t*)&PORTB;
 		ddrx = (uint8_t*)&DDRB;
-		pinx = &PINB;
+		pinx = (uint8_t*)&PINB;
 		break;
 			
 		case 'C':
-		portx = &PORTC;
-		ddrx = &DDRC;
-		pinx = &PINC;
+		portx = (uint8_t*)&PORTC;
+		ddrx = (uint8_t*)&DDRC;
+		pinx = (uint8_t*)&PINC;
 		break;
 			
 		case 'D':
-		portx = &PORTD;
-		ddrx = &DDRD;
-		pinx = &PIND;
+		portx = (uint8_t*)&PORTD;
+		ddrx = (uint8_t*)&DDRD;
+		pinx = (uint8_t*)&PIND;
 		break;
 			
 		default:
@@ -58,18 +58,18 @@ void dio_write(bool value, uint8_t pin, char port)
 	switch(port)
 	{
 		case 'B':
-			portx = &PORTB;
-			ddrx = &DDRB;
+			portx = (uint8_t*)&PORTB;
+			ddrx = (uint8_t*)&DDRB;
 			break;
 			
 		case 'C':
-			portx = &PORTC;
-			ddrx = &DDRC;
+			portx = (uint8_t*)&PORTC;
+			ddrx = (uint8_t*)&DDRC;
 			break;
 			
 		case 'D':
-			portx = &PORTD;
-			ddrx = &DDRD;
+			portx = (uint8_t*)&PORTD;
+			ddrx = (uint8_t*)&DDRD;
 			break;
 			
 		default:
@@ -98,6 +98,6 @@ void dio_write_high(char* cmd)
 
 void dio_write_low(char* cmd)
 {
-	uint8_t pin = cmd[11] - 0x30;
-	dio_write(false, pin, cmd[10]);
+	uint8_t pin = cmd[10] - 0x30;
+	dio_write(false, pin, cmd[9]);
 }
