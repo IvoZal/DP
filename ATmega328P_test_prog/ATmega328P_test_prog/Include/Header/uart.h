@@ -22,6 +22,9 @@ static volatile uint8_t u8Buffer[BUFFER_SIZE] = {0};
 static volatile uint8_t u8Head = 0;
 static volatile uint8_t u8Tail = 0;
 
+/* Function puts u8Data into u8Buffer on position u8Tail. */
+void BufferPut(uint8_t u8Data);
+
 /* Function returns value in head position from u8Buffer. */
 uint8_t BufferGet();
 
