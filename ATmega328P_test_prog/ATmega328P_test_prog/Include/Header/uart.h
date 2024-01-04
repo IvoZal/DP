@@ -12,6 +12,7 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include <avr/sfr_defs.h>
+#include <avr/interrupt.h>
 
 /* UART buffer size. */
 #define BUFFER_SIZE 24
@@ -26,6 +27,9 @@ uint8_t BufferGet();
 
 /* Function returns length of data saved in u8Buffer. */
 uint8_t BufferLength();
+
+/* Function return last value from u8Buffer. If buffer is empty, function returns 0. */
+uint8_t BufferPeekLast();
 
 static int uart_putchar(char c, FILE *stream);
 
