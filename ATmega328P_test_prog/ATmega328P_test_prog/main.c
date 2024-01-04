@@ -6,18 +6,32 @@
  */ 
 
 #include <avr/io.h>
-#include <string.h>
+#include <stdio.h>
+#include <avr/interrupt.h>
+#include <avr/sfr_defs.h>
 #include "dio.h"
 #include "adc.h"
 #include "uart.h"
 
-typedef void (*callback)(void* params);
+typedef void (*callback)(char* cmd);
 
 typedef struct uart_cmd {
-	const char cmd;
+	const char* cmd;
 	callback cb;
 } UART_CMD_T;
 
+uint8_t sub_str_cmp(const char* main_string, const char* substring) 
+{
+	uint8_t val = 1;
+	while (*substring != '\0') {
+		if (*main_string != *substring) {
+			val = 0;  // Not equal
+		}
+		++main_string;
+		++substring;
+	}
+	return val;  // Equal
+}
 
 
 int main(void)
@@ -28,26 +42,29 @@ int main(void)
 		{"dio_read",dio_read},
 		{"aio_read",adc_read}};
 	
-	char * input_string[BUFFER_SIZE];
+	char input_string[BUFFER_SIZE];
 
+	adc_init();
+	USART_Init(38400);
+	sei();
+	
     while (1) 
     {
-		if(BufferLength() >= 1) 
+		if(BufferPeekLast() == 0xA)
 		{
 			uint8_t j = 0;
 			while(BufferLength() > 0) 
 			{
 				input_string[j] = BufferGet();
-				j++;
+				++j;
 			}
 			for(uint8_t i=0; i < sizeof(cmd_lut) / sizeof(UART_CMD_T); i++)
 			{
-				if(strstr((const char *)input_string, cmd_lut[i].cmd) != NULL)
+				if(sub_str_cmp(input_string, cmd_lut[i].cmd))
 				{
-					cmd_lut[i].cb((void *)input_string);
+					cmd_lut[i].cb(input_string);
 				}
 			}
 		}		
     }
 }
-
