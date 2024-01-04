@@ -15,16 +15,28 @@ void adc_init()
 	ADCSRA = (1 << ADEN) | (0b00000111);	// ADC enable | prescaler 128
 }
 
-uint16_t adc_read_from_ch(uint8_t u8Channel)
+uint16_t adc_read_from_ch(uint8_t channel)
 {
-	DIDR0 |= (1 << u8Channel);		// digital input on pin "u8Channel" disable
-	ADMUX = u8Channel | (0xF0 & ADMUX);		// select "u8Channel"
+	DIDR0 |= (1 << channel);		// digital input on pin "u8Channel" disable
+	ADMUX = channel | (0xF0 & ADMUX);		// select "u8Channel"
 	ADCSRA |= (1 << ADSC);			// start ADC
 	while((ADCSRA & (1 << ADIF)) == 0) {}	// wait for result
-	return ADC;
+	DIDR0 &= !(1 << channel);
+	uint16_t conv_val = ADC;
+	printf("ADC%u=%u\n", channel, conv_val);
+	return conv_val;
 }
 
 uint16_t adc_read(char* cmd)
 {
-	return adc_read_from_ch(cmd[11] - 0x30);
+	uint8_t channel;
+	if (cmd[12] > 0x29 && cmd[12] < 0x3A)	// numbers 0x0 - 0x9
+		channel = cmd[12] - 0x30;
+	else if (cmd[12] > 0x40 && cmd[12] < 0x47)	// numbers 0xA - 0xF
+		channel = cmd[12] - 0x40 + 0xa;
+	else {
+		printf("ERROR: Invalid ADC channel!\n");
+		return 0xFFFF;
+	}
+	return adc_read_from_ch(channel);
 }

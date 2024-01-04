@@ -18,13 +18,15 @@
 #define ADC_H_
 
 #include <avr/io.h>
+#include "uart.h"
 
 /* ADC initialization, call once before adc_read function. */
 void adc_init();
 
 /* Read value from ADC port on channel specified by variable "u8Channel". */
-uint16_t adc_read_from_ch(uint8_t u8Channel);
+uint16_t adc_read_from_ch(uint8_t channel);
 
+/* Example call: "aio_read_ADC3" */
 uint16_t adc_read(char* cmd);
 
 
