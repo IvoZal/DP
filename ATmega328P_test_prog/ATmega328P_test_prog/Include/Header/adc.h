@@ -26,7 +26,8 @@ void adc_init();
 /* Read value from ADC port on channel specified by variable "u8Channel". */
 uint16_t adc_read_from_ch(uint8_t channel);
 
-/* Example call: "aio_read_ADC3" */
+/* The function processes the cmd and converts the analog value on the pin. Converted value is printed and returned from the function.
+ * The ADC channel is on position 12 of the cmd. Example function call: "aio_read_ADC3" */
 uint16_t adc_read(char* cmd);
 
 

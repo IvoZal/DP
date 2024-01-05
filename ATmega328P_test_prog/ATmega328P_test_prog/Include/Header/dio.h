@@ -22,13 +22,19 @@
 #include <stddef.h>
 #include "uart.h"
 
+/* Function processes the cmd and reads the pin on the port.
+ * The port type is on position 10 of cmd and pin number is on position 11. Example cmd: "dio_read_PC1" */
 bool dio_read(char* cmd);
 
+/* Function writes the pin on port according to the boolean value. */
 void dio_write(bool value, uint8_t pin, char port);
 
-/* Example cmd format: dio_high_PC1 */
+/* Function processes the cmd and calls the dio_write function to change the pin on the port to high.
+ * The port type is on position 10 of cmd and pin number is on position 11. Example cmd: "dio_high_PC1" */
 void dio_write_high(char* cmd);
 
+/* Function processes the cmd and calls the dio_write function to change the pin on the port to low.
+ * The port type is on position 9 of cmd and pin number is on position 10. Example cmd: "dio_low_PC1" */
 void dio_write_low(char* cmd);
 
 
