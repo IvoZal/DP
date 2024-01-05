@@ -21,19 +21,6 @@ typedef struct uart_cmd {
 	callback cb;
 } UART_CMD_T;
 
-uint8_t sub_str_cmp(const char* main_string, const char* substring) 
-{
-	uint8_t val = 1;
-	while (*substring != '\0') {
-		if (*main_string != *substring) {
-			val = 0;  // Not equal
-		}
-		++main_string;
-		++substring;
-	}
-	return val;  // Equal
-}
-
 
 int main(void)
 {
