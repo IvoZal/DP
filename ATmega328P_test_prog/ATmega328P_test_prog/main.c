@@ -40,8 +40,8 @@ int main(void)
     UART_CMD_T cmd_lut[] = 
 		{{"dio_high",dio_write_high},
 		{"dio_low",dio_write_low},
-		{"dio_read",dio_read},
-		{"aio_read",adc_read}};
+		{"dio_read",(callback)dio_read},
+		{"aio_read",(callback)adc_read}};
 	
 	char input_string[BUFFER_SIZE];
 
