@@ -1,7 +1,7 @@
 /*
  * uart.c
  *
- * Created: 16.03.2023 23:44:04
+ * Created: 05.12.2023 23:44:04
  *  Author: Ivo Zaludek
  */ 
 
@@ -32,8 +32,6 @@ void USART_Init(unsigned int baudrate)
 
 int uart_putchar(char c, FILE *stream)
 {
-	// if (c == '\n')
-	// uart_putchar('\r', stream);
 	loop_until_bit_is_set(UCSR0A, UDRE0);
 	UDR0 = c;
 	return 0;
@@ -59,5 +57,21 @@ uint8_t BufferGet()
 
 uint8_t BufferLength()
 {
-	return (u8Tail - u8Head);
+	if (u8Tail >= u8Head) {
+		return (u8Tail - u8Head);
+	}
+	else {
+		return (BUFFER_SIZE + u8Tail - u8Head);
+	}
+}
+
+uint8_t BufferPeekLast()
+{
+	if (u8Tail != u8Head)
+	{
+		uint8_t lastIndex = (u8Tail == 0) ? (BUFFER_SIZE - 1) : (u8Tail - 1);
+		return u8Buffer[lastIndex];
+	}
+	else
+		return 0;
 }

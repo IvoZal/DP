@@ -1,7 +1,7 @@
 /*
  * timer.h - low lever time functions.
  *
- * Created: 25.02.2023 11:00:13
+ * Created: 02.12.2023 11:00:13
  * Author: Ivo Zaludek
  *
  * This header file contains function and variable declarations for

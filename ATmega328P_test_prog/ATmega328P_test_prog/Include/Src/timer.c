@@ -1,7 +1,7 @@
 /*
  * timer.c
  *
- * Created: 25.02.2023 11:00:42
+ * Created: 02.12.2023 11:00:42
  *  Author: Ivo Zaludek
  */ 
 #include "timer.h"
