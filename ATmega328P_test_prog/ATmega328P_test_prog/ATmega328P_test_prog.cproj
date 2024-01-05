@@ -154,9 +154,6 @@
     <Compile Include="Include\Header\dio.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Include\Header\timer.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="Include\Header\uart.h">
       <SubType>compile</SubType>
     </Compile>
@@ -164,9 +161,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\Src\dio.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Include\Src\timer.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\Src\uart.c">

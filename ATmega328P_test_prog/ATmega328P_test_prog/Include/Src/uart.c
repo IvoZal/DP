@@ -30,7 +30,7 @@ void USART_Init(unsigned int baudrate)
 	stdout = &mystdout;
 }
 
-int uart_putchar(char c, FILE *stream)
+static int uart_putchar(char c, FILE *stream)
 {
 	loop_until_bit_is_set(UCSR0A, UDRE0);
 	UDR0 = c;
