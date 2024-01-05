@@ -49,22 +49,29 @@ int main(void)
 	USART_Init(38400);
 	sei();
 	
+	uint8_t max_i = sizeof(cmd_lut) / sizeof(UART_CMD_T);
+	
     while (1) 
     {
 		if(BufferPeekLast() == 0xA)
 		{
-			uint8_t j = 0;
+			uint8_t i = 0;
 			while(BufferLength() > 0) 
 			{
-				input_string[j] = BufferGet();
-				++j;
+				input_string[i] = BufferGet();
+				++i;
 			}
-			for(uint8_t i=0; i < sizeof(cmd_lut) / sizeof(UART_CMD_T); i++)
+			for(i=0; i < max_i; i++)
 			{
 				if(strstr(input_string,cmd_lut[i].cmd) != NULL)
 				{
 					cmd_lut[i].cb(input_string);
+					break;
 				}
+			}
+			if(i == max_i)
+			{
+				printf("ERROR: Unsupported command!\n");
 			}
 		}		
     }
