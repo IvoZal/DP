@@ -15,7 +15,7 @@ void USART_Init(unsigned int baudrate)
 	unsigned int ubrr = 16000000/16/baudrate-1;
 	/* Set transmitter as output, assign HIGH value */
 	DDRD |= (1 << DDD1);
-	PORTD |= (1 << PORTD1);
+	PORTD |= (1 << PORD1);
 	/* Enable pull-up for receiver */
 	PORTD |= (1 << PORTD0);
 	/*Set baud rate */
