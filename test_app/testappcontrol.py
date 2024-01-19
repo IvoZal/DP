@@ -5,7 +5,7 @@ class Device:
         self.name = name
         self.state = True
         self.tk_var = tk.BooleanVar(value=self.state)
-        self.result = "FAIL"
+        self.result = "INIT"
         self.err_message = ""
 
 class TestAppController:
@@ -59,19 +59,34 @@ class TestAppController:
                         device.result = "SKIPPED"
 
                 case "Rotacni enkoder":
-                    pass
+                    if(device.state):
+                        device.result = "FAIL"
+                    else:
+                        device.result = "SKIPPED"
 
                 case "Maticova klavesnice":
-                    pass
+                    if(device.state):
+                        device.result = "FAIL"
+                    else:
+                        device.result = "SKIPPED"
 
                 case "Modul LCD displeje":
-                    pass
+                    if(device.state):
+                        device.result = "FAIL"
+                    else:
+                        device.result = "SKIPPED"
 
                 case "Reproduktor":
-                    pass
+                    if(device.state):
+                        device.result = "FAIL"
+                    else:
+                        device.result = "SKIPPED"
 
                 case "Modul s termistorem":
-                    pass
+                    if(device.state):
+                        device.result = "FAIL"
+                    else:
+                        device.result = "SKIPPED"
 
                 case others:
                     pass
