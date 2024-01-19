@@ -22,6 +22,4 @@ class DefaultView:
             i += 1
 
     def update_state(self, device):
-        print(device.tk_var)
         device.state = device.tk_var.get()
-        print(f"State of {device.name}: {device.state}")
