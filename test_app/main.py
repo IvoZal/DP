@@ -8,8 +8,7 @@ if __name__ == "__main__":
     root.configure(pady=20,padx=20)
     root.title("Test application")
 
-    com_port = 'COM4'
-    model = TestModel(com_port,38400)
+    model = TestModel()
 
     control = TestAppController(model, None)
 
