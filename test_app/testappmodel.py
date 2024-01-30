@@ -10,6 +10,9 @@ class TestModel:
 
     def init_serial(self, com_port, baud_rate):
         self.ser = serial.Serial(com_port, baud_rate)
+
+    def close_serial(self):
+        self.ser.close()
         
     def start_test(self, message, timeout):
         self.ser.timeout = timeout
