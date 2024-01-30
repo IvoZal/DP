@@ -5,6 +5,7 @@ class DefaultView:
         self.root = root
         self.controller = controller
         
+        # Menu for com port selection
         menu_frame = tk.Frame(self.root)
         menu_frame.grid(column=2, row=2)
 
@@ -14,8 +15,9 @@ class DefaultView:
         port_menu = tk.Menu(menu_btn, tearoff=1)
         menu_btn.config(menu=port_menu)
         for port in self.controller.model.com_list:
-            port_menu.add_command(label=port, command=lambda: self.controller.selected_port.set(port))
+            port_menu.add_command(label=port, command=lambda port=port: self.controller.selected_port.set(port))
 
+        # Common labels
         test_label = tk.Label(self.root, text="Vyberte, ktere moduly testovat:", font=("Arial",14))
         test_label.grid(column=0,row=0, sticky=tk.W, padx=5, pady=5)
 
@@ -28,6 +30,10 @@ class DefaultView:
         exit_btn = tk.Button(self.root, text="Exit", font=("Arial",14), background='red', command=lambda: self.root.quit())
         exit_btn.grid(column=2, row=1, sticky=tk.E, padx=5, pady=5)
 
+        self.comm_label = tk.Label(self.root, text="")
+        self.comm_label.grid(column=2, row=3, sticky=tk.E, padx=5, pady=5)
+
+        # Checkboxes for each test with status label
         i = 1
         for device in self.controller.test_devices:
             check_btn = tk.Checkbutton(self.root, text=device.name, variable=device.tk_var, font=("Arial", 14),
