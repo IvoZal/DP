@@ -1,5 +1,29 @@
 import tkinter as tk
 
+class UserEvalView(tk.Toplevel):
+    def __init__(self, parent, device):
+        super().__init__(parent)
+        self.device = device
+
+    def reproductor_view(self):
+        self.title("Test reproduktoru")
+
+        comm_label = tk.Label(self, text="Potvrťe, zda slyšíte tón z reproduktoru:", font=("Arial",14))
+        comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
+
+        yes_btn = tk.Button(self, text="Ano", font=("Arial",14), background='green', command=lambda: self.save_result(True))
+        yes_btn.grid(column=0,row=1, sticky=tk.W, padx=5, pady=5)
+
+        no_btn = tk.Button(self, text="Ne", font=("Arial",14), background='red', command=lambda: self.save_result(False))
+        no_btn.grid(column=0,row=2, sticky=tk.W, padx=5, pady=5)
+
+    def save_result(self, clicked_result):
+        if(clicked_result):
+            self.device.result = "PASS"
+        else:
+            self.device.result = "FAIL"
+        self.destroy()
+
 class DefaultView:
     def __init__(self, root, controller):
         self.root = root
@@ -47,7 +71,7 @@ class DefaultView:
             i += 1
 
     def update_state(self, device):
-        device.state = device.tk_var.get()
+        device.run = device.tk_var.get()
 
     def update_status_label(self, device):
         color = 'green'
@@ -63,7 +87,13 @@ class DefaultView:
         
         device.status_label.config(text=device.result, bg=color)
 
-class View(tk.Toplevel):
-    def __init__(self, parent, root):
-        super().__init__(parent)
-        pass
+    def open_window(self, device):
+        window = UserEvalView(self.root, device)
+        match device.name:
+            case "Reproduktor":
+                window.reproductor_view()
+                pass
+
+            case others:
+                pass
+        self.root.wait_window(window)

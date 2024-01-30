@@ -3,8 +3,8 @@ import tkinter as tk
 class Device:
     def __init__(self, name):
         self.name = name
-        self.state = True
-        self.tk_var = tk.BooleanVar(value=self.state)
+        self.run = True
+        self.tk_var = tk.BooleanVar(value=self.run)
         self.result = "INIT"
         self.err_message = ""
         self.status_label = None
@@ -35,7 +35,7 @@ class TestAppController:
             for device in self.test_devices:
                 match device.name:
                     case "ATmega328P Xplained Mini":
-                        if(device.state):
+                        if(device.run):
                             test_result = self.model.self_test("TEST ATMEGA")
                             if(test_result[0]):
                                 device.result = "PASS"
@@ -46,7 +46,7 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Rele modul":
-                        if(device.state):
+                        if(device.run):
                             test_result = self.model.self_test("TEST RELAY")
                             if(test_result[0]):
                                 device.result = "PASS"
@@ -57,7 +57,7 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "RTC a EEPROM modul":
-                        if(device.state):
+                        if(device.run):
                             test_result = self.model.self_test("TEST RTC")
                             if(test_result[0]):
                                 device.result = "PASS"
@@ -68,31 +68,32 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Rotacni enkoder":
-                        if(device.state):
+                        if(device.run):
                             device.result = "FAIL"
                         else:
                             device.result = "SKIPPED"
 
                     case "Maticova klavesnice":
-                        if(device.state):
+                        if(device.run):
                             device.result = "FAIL"
                         else:
                             device.result = "SKIPPED"
 
                     case "Modul LCD displeje":
-                        if(device.state):
+                        if(device.run):
                             device.result = "FAIL"
                         else:
                             device.result = "SKIPPED"
 
                     case "Reproduktor":
-                        if(device.state):
-                            device.result = "FAIL"
+                        if(device.run):
+                            device.result = "INIT"
+                            self.view.open_window(device)
                         else:
                             device.result = "SKIPPED"
 
                     case "Modul s termistorem":
-                        if(device.state):
+                        if(device.run):
                             device.result = "FAIL"
                         else:
                             device.result = "SKIPPED"
