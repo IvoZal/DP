@@ -25,13 +25,13 @@ class TestAppController:
         
     def start_clicked(self):
         com_port = self.selected_port.get()
-        print(com_port)
-        if(com_port == ""):
+        try:
+            self.model.init_serial(com_port, 38400)
+            self.view.comm_label.config(text="COM port " + com_port + " selected.")
+        except Exception as e:
+            self.view.comm_label.config(text="Could not access selected port: " + com_port)
             pass
         else:
-            self.model.init_serial(com_port, 38400)
-
-            print("Start")
             for device in self.test_devices:
                 match device.name:
                     case "ATmega328P Xplained Mini":
@@ -101,3 +101,4 @@ class TestAppController:
                         pass
                     
                 self.view.update_status_label(device)
+            self.model.close_serial()
