@@ -81,20 +81,25 @@ class TestAppController:
 
                     case "Modul LCD displeje":
                         if(device.run):
-                            device.result = "FAIL"
+                            device.result = "INIT"
+                            self.model.start_test("TEST LCD", None)
+                            self.view.open_window(device)
                         else:
                             device.result = "SKIPPED"
 
                     case "Reproduktor":
                         if(device.run):
                             device.result = "INIT"
+                            self.model.start_test("TEST REPRO", None)
                             self.view.open_window(device)
                         else:
                             device.result = "SKIPPED"
 
                     case "Modul s termistorem":
                         if(device.run):
-                            device.result = "FAIL"
+                            device.result = "INIT"
+                            self.model.start_test("TEST THERM", None)
+                            self.view.open_window(device)
                         else:
                             device.result = "SKIPPED"
 
