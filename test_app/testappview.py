@@ -1,9 +1,15 @@
 import tkinter as tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import matplotlib.animation as animation
 
 class UserEvalView(tk.Toplevel):
     def __init__(self, parent, device):
         super().__init__(parent)
         self.device = device
+        self.plot = None
+        self.ax = None
+        self.canvas = None
 
         yes_btn = tk.Button(self, text="Ano", font=("Arial",14), background='green', command=lambda: self.save_result(True))
         yes_btn.grid(column=0,row=1, sticky=tk.W, padx=5, pady=5)
@@ -23,11 +29,31 @@ class UserEvalView(tk.Toplevel):
         comm_label = tk.Label(self, text="Potvrťe, zda je na displeji správně zobrazený testovací obrazec:", font=("Arial",14))
         comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
+    def update_graph(self, frame):
+        self.ax.clear()
+        self.ax.plot(self.device.data, marker='o')
+        self.ax.set_title("Graf výstupního napětí modulu:")
+        self.ax.set_xlabel("Číslo vzorku []")
+        self.ax.set_ylabel("Napětí [V]")
+        self.ax.grid(True)
+        self.canvas.draw()
+
     def thermistor_view(self):
         self.title("Test modulu s termisorem")
 
         comm_label = tk.Label(self, text="Vyhodnoťte, zda termisor funguje korektně:", font=("Arial",14))
         comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
+
+        # Init matplot figure
+        figure = Figure(figsize=(5,4), dpi=100)
+        self.ax = figure.add_subplot(1, 1, 1)
+        
+        self.canvas = FigureCanvasTkAgg(figure, master=self)
+        canvas_widget = self.canvas.get_tk_widget()
+        canvas_widget.grid(column=1, row=1, rowspan=3)
+
+        self.plot = animation.FuncAnimation(figure, self.update_graph, blit=False, interval=1000)
+        self.animation_running = True
 
     def save_result(self, clicked_result):
         if(clicked_result):
@@ -40,6 +66,7 @@ class DefaultView:
     def __init__(self, root, controller):
         self.root = root
         self.controller = controller
+        self.window = None
         
         # Menu for com port selection
         menu_frame = tk.Frame(self.root)
@@ -100,17 +127,19 @@ class DefaultView:
         device.status_label.config(text=device.result, bg=color)
 
     def open_window(self, device):
-        window = UserEvalView(self.root, device)
+        self.window = UserEvalView(self.root, device)
         match device.name:
             case "Reproduktor":
-                window.reproductor_view()
+                self.window.reproductor_view()
+                self.root.wait_window(self.window)
 
             case "Modul LCD displeje":
-                window.display_view()
+                self.window.display_view()
+                self.root.wait_window(self.window)
 
             case "Modul s termistorem":
-                window.thermistor_view()
+                self.window.thermistor_view()
+                self.root.wait_window(self.window)
 
             case others:
                 pass
-        self.root.wait_window(window)
