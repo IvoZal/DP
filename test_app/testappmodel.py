@@ -29,3 +29,7 @@ class TestModel:
     def self_test(self, message, timeout=5):
         self.start_test(message,timeout)
         return self.eval_test()
+
+    def read_data(self, timeout):
+        self.ser.timeout = timeout
+        return self.ser.readline().decode('utf-8')

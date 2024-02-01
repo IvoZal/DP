@@ -3,11 +3,12 @@ import tkinter as tk
 class Device:
     def __init__(self, name):
         self.name = name
-        self.run = True
+        self.run = False
         self.tk_var = tk.BooleanVar(value=self.run)
         self.result = "INIT"
         self.err_message = ""
         self.status_label = None
+        self.data = [1,2,3,5,2,3,1,2,3,4,5,6]
 
 class TestAppController:
     def __init__(self, model, view):
@@ -100,6 +101,14 @@ class TestAppController:
                             device.result = "INIT"
                             self.model.start_test("TEST THERM", None)
                             self.view.open_window(device)
+
+                            while self.view.window.winfo_exists():
+                                data = self.model.read_data(None)
+                                raw_data = int(data.replace("ADC: ",""))
+                                print(raw_data)
+                                device.data.append(raw_data)
+                                if len(device.data) > 20:
+                                    device.data.pop(0)
                         else:
                             device.result = "SKIPPED"
 
