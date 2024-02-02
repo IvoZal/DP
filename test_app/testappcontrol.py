@@ -1,4 +1,5 @@
 import tkinter as tk
+import threading
 
 class Device:
     def __init__(self, name):
@@ -8,13 +9,14 @@ class Device:
         self.result = "INIT"
         self.err_message = ""
         self.status_label = None
-        self.data = [1,2,3,5,2,3,1,2,3,4,5,6]
+        self.data = []
 
 class TestAppController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
         self.selected_port = tk.StringVar(value="")
+        self.serial_read_flag = False
         self.test_devices = [Device("ATmega328P Xplained Mini"),
                              Device("Rele modul"),
                              Device("RTC a EEPROM modul"),
@@ -23,6 +25,17 @@ class TestAppController:
                              Device("Modul LCD displeje"),
                              Device("Reproduktor"),
                              Device("Modul s termistorem"),]
+        
+    def start_serial_read(self, device):
+        while self.serial_read_flag:
+            try:
+                data = self.model.read_data(None)
+                raw_data = int(data.replace("ADC: ",""))
+                device.data.append(5*raw_data/1023)
+                if len(device.data) > 20:
+                    device.data.pop(0)
+            except ValueError:
+                pass
         
     def start_clicked(self):
         com_port = self.selected_port.get()
@@ -100,15 +113,12 @@ class TestAppController:
                         if(device.run):
                             device.result = "INIT"
                             self.model.start_test("TEST THERM", None)
-                            self.view.open_window(device)
 
-                            while self.view.window.winfo_exists():
-                                data = self.model.read_data(None)
-                                raw_data = int(data.replace("ADC: ",""))
-                                print(raw_data)
-                                device.data.append(raw_data)
-                                if len(device.data) > 20:
-                                    device.data.pop(0)
+                            self.serial_read_flag = True
+                            serial_thread = threading.Thread(target=self.start_serial_read, args=(device,))
+                            serial_thread.start()
+
+                            self.view.open_window(device)                      
                         else:
                             device.result = "SKIPPED"
 

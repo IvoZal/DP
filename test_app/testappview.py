@@ -8,7 +8,7 @@ class UserEvalView(tk.Toplevel):
         super().__init__(parent)
         self.device = device
         self.plot = None
-        self.ax = None
+        self.axis = None
         self.canvas = None
 
         yes_btn = tk.Button(self, text="Ano", font=("Arial",14), background='green', command=lambda: self.save_result(True))
@@ -30,12 +30,16 @@ class UserEvalView(tk.Toplevel):
         comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
     def update_graph(self, frame):
-        self.ax.clear()
-        self.ax.plot(self.device.data, marker='o')
-        self.ax.set_title("Graf výstupního napětí modulu:")
-        self.ax.set_xlabel("Číslo vzorku []")
-        self.ax.set_ylabel("Napětí [V]")
-        self.ax.grid(True)
+        self.axis.clear()
+        self.axis.plot(self.device.data, marker='o')
+        self.axis.set_title("Graf výstupního napětí modulu:")
+        self.axis.set_xlabel("Číslo vzorku []")
+        self.axis.set_ylabel("Napětí [V]")
+        self.axis.grid(True)
+        data_range = range(len(self.device.data))
+        self.axis.set_xticks(data_range)
+        self.axis.set_xticklabels([str(x) for x in data_range])
+        # self.axis.set_ylim([0,5])
         self.canvas.draw()
 
     def thermistor_view(self):
@@ -45,14 +49,14 @@ class UserEvalView(tk.Toplevel):
         comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
         # Init matplot figure
-        figure = Figure(figsize=(5,4), dpi=100)
-        self.ax = figure.add_subplot(1, 1, 1)
+        figure = Figure(figsize=(6,6), dpi=100)
+        self.axis = figure.add_subplot(1, 1, 1)
         
         self.canvas = FigureCanvasTkAgg(figure, master=self)
         canvas_widget = self.canvas.get_tk_widget()
-        canvas_widget.grid(column=1, row=1, rowspan=3)
+        canvas_widget.grid(column=0, row=3)
 
-        self.plot = animation.FuncAnimation(figure, self.update_graph, blit=False, interval=1000)
+        self.plot = animation.FuncAnimation(figure, self.update_graph, blit=False, interval=300)
         self.animation_running = True
 
     def save_result(self, clicked_result):
@@ -140,6 +144,8 @@ class DefaultView:
             case "Modul s termistorem":
                 self.window.thermistor_view()
                 self.root.wait_window(self.window)
+                self.controller.serial_read_flag = False
+                device.data = []
 
             case others:
                 pass
