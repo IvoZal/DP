@@ -14,12 +14,12 @@ class TestModel:
     def close_serial(self):
         self.ser.close()
         
-    def start_test(self, message, timeout):
-        self.ser.timeout = timeout
+    def start_test(self, message):
         message += '\n'
         self.ser.write(message.encode('utf-8'))
 
-    def eval_test(self):
+    def eval_test(self, timeout):
+        self.ser.timeout = timeout
         result = self.ser.readline().decode('utf-8')
         if(result.find("PASS") >= 0):
             return True, result
@@ -27,8 +27,8 @@ class TestModel:
             return False, result
         
     def self_test(self, message, timeout=5):
-        self.start_test(message,timeout)
-        return self.eval_test()
+        self.start_test(message)
+        return self.eval_test(timeout)
 
     def read_data(self, timeout):
         self.ser.timeout = timeout

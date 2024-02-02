@@ -3,6 +3,17 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
 
+class UserInteractView(tk.Toplevel):
+    def __init__(self, parent, device):
+        super().__init__(parent)
+        self.device = device
+
+    def encoder_view(self):
+        self.title("Test rotacniho enkoderu")
+
+        comm_label = tk.Label(self, text="Otočte enkodérem oběma směry a stiskněte tlačítko v ose enkodéru", font=("Arial",14))
+        comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
+
 class UserEvalView(tk.Toplevel):
     def __init__(self, parent, device):
         super().__init__(parent)
@@ -131,17 +142,23 @@ class DefaultView:
         device.status_label.config(text=device.result, bg=color)
 
     def open_window(self, device):
-        self.window = UserEvalView(self.root, device)
         match device.name:
+            case "Rotacni enkoder":
+                self.window = UserInteractView(self.root, device)
+                self.window.encoder_view()
+
             case "Reproduktor":
+                self.window = UserEvalView(self.root, device)
                 self.window.reproductor_view()
                 self.root.wait_window(self.window)
 
             case "Modul LCD displeje":
+                self.window = UserEvalView(self.root, device)
                 self.window.display_view()
                 self.root.wait_window(self.window)
 
             case "Modul s termistorem":
+                self.window = UserEvalView(self.root, device)
                 self.window.thermistor_view()
                 self.root.wait_window(self.window)
                 self.controller.serial_read_flag = False
