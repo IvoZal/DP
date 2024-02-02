@@ -56,7 +56,7 @@ class UserEvalView(tk.Toplevel):
         canvas_widget = self.canvas.get_tk_widget()
         canvas_widget.grid(column=0, row=3)
 
-        self.plot = animation.FuncAnimation(figure, self.update_graph, blit=False, interval=300)
+        self.plot = animation.FuncAnimation(figure, self.update_graph, blit=False, interval=300, cache_frame_data=False)
         self.animation_running = True
 
     def save_result(self, clicked_result):
