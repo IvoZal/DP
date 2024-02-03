@@ -20,7 +20,7 @@ class UserInteractView(tk.Toplevel):
         skip_btn.grid(column=0,row=2, sticky=tk.W, padx=5, pady=5)
 
     def missing_input(self, message):
-        self.err_label.config(text=message)
+        self.err_label.config(text=self.err_label["text"] + message)
 
     def save_result(self, clicked_result):
         if(clicked_result):
