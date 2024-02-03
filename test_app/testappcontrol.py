@@ -26,7 +26,7 @@ class TestAppController:
                              Device("Reproduktor"),
                              Device("Modul s termistorem"),]
         
-    def start_serial_read(self, device):
+    def start_adc_read(self, device):
         while self.serial_read_flag:
             try:
                 data = self.model.read_data(None)
@@ -36,6 +36,24 @@ class TestAppController:
                     device.data.pop(0)
             except ValueError:
                 pass
+
+    def interact_test(self, device):
+        test_result = [False, ""]
+        while self.serial_read_flag:
+            try:
+                test_result = self.model.eval_test(0)
+            except:
+                pass
+            else:
+                if(test_result[0]):
+                    device.result = "PASS"
+                    device.err_message = ""
+                    self.view.window.save_result(True)
+                    # break
+                elif(test_result[1] != ""):
+                    device.result = "FAIL"
+                    device.err_message = test_result[1]
+                    self.view.window.missing_input(device.err_message)
         
     def start_clicked(self):
         com_port = self.selected_port.get()
@@ -82,8 +100,16 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Rotacni enkoder":
+                        device.run = True
                         if(device.run):
-                            device.result = "FAIL"
+                            self.model.start_test("TEST ENCODER")
+
+                            self.serial_read_flag = True
+                            test_thread = threading.Thread(target=self.interact_test, args=(device,))
+                            test_thread.start()
+
+                            self.view.open_window(device)        
+                            self.serial_read_flag = False                    
                         else:
                             device.result = "SKIPPED"
 
@@ -95,27 +121,24 @@ class TestAppController:
 
                     case "Modul LCD displeje":
                         if(device.run):
-                            device.result = "INIT"
-                            self.model.start_test("TEST LCD", None)
+                            self.model.start_test("TEST LCD")
                             self.view.open_window(device)
                         else:
                             device.result = "SKIPPED"
 
                     case "Reproduktor":
                         if(device.run):
-                            device.result = "INIT"
-                            self.model.start_test("TEST REPRO", None)
+                            self.model.start_test("TEST REPRO")
                             self.view.open_window(device)
                         else:
                             device.result = "SKIPPED"
 
                     case "Modul s termistorem":
                         if(device.run):
-                            device.result = "INIT"
-                            self.model.start_test("TEST THERM", None)
+                            self.model.start_test("TEST THERM")
 
                             self.serial_read_flag = True
-                            serial_thread = threading.Thread(target=self.start_serial_read, args=(device,))
+                            serial_thread = threading.Thread(target=self.start_adc_read, args=(device,))
                             serial_thread.start()
 
                             self.view.open_window(device)                      

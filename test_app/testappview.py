@@ -7,12 +7,27 @@ class UserInteractView(tk.Toplevel):
     def __init__(self, parent, device):
         super().__init__(parent)
         self.device = device
+        self.err_label = tk.Label(self, text="", font=("Arial",14))
+        self.err_label.grid(column=0, row=1, sticky=tk.W, padx=5, pady=5)
 
     def encoder_view(self):
         self.title("Test rotacniho enkoderu")
 
-        comm_label = tk.Label(self, text="Otočte enkodérem oběma směry a stiskněte tlačítko v ose enkodéru", font=("Arial",14))
-        comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
+        label = tk.Label(self, text="Otočte enkodérem oběma směry a stiskněte tlačítko v ose enkodéru", font=("Arial",14))
+        label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
+
+        skip_btn = tk.Button(self, text="Ukončit test", font=("Arial",14), background='green', command=lambda: self.save_result(False))
+        skip_btn.grid(column=0,row=2, sticky=tk.W, padx=5, pady=5)
+
+    def missing_input(self, message):
+        self.err_label.config(text=message)
+
+    def save_result(self, clicked_result):
+        if(clicked_result):
+            self.device.result = "PASS"
+        else:
+            self.device.result = "FAIL"
+        self.destroy()
 
 class UserEvalView(tk.Toplevel):
     def __init__(self, parent, device):
@@ -128,7 +143,6 @@ class DefaultView:
         device.run = device.tk_var.get()
 
     def update_status_label(self, device):
-        color = 'green'
         match device.result:
             case "FAIL":
                 color = 'red'
@@ -137,7 +151,7 @@ class DefaultView:
                 color = 'yellow'
 
             case others:
-                pass
+                color = 'green'
         
         device.status_label.config(text=device.result, bg=color)
 
@@ -146,6 +160,7 @@ class DefaultView:
             case "Rotacni enkoder":
                 self.window = UserInteractView(self.root, device)
                 self.window.encoder_view()
+                self.root.wait_window(self.window)
 
             case "Reproduktor":
                 self.window = UserEvalView(self.root, device)
