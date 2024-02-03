@@ -100,7 +100,6 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Rotacni enkoder":
-                        device.run = True
                         if(device.run):
                             self.model.start_test("TEST ENCODER")
 
@@ -115,7 +114,14 @@ class TestAppController:
 
                     case "Maticova klavesnice":
                         if(device.run):
-                            device.result = "FAIL"
+                            self.model.start_test("TEST KEYBRD")
+
+                            self.serial_read_flag = True
+                            test_thread = threading.Thread(target=self.interact_test, args=(device,))
+                            test_thread.start()
+
+                            self.view.open_window(device)        
+                            self.serial_read_flag = False  
                         else:
                             device.result = "SKIPPED"
 
@@ -149,4 +155,5 @@ class TestAppController:
                         pass
                     
                 self.view.update_status_label(device)
+                self.model.ser.reset_input_buffer()
             self.model.close_serial()

@@ -10,14 +10,20 @@ class UserInteractView(tk.Toplevel):
         self.err_label = tk.Label(self, text="", font=("Arial",14))
         self.err_label.grid(column=0, row=1, sticky=tk.W, padx=5, pady=5)
 
+        skip_btn = tk.Button(self, text="Ukončit test", font=("Arial",14), background='green', command=lambda: self.save_result(False))
+        skip_btn.grid(column=0,row=2, sticky=tk.W, padx=5, pady=5)
+
     def encoder_view(self):
         self.title("Test rotacniho enkoderu")
 
         label = tk.Label(self, text="Otočte enkodérem oběma směry a stiskněte tlačítko v ose enkodéru", font=("Arial",14))
         label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
-        skip_btn = tk.Button(self, text="Ukončit test", font=("Arial",14), background='green', command=lambda: self.save_result(False))
-        skip_btn.grid(column=0,row=2, sticky=tk.W, padx=5, pady=5)
+    def keyboard_view(self):
+        self.title("Test maticové klávesnice")
+
+        label = tk.Label(self, text="Postupně stiskněte všechna tlačítka maticové klávesnice", font=("Arial",14))
+        label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
     def missing_input(self, message):
         self.err_label.config(text=self.err_label["text"] + message)
@@ -160,6 +166,11 @@ class DefaultView:
             case "Rotacni enkoder":
                 self.window = UserInteractView(self.root, device)
                 self.window.encoder_view()
+                self.root.wait_window(self.window)
+
+            case "Maticova klavesnice":
+                self.window = UserInteractView(self.root, device)
+                self.window.keyboard_view()
                 self.root.wait_window(self.window)
 
             case "Reproduktor":
