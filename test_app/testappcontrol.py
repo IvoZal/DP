@@ -4,7 +4,7 @@ import threading
 class Device:
     def __init__(self, name):
         self.name = name
-        self.run = False
+        self.run = True
         self.tk_var = tk.BooleanVar(value=self.run)
         self.result = "INIT"
         self.err_message = ""
@@ -52,7 +52,7 @@ class TestAppController:
                     # break
                 elif(test_result[1] != ""):
                     device.result = "FAIL"
-                    device.err_message = test_result[1]
+                    device.err_message += test_result[1]
                     self.view.window.missing_input(device.err_message)
         
     def start_clicked(self):
