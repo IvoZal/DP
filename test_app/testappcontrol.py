@@ -10,13 +10,13 @@ class Device:
         self.err_message = ""
         self.status_label = None
         self.data = []
+        self.serial_read_flag = False
 
 class TestAppController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
         self.selected_port = tk.StringVar(value="")
-        self.serial_read_flag = False
         self.test_devices = [Device("ATmega328P Xplained Mini"),
                              Device("Rele modul"),
                              Device("RTC a EEPROM modul"),
@@ -27,7 +27,7 @@ class TestAppController:
                              Device("Modul s termistorem"),]
         
     def start_adc_read(self, device):
-        while self.serial_read_flag:
+        while device.serial_read_flag:
             try:
                 data = self.model.read_data(None)
                 raw_data = int(data.replace("ADC: ",""))
@@ -39,7 +39,7 @@ class TestAppController:
 
     def interact_test(self, device):
         test_result = [False, ""]
-        while self.serial_read_flag:
+        while device.serial_read_flag:
             try:
                 test_result = self.model.eval_test(0)
             except:
@@ -49,10 +49,9 @@ class TestAppController:
                     device.result = "PASS"
                     device.err_message = ""
                     self.view.window.save_result(True)
-                    # break
                 elif(test_result[1] != ""):
                     device.result = "FAIL"
-                    device.err_message += test_result[1]
+                    device.err_message = test_result[1]
                     self.view.window.missing_input(device.err_message)
         
     def start_clicked(self):
@@ -103,25 +102,26 @@ class TestAppController:
                         if(device.run):
                             self.model.start_test("TEST ENCODER")
 
-                            self.serial_read_flag = True
                             test_thread = threading.Thread(target=self.interact_test, args=(device,))
+                            device.serial_read_flag = True
                             test_thread.start()
 
-                            self.view.open_window(device)        
-                            self.serial_read_flag = False                    
+                            self.view.open_window(device)   
+                            device.serial_read_flag = False         
                         else:
                             device.result = "SKIPPED"
 
                     case "Maticova klavesnice":
                         if(device.run):
+                            device.result = "INIT"
                             self.model.start_test("TEST KEYBRD")
 
-                            self.serial_read_flag = True
-                            test_thread = threading.Thread(target=self.interact_test, args=(device,))
-                            test_thread.start()
+                            test_th = threading.Thread(target=self.interact_test, args=(device,))
+                            device.serial_read_flag = True
+                            test_th.start()
 
                             self.view.open_window(device)        
-                            self.serial_read_flag = False  
+                            device.serial_read_flag = False  
                         else:
                             device.result = "SKIPPED"
 
@@ -143,11 +143,12 @@ class TestAppController:
                         if(device.run):
                             self.model.start_test("TEST THERM")
 
-                            self.serial_read_flag = True
+                            device.serial_read_flag = True
                             serial_thread = threading.Thread(target=self.start_adc_read, args=(device,))
                             serial_thread.start()
 
-                            self.view.open_window(device)                      
+                            self.view.open_window(device)   
+                            device.serial_read_flag = False                   
                         else:
                             device.result = "SKIPPED"
 

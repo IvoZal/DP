@@ -187,7 +187,6 @@ class DefaultView:
                 self.window = UserEvalView(self.root, device)
                 self.window.thermistor_view()
                 self.root.wait_window(self.window)
-                self.controller.serial_read_flag = False
                 device.data = []
 
             case others:
