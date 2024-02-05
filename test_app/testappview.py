@@ -143,7 +143,7 @@ class DefaultView:
         result_label.grid(column=1, row=5, sticky=tk.W, padx=50, pady=5)  
 
         result_label = tk.Label(device_frame, text="Chybová hláška:", font=("Arial",14))
-        result_label.grid(column=1, row=5, sticky=tk.W, padx=50, pady=5)        
+        result_label.grid(column=2, row=5, sticky=tk.W, padx=50, pady=5)        
 
         # Checkboxes for each test with status label
         i = 6

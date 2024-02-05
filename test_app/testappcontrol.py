@@ -58,7 +58,7 @@ class TestAppController:
         com_port = self.selected_port.get()
         try:
             self.model.init_serial(com_port, 38400)
-            self.view.comm_label.config(text="COM port " + com_port + " selected.")
+            self.view.comm_label.config(text="Vybrán port " + com_port)
         except Exception as e:
             self.view.comm_label.config(text="Vybraný COM port není přístupný: " + com_port)
             pass
