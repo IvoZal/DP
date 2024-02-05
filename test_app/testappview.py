@@ -104,44 +104,61 @@ class DefaultView:
         self.controller = controller
         self.window = None
         
-        # Menu for com port selection
-        menu_frame = tk.Frame(self.root)
-        menu_frame.grid(column=2, row=2)
+        ## Common test setting
+        settings_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
+        settings_frame.grid(column=0, row=0, padx=10, pady=10, sticky=tk.W)
 
-        menu_btn = tk.Menubutton(menu_frame, text="Select COM port", relief="raised", indicatoron=True)
-        menu_btn.grid(column=2, row=2)
+        setup_label = tk.Label(settings_frame, text="Nastavení:", font=("Arial",14))
+        setup_label.grid(column=0,row=0, sticky=tk.W, padx=5, pady=5)
+
+        self.comm_label = tk.Label(settings_frame, text="", font=("Arial",14))
+        self.comm_label.grid(column=0, row=2, sticky=tk.W, padx=5, pady=5)
+
+        start_btn = tk.Button(settings_frame, text="Start", font=("Arial",14), background='green', command=self.controller.start_clicked)
+        start_btn.grid(column=0,row=3, sticky=tk.W, padx=5, pady=5)
+
+        exit_btn = tk.Button(settings_frame, text="Ukončit", font=("Arial",14), background='red', command=lambda: self.root.quit())
+        exit_btn.grid(column=0, row=4, sticky=tk.W, padx=5, pady=5)
+
+        # Menu for com port selection
+        menu_frame = tk.Frame(settings_frame)
+        menu_frame.grid(column=0, row=1, sticky=tk.W)
+
+        menu_btn = tk.Menubutton(menu_frame, text="Vyberte COM port", relief="raised", indicatoron=True, font=("Arial",14))
+        menu_btn.grid(column=0, row=1)
 
         port_menu = tk.Menu(menu_btn, tearoff=1)
         menu_btn.config(menu=port_menu)
         for port in self.controller.model.com_list:
             port_menu.add_command(label=port, command=lambda port=port: self.controller.selected_port.set(port))
 
-        # Common labels
-        test_label = tk.Label(self.root, text="Vyberte, ktere moduly testovat:", font=("Arial",14))
-        test_label.grid(column=0,row=0, sticky=tk.W, padx=5, pady=5)
+        # Device specific labels
+        device_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
+        device_frame.grid(column=0, row=5, padx=10, pady=10, sticky=tk.W)
 
-        result_label = tk.Label(self.root, text="Vysledky testu:", font=("Arial",14))
-        result_label.grid(column=1, row=0, sticky=tk.W, padx=50, pady=5)
+        test_label = tk.Label(device_frame, text="Vyberte, ktere moduly testovat:", font=("Arial",14))
+        test_label.grid(column=0,row=5, sticky=tk.W, padx=5, pady=5)
 
-        start_btn = tk.Button(self.root, text="Start", font=("Arial",14), background='green', command=self.controller.start_clicked)
-        start_btn.grid(column=2,row=0, sticky=tk.E, padx=5, pady=5)
+        result_label = tk.Label(device_frame, text="Vysledky testu:", font=("Arial",14))
+        result_label.grid(column=1, row=5, sticky=tk.W, padx=50, pady=5)  
 
-        exit_btn = tk.Button(self.root, text="Exit", font=("Arial",14), background='red', command=lambda: self.root.quit())
-        exit_btn.grid(column=2, row=1, sticky=tk.E, padx=5, pady=5)
-
-        self.comm_label = tk.Label(self.root, text="")
-        self.comm_label.grid(column=2, row=3, sticky=tk.E, padx=5, pady=5)
+        result_label = tk.Label(device_frame, text="Chybová hláška:", font=("Arial",14))
+        result_label.grid(column=1, row=5, sticky=tk.W, padx=50, pady=5)        
 
         # Checkboxes for each test with status label
-        i = 1
+        i = 6
         for device in self.controller.test_devices:
-            check_btn = tk.Checkbutton(self.root, text=device.name, variable=device.tk_var, font=("Arial", 14),
+            check_btn = tk.Checkbutton(device_frame, text=device.name, variable=device.tk_var, font=("Arial", 14),
                                         command=lambda d=device: self.update_state(d))
             check_btn.grid(row=i, column=0, padx=5, pady=5, sticky=tk.W)
             
-            status_label = tk.Label(self.root, text=device.result, font=("Arial", 14), bg='green')
+            status_label = tk.Label(device_frame, text=device.result, font=("Arial", 14), bg='green')
             status_label.grid(row=i, column=1, padx=50, pady=5, sticky=tk.W)
-            device.status_label = status_label
+            device.label["status"] = status_label
+
+            error_label = tk.Label(device_frame, text="", font=("Arial", 14))
+            error_label.grid(row=i, column=2, padx=5, pady=5, sticky=tk.W)
+            device.label["error"] = error_label
 
             i += 1
 
@@ -159,7 +176,8 @@ class DefaultView:
             case others:
                 color = 'green'
         
-        device.status_label.config(text=device.result, bg=color)
+        device.label["status"].config(text=device.result, bg=color)
+        device.label["error"].config(text=device.err_message)
 
     def open_window(self, device):
         match device.name:

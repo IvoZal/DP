@@ -8,7 +8,7 @@ class Device:
         self.tk_var = tk.BooleanVar(value=self.run)
         self.result = "INIT"
         self.err_message = ""
-        self.status_label = None
+        self.label = {"status" : None, "error" : None}
         self.data = []
         self.serial_read_flag = False
 
@@ -60,7 +60,7 @@ class TestAppController:
             self.model.init_serial(com_port, 38400)
             self.view.comm_label.config(text="COM port " + com_port + " selected.")
         except Exception as e:
-            self.view.comm_label.config(text="Could not access selected port: " + com_port)
+            self.view.comm_label.config(text="Vybraný COM port není přístupný: " + com_port)
             pass
         else:
             for device in self.test_devices:
@@ -70,6 +70,7 @@ class TestAppController:
                             test_result = self.model.self_test("TEST ATMEGA")
                             if(test_result[0]):
                                 device.result = "PASS"
+                                device.err_message = ""
                             else:
                                 device.result = "FAIL"
                                 device.err_message = test_result[1]
@@ -81,6 +82,7 @@ class TestAppController:
                             test_result = self.model.self_test("TEST RELAY")
                             if(test_result[0]):
                                 device.result = "PASS"
+                                device.err_message = ""
                             else:
                                 device.result = "FAIL"
                                 device.err_message = test_result[1]
@@ -92,6 +94,7 @@ class TestAppController:
                             test_result = self.model.self_test("TEST RTC")
                             if(test_result[0]):
                                 device.result = "PASS"
+                                device.err_message = ""
                             else:
                                 device.result = "FAIL"
                                 device.err_message = test_result[1]
