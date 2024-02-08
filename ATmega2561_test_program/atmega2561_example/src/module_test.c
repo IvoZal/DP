@@ -7,9 +7,14 @@
  *  Author: Ivo Zaludek
  */ 
 
-#include "module_test.h"
-#include <stdio.h>
-#include "uart.h"
+void module_test_init()
+{
+	/* Init reproductor pin */
+	PORTE_set_pin_dir(2U, PORT_DIR_OUT);
+
+	/* Init thermistor ADC */
+	DIDR0 |= (1 << ADC0D);
+}
 
 void encoder_test()
 {
@@ -35,14 +40,12 @@ void lcd_test()
 
 void reproductor_test()
 {
-	PORTE_set_pin_dir(2U, PORT_DIR_OUT);
 	PORTE_toggle_pin_level(2U);
 	_delay_us(500U);
 }
 
 void thermistor_test()
 {
-	// read adc in loop
-	// until STOP read from serial
+	printf("ADC: %u\n",ADC_0_get_conversion(0U));
 }
  

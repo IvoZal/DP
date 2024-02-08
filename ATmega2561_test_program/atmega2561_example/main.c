@@ -21,6 +21,8 @@ int main(void)
 {
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
+
+	module_test_init();
 	
 	UART_CMD_T cmd_lut[] =
 		{{"STOP",printf},

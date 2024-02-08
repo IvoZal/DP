@@ -17,6 +17,13 @@
 
 #include <util/delay.h>
 #include <port.h>
+#include <adc_basic.h>
+#include "module_test.h"
+#include <stdio.h>
+#include "uart.h"
+
+/* Function initializes all peripherals for the module tests */
+void module_test_init(void);
 
 /* hw evaluated tests */
 // start test
