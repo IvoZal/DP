@@ -86,12 +86,6 @@ void SPI_0_initialization(void)
 	SPI_0_init();
 }
 
-void TIMER_0_initialization(void)
-{
-
-	TIMER_0_init();
-}
-
 /* configure pins and initialize registers */
 void USART_0_initialization(void)
 {
@@ -160,8 +154,6 @@ void system_init()
 	I2C_0_initialization();
 
 	SPI_0_initialization();
-
-	TIMER_0_initialization();
 
 	USART_0_initialization();
 

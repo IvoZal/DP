@@ -49,8 +49,6 @@
 
 #include <spi_basic.h>
 
-#include <tc16.h>
-
 #include <usart_basic.h>
 
 #include <usart_basic.h>
