@@ -22,6 +22,7 @@ class TestAppController:
                              Device("RTC a EEPROM modul"),
                              Device("Rotacni enkoder"),
                              Device("Maticova klavesnice"),
+                             Device("Tlacitka na LCD modulu"),
                              Device("Modul LCD displeje"),
                              Device("Reproduktor"),
                              Device("Modul s termistorem"),]
@@ -103,21 +104,22 @@ class TestAppController:
 
                     case "Rotacni enkoder":
                         if(device.run):
-                            self.model.start_test("TEST ENCODER")
+                            self.model.write("TEST ENCODER")
 
                             test_thread = threading.Thread(target=self.interact_test, args=(device,))
                             device.serial_read_flag = True
                             test_thread.start()
 
                             self.view.open_window(device)   
-                            device.serial_read_flag = False         
+                            device.serial_read_flag = False
+                            self.model.write("STOP")      
                         else:
                             device.result = "SKIPPED"
 
                     case "Maticova klavesnice":
                         if(device.run):
                             device.result = "INIT"
-                            self.model.start_test("TEST KEYBRD")
+                            self.model.write("TEST KEYBRD")
 
                             test_th = threading.Thread(target=self.interact_test, args=(device,))
                             device.serial_read_flag = True
@@ -125,33 +127,52 @@ class TestAppController:
 
                             self.view.open_window(device)        
                             device.serial_read_flag = False  
+                            self.model.write("STOP")
+                        else:
+                            device.result = "SKIPPED"
+
+                    case "Tlacitka na LCD modulu":
+                        if(device.run):
+                            device.result = "INIT"
+                            self.model.write("TEST BTN")
+
+                            test_th = threading.Thread(target=self.interact_test, args=(device,))
+                            device.serial_read_flag = True
+                            test_th.start()
+
+                            self.view.open_window(device)        
+                            device.serial_read_flag = False  
+                            self.model.write("STOP")
                         else:
                             device.result = "SKIPPED"
 
                     case "Modul LCD displeje":
                         if(device.run):
-                            self.model.start_test("TEST LCD")
+                            self.model.write("TEST LCD")
                             self.view.open_window(device)
+                            self.model.write("STOP")
                         else:
                             device.result = "SKIPPED"
 
                     case "Reproduktor":
                         if(device.run):
-                            self.model.start_test("TEST REPRO")
+                            self.model.write("TEST REPRO")
                             self.view.open_window(device)
+                            self.model.write("STOP")
                         else:
                             device.result = "SKIPPED"
 
                     case "Modul s termistorem":
                         if(device.run):
-                            self.model.start_test("TEST THERM")
+                            self.model.write("TEST THERM")
 
                             device.serial_read_flag = True
                             serial_thread = threading.Thread(target=self.start_adc_read, args=(device,))
                             serial_thread.start()
 
                             self.view.open_window(device)   
-                            device.serial_read_flag = False                   
+                            device.serial_read_flag = False
+                            self.model.write("STOP")                 
                         else:
                             device.result = "SKIPPED"
 
