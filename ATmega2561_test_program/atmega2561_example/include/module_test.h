@@ -34,6 +34,8 @@ void encoder_test(void);
 
 void keyboard_test(void);
 
+void lcd_btn_test(void);
+
 /* user interact, user evaluated tests */
 void lcd_test(void);
 

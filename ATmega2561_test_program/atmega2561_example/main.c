@@ -29,11 +29,12 @@ int main(void)
 		{"TEST ATMEGA",printf},
 		{"TEST RELAY",printf},
 		{"TEST RTC",printf},
-		{"TEST ENCODER",printf},
-		{"TEST KEYBRD",printf},
-		{"TEST LCD",printf},
+		{"TEST ENCODER",encoder_test},
+		{"TEST KEYBRD",keyboard_test},
+		{"TEST BTN",lcd_btn_test}
+		{"TEST LCD",lcd_test},
 		{"TEST REPRO",reproductor_test},
-		{"TEST THERM",printf}};
+		{"TEST THERM",thermistor_test}};
 			
 	char input_string[BUFFER_SIZE];
 	

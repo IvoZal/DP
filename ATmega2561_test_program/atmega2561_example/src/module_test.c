@@ -32,6 +32,12 @@ void keyboard_test()
 	// if STOP received, terminate
 }
 
+void lcd_btn_test()
+{
+	// same as keyboard_test
+	// measuring adc
+}
+
 void lcd_test()
 {
 	// show test text
