@@ -25,6 +25,12 @@ class UserInteractView(tk.Toplevel):
         label = tk.Label(self, text="Postupně stiskněte všechna tlačítka maticové klávesnice", font=("Arial",14))
         label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
+    def display_btn_view(self):
+        self.title("Test tlačítek na modulu LCD displeje")
+
+        label = tk.Label(self, text="Postupně stiskněte všechna tlačítka na modulu LCD displeje", font=("Arial",14))
+        label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
+
     def missing_input(self, message):
         self.err_label.config(text=self.err_label["text"] + message)
 
@@ -189,6 +195,11 @@ class DefaultView:
             case "Maticova klavesnice":
                 self.window = UserInteractView(self.root, device)
                 self.window.keyboard_view()
+                self.root.wait_window(self.window)
+
+            case "Tlacitka na LCD modulu":
+                self.window = UserInteractView(self.root, device)
+                self.window.display_btn_view()
                 self.root.wait_window(self.window)
 
             case "Reproduktor":
