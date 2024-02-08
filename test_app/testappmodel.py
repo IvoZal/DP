@@ -14,7 +14,7 @@ class TestModel:
     def close_serial(self):
         self.ser.close()
         
-    def start_test(self, message):
+    def write(self, message):
         message += '\n'
         self.ser.write(message.encode('utf-8'))
 
@@ -27,7 +27,7 @@ class TestModel:
             return False, result
         
     def self_test(self, message, timeout=5):
-        self.start_test(message)
+        self.write(message)
         return self.eval_test(timeout)
 
     def read_data(self, timeout):
