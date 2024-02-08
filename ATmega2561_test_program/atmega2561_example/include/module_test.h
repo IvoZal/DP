@@ -13,6 +13,11 @@
 #ifndef MODULE_TEST_H_
 #define MODULE_TEST_H_
 
+#define F_CPU 16000000
+
+#include <util/delay.h>
+#include <port.h>
+
 /* hw evaluated tests */
 // start test
 // print PASS/FAIL

@@ -35,8 +35,9 @@ void lcd_test()
 
 void reproductor_test()
 {
-	// play tone in loop
-	// until for STOP from serial
+	PORTE_set_pin_dir(2U, PORT_DIR_OUT);
+	PORTE_toggle_pin_level(2U);
+	_delay_us(500U);
 }
 
 void thermistor_test()

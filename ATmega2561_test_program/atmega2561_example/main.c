@@ -1,11 +1,14 @@
+#define F_CPU 16000000
+#define BAUD 38400
+
+#include <util/delay.h>
 #include <stdio.h>
 #include <string.h>
 #include <atmel_start.h>
 #include <usart_basic.h>
 #include <atomic.h>
 #include "uart.h"
-
-#define BAUD 38400
+#include "module_test.h"
 
 typedef void (*callback)(char* cmd);
 
@@ -27,13 +30,15 @@ int main(void)
 		{"TEST ENCODER",printf},
 		{"TEST KEYBRD",printf},
 		{"TEST LCD",printf},
-		{"TEST REPRO",printf},
+		{"TEST REPRO",reproductor_test},
 		{"TEST THERM",printf}};
 			
 	char input_string[BUFFER_SIZE];
 	
 	USART_0_enable();
 	ENABLE_INTERRUPTS();
+
+	printf("Initialized");
 
 	uint8_t max_i = sizeof(cmd_lut) / sizeof(UART_CMD_T);
 	uint8_t i = 0;
