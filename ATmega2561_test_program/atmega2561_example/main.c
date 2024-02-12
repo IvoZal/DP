@@ -31,15 +31,18 @@ int main(void)
 		{"TEST RTC",printf},
 		{"TEST ENCODER",encoder_test},
 		{"TEST KEYBRD",keyboard_test},
-		{"TEST BTN",lcd_btn_test}
+		{"TEST BTN",lcd_btn_test},
 		{"TEST LCD",lcd_test},
 		{"TEST REPRO",reproductor_test},
 		{"TEST THERM",thermistor_test}};
 			
 	char input_string[BUFFER_SIZE];
 	
-	USART_0_enable();
+	//USART_0_enable();
+	//USART_1_enable();
 	ENABLE_INTERRUPTS();
+
+	USART_0_test_usart_basic();
 
 	printf("Initialized");
 

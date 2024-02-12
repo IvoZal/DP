@@ -7,6 +7,8 @@
  *  Author: Ivo Zaludek
  */ 
 
+#include "module_test.h"
+
 void module_test_init()
 {
 	/* Init reproductor pin */
