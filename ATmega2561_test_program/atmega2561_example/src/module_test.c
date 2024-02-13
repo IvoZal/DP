@@ -55,5 +55,6 @@ void reproductor_test()
 void thermistor_test()
 {
 	printf("ADC: %u\n",ADC_0_get_conversion(0U));
+	_delay_ms(300U);
 }
  

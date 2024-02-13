@@ -376,9 +376,6 @@
     <Compile Include="include\system.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\uart.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="include\usart_basic.h">
       <SubType>compile</SubType>
     </Compile>
@@ -407,9 +404,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\spi_basic.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\uart.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\usart_basic.c">
