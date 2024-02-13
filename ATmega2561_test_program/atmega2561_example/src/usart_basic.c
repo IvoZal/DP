@@ -243,7 +243,7 @@ int8_t USART_0_init()
 	/* Enable USART0 */
 	PRR0 &= ~(1 << PRUSART0);
 
-#define BAUD 9600
+#define BAUD 38400
 
 #include <utils/setbaud.h>
 

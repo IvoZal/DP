@@ -1,5 +1,7 @@
 #define F_CPU 16000000
-#define BAUD 9600
+#ifndef BAUD
+#define BAUD 38400
+#endif
 
 //#include <util/delay.h>
 #include <stdio.h>
@@ -49,11 +51,18 @@ int main(void)
 	{
 		if((USART_0_rx_peek_head() == 0xA) && (USART_0_rxbuf_length() > 0))	// if the last char was line feed
 		{
-			uint8_t j = 0;
-			while(USART_0_rxbuf_length() > 0)
+			//uint8_t j = 0;
+			//while(USART_0_rxbuf_length() > 0)
+			//{
+				//input_string[j] = USART_0_read();
+				//j++;
+			//}
+			for(uint8_t j=0; j < USART_0_RX_BUFFER_SIZE; j++)
 			{
-				input_string[j] = USART_0_read();
-				j++;
+				if(USART_0_rxbuf_length() > 0)
+					input_string[j] = USART_0_read();
+				else
+					input_string[j] = 0;
 			}
 			for(i=0; i < max_i; i++)
 			{
