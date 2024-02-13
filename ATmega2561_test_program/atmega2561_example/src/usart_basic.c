@@ -39,6 +39,193 @@
 #include <usart_basic.h>
 #include <atomic.h>
 
+#include <stdio.h>
+
+#if defined(__GNUC__)
+
+int USART_0_printCHAR(char character, FILE *stream)
+{
+	USART_0_write(character);
+	return 0;
+}
+
+FILE USART_0_stream = FDEV_SETUP_STREAM(USART_0_printCHAR, NULL, _FDEV_SETUP_WRITE);
+
+#elif defined(__ICCAVR__)
+
+int putchar(int outChar)
+{
+	USART_0_write(outChar);
+	return outChar;
+}
+#endif
+
+/* Static Variables holding the ringbuffer used in IRQ mode */
+static uint8_t          USART_0_rxbuf[USART_0_RX_BUFFER_SIZE];
+static volatile uint8_t USART_0_rx_head;
+static volatile uint8_t USART_0_rx_tail;
+static volatile uint8_t USART_0_rx_elements;
+static uint8_t          USART_0_txbuf[USART_0_TX_BUFFER_SIZE];
+static volatile uint8_t USART_0_tx_head;
+static volatile uint8_t USART_0_tx_tail;
+static volatile uint8_t USART_0_tx_elements;
+
+void USART_0_default_rx_isr_cb(void);
+void (*USART_0_rx_isr_cb)(void) = &USART_0_default_rx_isr_cb;
+void USART_0_default_udre_isr_cb(void);
+void (*USART_0_udre_isr_cb)(void) = &USART_0_default_udre_isr_cb;
+
+void USART_0_default_rx_isr_cb(void)
+{
+	uint8_t data;
+	uint8_t tmphead;
+
+	/* Read the received data */
+	data = UDR0;
+	/* Calculate buffer index */
+	tmphead = (USART_0_rx_head + 1) & USART_0_RX_BUFFER_MASK;
+
+	if (tmphead == USART_0_rx_tail) {
+		/* ERROR! Receive buffer overflow */
+	} else {
+		/* Store new index */
+		USART_0_rx_head = tmphead;
+
+		/* Store received data in buffer */
+		USART_0_rxbuf[tmphead] = data;
+		USART_0_rx_elements++;
+	}
+}
+
+void USART_0_default_udre_isr_cb(void)
+{
+	uint8_t tmptail;
+
+	/* Check if all data is transmitted */
+	if (USART_0_tx_elements != 0) {
+		/* Calculate buffer index */
+		tmptail = (USART_0_tx_tail + 1) & USART_0_TX_BUFFER_MASK;
+		/* Store new index */
+		USART_0_tx_tail = tmptail;
+		/* Start transmission */
+		UDR0 = USART_0_txbuf[tmptail];
+		USART_0_tx_elements--;
+	}
+
+	if (USART_0_tx_elements == 0) {
+		/* Disable UDRE interrupt */
+		UCSR0B &= ~(1 << UDRIE0);
+	}
+}
+
+/**
+ * \brief Set call back function for USART_0
+ *
+ * \param[in] cb The call back function to set
+ *
+ * \param[in] type The type of ISR to be set
+ *
+ * \return Nothing
+ */
+void USART_0_set_ISR_cb(usart_cb_t cb, usart_cb_type_t type)
+{
+	switch (type) {
+	case RX_CB:
+		USART_0_rx_isr_cb = cb;
+		break;
+	case UDRE_CB:
+		USART_0_udre_isr_cb = cb;
+		break;
+	default:
+		// do nothing
+		break;
+	}
+}
+
+/* Interrupt service routine for RX complete */
+ISR(USART0_RX_vect)
+{
+	if (USART_0_rx_isr_cb != NULL)
+		(*USART_0_rx_isr_cb)();
+}
+
+/* Interrupt service routine for Data Register Empty */
+ISR(USART0_UDRE_vect)
+{
+	if (USART_0_udre_isr_cb != NULL)
+		(*USART_0_udre_isr_cb)();
+}
+
+bool USART_0_is_tx_ready()
+{
+	return (USART_0_tx_elements != USART_0_TX_BUFFER_SIZE);
+}
+
+bool USART_0_is_rx_ready()
+{
+	return (USART_0_rx_elements != 0);
+}
+
+bool USART_0_is_tx_busy()
+{
+	return (!(UCSR0A & (1 << TXC0)));
+}
+
+/**
+ * \brief Read one character from USART_0
+ *
+ * Function will block if a character is not available.
+ *
+ * \return Data read from the USART_0 module
+ */
+uint8_t USART_0_read(void)
+{
+	uint8_t tmptail;
+
+	/* Wait for incoming data */
+	while (USART_0_rx_elements == 0)
+		;
+	/* Calculate buffer index */
+	tmptail = (USART_0_rx_tail + 1) & USART_0_RX_BUFFER_MASK;
+	/* Store new index */
+	USART_0_rx_tail = tmptail;
+	ENTER_CRITICAL(R);
+	USART_0_rx_elements--;
+	EXIT_CRITICAL(R);
+
+	/* Return data */
+	return USART_0_rxbuf[tmptail];
+}
+
+/**
+ * \brief Write one character to USART_0
+ *
+ * Function will block until a character can be accepted.
+ *
+ * \param[in] data The character to write to the USART
+ *
+ * \return Nothing
+ */
+void USART_0_write(const uint8_t data)
+{
+	uint8_t tmphead;
+
+	/* Calculate buffer index */
+	tmphead = (USART_0_tx_head + 1) & USART_0_TX_BUFFER_MASK;
+	/* Wait for free space in buffer */
+	while (USART_0_tx_elements == USART_0_TX_BUFFER_SIZE)
+		;
+	/* Store data in buffer */
+	USART_0_txbuf[tmphead] = data;
+	/* Store new index */
+	USART_0_tx_head = tmphead;
+	ENTER_CRITICAL(W);
+	USART_0_tx_elements++;
+	EXIT_CRITICAL(W);
+	/* Enable UDRE interrupt */
+	UCSR0B |= (1 << UDRIE0);
+}
+
 /**
  * \brief Initialize USART interface
  * If module is configured to disabled state, the clock to the USART is disabled
@@ -56,9 +243,7 @@ int8_t USART_0_init()
 	/* Enable USART0 */
 	PRR0 &= ~(1 << PRUSART0);
 
-#ifndef BAUD
-#define BAUD 9600
-#endif
+#define BAUD 38400
 
 #include <utils/setbaud.h>
 
@@ -78,6 +263,22 @@ int8_t USART_0_init()
 	//		 | (0 << UPM01) | (0 << UPM00) /* Disabled */
 	//		 | 0 << USBS0 /* USART Stop Bit Select: disabled */
 	//		 | (1 << UCSZ01) | (1 << UCSZ00); /* 8-bit */
+
+	uint8_t x;
+
+	/* Initialize ringbuffers */
+	x = 0;
+
+	USART_0_rx_tail     = x;
+	USART_0_rx_head     = x;
+	USART_0_rx_elements = x;
+	USART_0_tx_tail     = x;
+	USART_0_tx_head     = x;
+	USART_0_tx_elements = x;
+
+#if defined(__GNUC__)
+	stdout = &USART_0_stream;
+#endif
 
 	return 0;
 }
@@ -140,58 +341,166 @@ uint8_t USART_0_get_data()
 	return UDR0;
 }
 
-/**
- * \brief Check if the usart can accept data to be transmitted
- *
- * \return The status of USART TX data ready check
- * \retval false The USART can not receive data to be transmitted
- * \retval true The USART can receive data to be transmitted
- */
-bool USART_0_is_tx_ready()
+#include <stdio.h>
+
+#if defined(__GNUC__)
+
+int USART_1_printCHAR(char character, FILE *stream)
 {
-	return (UCSR0A & (1 << UDRE0));
+	USART_1_write(character);
+	return 0;
+}
+
+FILE USART_1_stream = FDEV_SETUP_STREAM(USART_1_printCHAR, NULL, _FDEV_SETUP_WRITE);
+
+#elif defined(__ICCAVR__)
+
+int putchar(int outChar)
+{
+	USART_0_write(outChar);
+	return outChar;
+}
+#endif
+
+/* Static Variables holding the ringbuffer used in IRQ mode */
+static uint8_t          USART_1_rxbuf[USART_1_RX_BUFFER_SIZE];
+static volatile uint8_t USART_1_rx_head;
+static volatile uint8_t USART_1_rx_tail;
+static volatile uint8_t USART_1_rx_elements;
+static uint8_t          USART_1_txbuf[USART_1_TX_BUFFER_SIZE];
+static volatile uint8_t USART_1_tx_head;
+static volatile uint8_t USART_1_tx_tail;
+static volatile uint8_t USART_1_tx_elements;
+
+void USART_1_default_rx_isr_cb(void);
+void (*USART_1_rx_isr_cb)(void) = &USART_1_default_rx_isr_cb;
+void USART_1_default_udre_isr_cb(void);
+void (*USART_1_udre_isr_cb)(void) = &USART_1_default_udre_isr_cb;
+
+void USART_1_default_rx_isr_cb(void)
+{
+	uint8_t data;
+	uint8_t tmphead;
+
+	/* Read the received data */
+	data = UDR1;
+	/* Calculate buffer index */
+	tmphead = (USART_1_rx_head + 1) & USART_1_RX_BUFFER_MASK;
+
+	if (tmphead == USART_1_rx_tail) {
+		/* ERROR! Receive buffer overflow */
+	} else {
+		/* Store new index */
+		USART_1_rx_head = tmphead;
+
+		/* Store received data in buffer */
+		USART_1_rxbuf[tmphead] = data;
+		USART_1_rx_elements++;
+	}
+}
+
+void USART_1_default_udre_isr_cb(void)
+{
+	uint8_t tmptail;
+
+	/* Check if all data is transmitted */
+	if (USART_1_tx_elements != 0) {
+		/* Calculate buffer index */
+		tmptail = (USART_1_tx_tail + 1) & USART_1_TX_BUFFER_MASK;
+		/* Store new index */
+		USART_1_tx_tail = tmptail;
+		/* Start transmission */
+		UDR1 = USART_1_txbuf[tmptail];
+		USART_1_tx_elements--;
+	}
+
+	if (USART_1_tx_elements == 0) {
+		/* Disable UDRE interrupt */
+		UCSR1B &= ~(1 << UDRIE1);
+	}
 }
 
 /**
- * \brief Check if the USART has received data
+ * \brief Set call back function for USART_1
  *
- * \return The status of USART RX data ready check
- * \retval true The USART has received data
- * \retval false The USART has not received data
+ * \param[in] cb The call back function to set
+ *
+ * \param[in] type The type of ISR to be set
+ *
+ * \return Nothing
  */
-bool USART_0_is_rx_ready()
+void USART_1_set_ISR_cb(usart_cb_t cb, usart_cb_type_t type)
 {
-	return (UCSR0A & (1 << RXC0));
+	switch (type) {
+	case RX_CB:
+		USART_1_rx_isr_cb = cb;
+		break;
+	case UDRE_CB:
+		USART_1_udre_isr_cb = cb;
+		break;
+	default:
+		// do nothing
+		break;
+	}
+}
+
+/* Interrupt service routine for RX complete */
+ISR(USART1_RX_vect)
+{
+	if (USART_1_rx_isr_cb != NULL)
+		(*USART_1_rx_isr_cb)();
+}
+
+/* Interrupt service routine for Data Register Empty */
+ISR(USART1_UDRE_vect)
+{
+	if (USART_1_udre_isr_cb != NULL)
+		(*USART_1_udre_isr_cb)();
+}
+
+bool USART_1_is_tx_ready()
+{
+	return (USART_1_tx_elements != USART_1_TX_BUFFER_SIZE);
+}
+
+bool USART_1_is_rx_ready()
+{
+	return (USART_1_rx_elements != 0);
+}
+
+bool USART_1_is_tx_busy()
+{
+	return (!(UCSR1A & (1 << TXC1)));
 }
 
 /**
- * \brief Check if USART_0 data is transmitted
- *
- * \return Receiver ready status
- * \retval true  Data is not completely shifted out of the shift register
- * \retval false Data completely shifted out if the USART shift register
- */
-bool USART_0_is_tx_busy()
-{
-	return (!(UCSR0A & (1 << TXC0)));
-}
-
-/**
- * \brief Read one character from USART_0
+ * \brief Read one character from USART_1
  *
  * Function will block if a character is not available.
  *
- * \return Data read from the USART_0 module
+ * \return Data read from the USART_1 module
  */
-uint8_t USART_0_read()
+uint8_t USART_1_read(void)
 {
-	while (!(UCSR0A & (1 << RXC0)))
+	uint8_t tmptail;
+
+	/* Wait for incoming data */
+	while (USART_1_rx_elements == 0)
 		;
-	return UDR0;
+	/* Calculate buffer index */
+	tmptail = (USART_1_rx_tail + 1) & USART_1_RX_BUFFER_MASK;
+	/* Store new index */
+	USART_1_rx_tail = tmptail;
+	ENTER_CRITICAL(R);
+	USART_1_rx_elements--;
+	EXIT_CRITICAL(R);
+
+	/* Return data */
+	return USART_1_rxbuf[tmptail];
 }
 
 /**
- * \brief Write one character to USART_0
+ * \brief Write one character to USART_1
  *
  * Function will block until a character can be accepted.
  *
@@ -199,11 +508,24 @@ uint8_t USART_0_read()
  *
  * \return Nothing
  */
-void USART_0_write(const uint8_t data)
+void USART_1_write(const uint8_t data)
 {
-	while (!(UCSR0A & (1 << UDRE0)))
+	uint8_t tmphead;
+
+	/* Calculate buffer index */
+	tmphead = (USART_1_tx_head + 1) & USART_1_TX_BUFFER_MASK;
+	/* Wait for free space in buffer */
+	while (USART_1_tx_elements == USART_1_TX_BUFFER_SIZE)
 		;
-	UDR0 = data;
+	/* Store data in buffer */
+	USART_1_txbuf[tmphead] = data;
+	/* Store new index */
+	USART_1_tx_head = tmphead;
+	ENTER_CRITICAL(W);
+	USART_1_tx_elements++;
+	EXIT_CRITICAL(W);
+	/* Enable UDRE interrupt */
+	UCSR1B |= (1 << UDRIE1);
 }
 
 /**
@@ -223,7 +545,7 @@ int8_t USART_1_init()
 	/* Enable USART1 */
 	PRR1 &= ~(1 << PRUSART1);
 
-#define BAUD 9600
+#define BAUD 38400
 
 #include <utils/setbaud.h>
 
@@ -243,6 +565,22 @@ int8_t USART_1_init()
 	//		 | (0 << UPM11) | (0 << UPM10) /* Disabled */
 	//		 | 0 << USBS1 /* USART Stop Bit Select: disabled */
 	//		 | (1 << UCSZ11) | (1 << UCSZ10); /* 8-bit */
+
+	uint8_t x;
+
+	/* Initialize ringbuffers */
+	x = 0;
+
+	USART_1_rx_tail     = x;
+	USART_1_rx_head     = x;
+	USART_1_rx_elements = x;
+	USART_1_tx_tail     = x;
+	USART_1_tx_head     = x;
+	USART_1_tx_elements = x;
+
+#if defined(__GNUC__)
+	stdout = &USART_1_stream;
+#endif
 
 	return 0;
 }
@@ -303,70 +641,4 @@ void USART_1_disable()
 uint8_t USART_1_get_data()
 {
 	return UDR1;
-}
-
-/**
- * \brief Check if the usart can accept data to be transmitted
- *
- * \return The status of USART TX data ready check
- * \retval false The USART can not receive data to be transmitted
- * \retval true The USART can receive data to be transmitted
- */
-bool USART_1_is_tx_ready()
-{
-	return (UCSR1A & (1 << UDRE1));
-}
-
-/**
- * \brief Check if the USART has received data
- *
- * \return The status of USART RX data ready check
- * \retval true The USART has received data
- * \retval false The USART has not received data
- */
-bool USART_1_is_rx_ready()
-{
-	return (UCSR1A & (1 << RXC1));
-}
-
-/**
- * \brief Check if USART_1 data is transmitted
- *
- * \return Receiver ready status
- * \retval true  Data is not completely shifted out of the shift register
- * \retval false Data completely shifted out if the USART shift register
- */
-bool USART_1_is_tx_busy()
-{
-	return (!(UCSR1A & (1 << TXC1)));
-}
-
-/**
- * \brief Read one character from USART_1
- *
- * Function will block if a character is not available.
- *
- * \return Data read from the USART_1 module
- */
-uint8_t USART_1_read()
-{
-	while (!(UCSR1A & (1 << RXC1)))
-		;
-	return UDR1;
-}
-
-/**
- * \brief Write one character to USART_1
- *
- * Function will block until a character can be accepted.
- *
- * \param[in] data The character to write to the USART
- *
- * \return Nothing
- */
-void USART_1_write(const uint8_t data)
-{
-	while (!(UCSR1A & (1 << UDRE1)))
-		;
-	UDR1 = data;
 }

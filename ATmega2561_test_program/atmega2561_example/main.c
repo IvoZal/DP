@@ -6,8 +6,9 @@
 #include <string.h>
 #include <atmel_start.h>
 #include <usart_basic.h>
+#include <usart_basic_example.h>
 #include <atomic.h>
-#include "uart.h"
+//#include "uart.h"
 #include "module_test.h"
 
 typedef void (*callback)(char* cmd);
@@ -40,7 +41,7 @@ int main(void)
 	
 	//USART_0_enable();
 	//USART_1_enable();
-	ENABLE_INTERRUPTS();
+	//ENABLE_INTERRUPTS();
 
 	USART_0_test_usart_basic();
 
