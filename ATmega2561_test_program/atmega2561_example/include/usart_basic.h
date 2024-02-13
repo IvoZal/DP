@@ -69,6 +69,10 @@ void USART_0_write(const uint8_t data);
 
 void USART_0_set_ISR_cb(usart_cb_t cb, usart_cb_type_t type);
 
+uint8_t USART_0_rx_peek_head();
+
+uint8_t USART_0_rxbuf_length();
+
 /* USART_1 Ringbuffer */
 
 #define USART_1_RX_BUFFER_SIZE 8

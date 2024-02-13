@@ -1,14 +1,13 @@
 #define F_CPU 16000000
-#define BAUD 38400
+#define BAUD 9600
 
-#include <util/delay.h>
+//#include <util/delay.h>
 #include <stdio.h>
 #include <string.h>
 #include <atmel_start.h>
 #include <usart_basic.h>
-#include <usart_basic_example.h>
+//#include <usart_basic_example.h>
 #include <atomic.h>
-//#include "uart.h"
 #include "module_test.h"
 
 typedef void (*callback)(char* cmd);
@@ -37,13 +36,9 @@ int main(void)
 		{"TEST REPRO",reproductor_test},
 		{"TEST THERM",thermistor_test}};
 			
-	char input_string[BUFFER_SIZE];
+	char input_string[USART_0_RX_BUFFER_SIZE];
 	
-	//USART_0_enable();
-	//USART_1_enable();
-	//ENABLE_INTERRUPTS();
-
-	USART_0_test_usart_basic();
+	ENABLE_INTERRUPTS();
 
 	printf("Initialized");
 
@@ -52,11 +47,13 @@ int main(void)
 
 	while (1) 
 	{
-		if(BufferPeekLast() == 0xA)	// if the last char was line feed
+		if((USART_0_rx_peek_head() == 0xA) && (USART_0_rxbuf_length() > 0))	// if the last char was line feed
 		{
-			for(uint8_t j = 0; BufferLength() > 0; j++)
+			uint8_t j = 0;
+			while(USART_0_rxbuf_length() > 0)
 			{
-				input_string[j] = BufferGet();
+				input_string[j] = USART_0_read();
+				j++;
 			}
 			for(i=0; i < max_i; i++)
 			{
@@ -69,6 +66,7 @@ int main(void)
 		if(i == max_i)
 		{
 			printf("ERROR: Unsupported command!\n");
+			i = 0;
 		}
 		else if(i > 0)	// if a command was found in the input string, process it
 		{

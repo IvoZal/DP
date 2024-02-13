@@ -243,7 +243,7 @@ int8_t USART_0_init()
 	/* Enable USART0 */
 	PRR0 &= ~(1 << PRUSART0);
 
-#define BAUD 38400
+#define BAUD 9600
 
 #include <utils/setbaud.h>
 
@@ -339,6 +339,26 @@ void USART_0_disable()
 uint8_t USART_0_get_data()
 {
 	return UDR0;
+}
+
+/**
+ * \brief View the last received item
+ *
+ * \return Last item in the USART_0 rx buffer
+ */
+uint8_t USART_0_rx_peek_head()
+{
+	return USART_0_rxbuf[USART_0_rx_head];
+}
+
+/**
+ * \brief Get the USART_0 buffer length
+ *
+ * \return USART_0 buffer length
+ */
+uint8_t USART_0_rxbuf_length()
+{
+	return USART_0_rx_elements;
 }
 
 #include <stdio.h>
