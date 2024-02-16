@@ -157,5 +157,5 @@ void system_init()
 
 	USART_0_initialization();
 
-	USART_1_initialization();
+	//USART_1_initialization();
 }
