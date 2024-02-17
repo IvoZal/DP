@@ -27,16 +27,16 @@ int main(void)
 	module_test_init();
 	
 	UART_CMD_T cmd_lut[] =
-		{{"STOP",printf},
-		{"TEST ATMEGA",printf},
-		{"TEST RELAY",printf},
-		{"TEST RTC",printf},
-		{"TEST ENCODER",encoder_test},
-		{"TEST KEYBRD",keyboard_test},
-		{"TEST BTN",lcd_btn_test},
-		{"TEST LCD",lcd_test},
-		{"TEST REPRO",reproductor_test},
-		{"TEST THERM",thermistor_test}};
+		{{"STOP",(callback)printf},
+		{"TEST ATMEGA",(callback)printf},
+		{"TEST RELAY",(callback)printf},
+		{"TEST RTC",(callback)printf},
+		{"TEST ENCODER",(callback)encoder_test},
+		{"TEST KEYBRD",(callback)keyboard_test},
+		{"TEST BTN",(callback)lcd_btn_test},
+		{"TEST LCD",(callback)lcd_test},
+		{"TEST REPRO",(callback)reproductor_test},
+		{"TEST THERM",(callback)thermistor_test}};
 			
 	char input_string[USART_0_RX_BUFFER_SIZE];
 	
@@ -74,7 +74,7 @@ int main(void)
 		}
 		if(i == max_i)
 		{
-			printf("ERROR: Unsupported command!\n");
+			// printf("ERROR: Unsupported command!\n");
 			i = 0;
 		}
 		else if(i > 0)	// if a command was found in the input string, process it
