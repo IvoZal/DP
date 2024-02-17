@@ -25,7 +25,7 @@ volitelne blink, display, cursor, backlight (PWM)
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "timer.h"
+#include <util/delay.h>
 
 /* Display initialization, call after power on. */
 void lcd_Init();

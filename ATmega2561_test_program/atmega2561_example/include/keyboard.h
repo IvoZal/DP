@@ -18,7 +18,6 @@
 #define KEYBOARD_H_
 
 #include <avr/io.h>
-#include "timer.h"
 
 /* Pinout */
 #define Row1 (1 << DDB3)
