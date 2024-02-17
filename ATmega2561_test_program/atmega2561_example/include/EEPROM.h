@@ -10,7 +10,7 @@
 #define EEPROM_H_
 
 #include <avr/io.h>
-#include "IIC.h"
+#include "I2C.h"
 
 #define EEPROM_ADDRESS 0b01010000
 

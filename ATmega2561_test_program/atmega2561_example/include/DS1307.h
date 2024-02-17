@@ -14,7 +14,7 @@
 
 #include <avr/io.h>
 #include <stdbool.h>
-#include "IIC.h"
+#include "I2C.h"
 
 #define DEV_ADDRESS 0b01101000
 

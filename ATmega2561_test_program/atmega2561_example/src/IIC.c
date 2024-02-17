@@ -6,7 +6,7 @@
  */ 
 
 
-#include "IIC.h"
+#include "I2C.h"
 
 #define CPU_frequency 16000000	// Hz
 
