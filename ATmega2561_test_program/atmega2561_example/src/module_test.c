@@ -16,6 +16,10 @@ void module_test_init()
 
 	/* Init thermistor ADC */
 	DIDR0 |= (1 << ADC0D);
+		
+	Encoder_Init();
+	
+	// RTC_init();
 }
 
 void encoder_test()
@@ -24,6 +28,10 @@ void encoder_test()
 	// when all states reached - print PASS and terminate the test
 	// when something is missing - print fail
 	// if STOP received, terminate
+	if (Encoder_Cw_Pulse_Count() > 3 && Encoder_Ccw_Pulse_Count() > 3 && Encoder_Btn_Count() > 0)
+	{
+		printf("PASS");
+	}
 }
 
 void keyboard_test()

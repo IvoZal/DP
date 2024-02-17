@@ -19,6 +19,8 @@
 #include <port.h>
 #include <adc_basic.h>
 #include <stdio.h>
+#include "DS1307.h"
+#include "encoder.h"
 
 /* Function initializes all peripherals for the module tests */
 void module_test_init(void);
