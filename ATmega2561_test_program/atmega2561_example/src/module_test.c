@@ -55,6 +55,7 @@ void encoder_test()
 	if (Encoder_Cw_Pulse_Count() > 3 && Encoder_Ccw_Pulse_Count() > 3 && Encoder_Btn_Count() > 0)
 	{
 		printf("PASS");
+		Encoder_Init();
 	}
 }
 
