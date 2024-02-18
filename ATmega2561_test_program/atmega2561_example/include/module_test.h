@@ -15,10 +15,10 @@
 
 #define F_CPU 16000000
 
-#include <util/delay.h>
 #include <port.h>
 #include <adc_basic.h>
 #include <stdio.h>
+#include "timer.h"
 #include "DS1307.h"
 #include "encoder.h"
 

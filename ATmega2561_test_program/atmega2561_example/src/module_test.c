@@ -11,6 +11,8 @@
 
 void module_test_init()
 {
+	TimerInit();
+	
 	/* Init reproductor pin */
 	PORTE_set_pin_dir(2U, PORT_DIR_OUT);
 
@@ -30,6 +32,7 @@ void encoder_test()
 	// if STOP received, terminate
 	if (Encoder_Cw_Pulse_Count() > 3 && Encoder_Ccw_Pulse_Count() > 3 && Encoder_Btn_Count() > 0)
 	{
+		Encoder_Init();
 		printf("PASS");
 	}
 }
@@ -57,12 +60,12 @@ void lcd_test()
 void reproductor_test()
 {
 	PORTE_toggle_pin_level(2U);
-	_delay_us(500U);
+	delay(500U);
 }
 
 void thermistor_test()
 {
 	printf("ADC: %u\n",ADC_0_get_conversion(0U));
-	_delay_ms(300U);
+	delay(300000U);
 }
  

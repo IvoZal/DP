@@ -20,10 +20,10 @@ void lcd_Init()
 	/* Set all display pins as output */
 	DDRD = DB4 | DB5 | DB6 | DB7 | RS | E;
 	// Wait for 20 ms before first instruction
-	_delay_us(20000);
+	delay(20000);
 	// Function set
 	lcd_SendCmd4b(0x03);
-	_delay_us(5000);
+	delay(5000);
 	// Function set
 	lcd_SendCmd4b(0x03);
 	// Function set
@@ -36,7 +36,7 @@ void lcd_Init()
 	lcd_SendCmd(0b00001011);
 	// Display clear
 	lcd_SendCmd(0x01);
-	_delay_us(10000);
+	delay(10000);
 	// turn on display
 	lcd_SendCmd(0b00001100);
 	// Entry mode set, increment I/D = 1, shift S = 0
@@ -51,9 +51,9 @@ void lcd_SendCmd4b(uint8_t cmd)
 	PORTD = (PORTD & 0x0F) | (cmd << 4);
 	/* Toggle E */
 	PORTD |= E;
-	_delay_us(1);
+	delay(1);
 	PORTD &= ~E;
-	_delay_us(200);
+	delay(200);
 }
 
 void lcd_SendCmd(uint8_t cmd)
@@ -64,16 +64,16 @@ void lcd_SendCmd(uint8_t cmd)
 	PORTD = (PORTD & 0x0F) | (cmd & 0xF0);
 	/* Toggle E */
 	PORTD |= E;
-	_delay_us(1);
+	delay(1);
 	PORTD &= ~E;
-	_delay_us(50);
+	delay(50);
 	/* Send data bits 0-4 */
 	PORTD = (PORTD & 0x0F) | (cmd << 4);
 	/* Toggle E */
 	PORTD |= E;
-	_delay_us(1);
+	delay(1);
 	PORTD &= ~E;
-	_delay_us(200);
+	delay(200);
 }
 
 void lcd_WriteChar(char data)
@@ -88,22 +88,22 @@ void lcd_WriteChar(char data)
 	PORTD = (PORTD & 0x0F) | (data & 0xF0);
 	/* Toggle E */
 	PORTD |= E;
-	_delay_us(1);
+	delay(1);
 	PORTD &= ~E;
-	_delay_us(50);
+	delay(50);
 	/* Send data bits 0-4 */
 	PORTD = (PORTD & 0x0F) | (data << 4);
 	/* Toggle E */
 	PORTD |= E;
-	_delay_us(1);
+	delay(1);
 	PORTD &= ~E;
-	_delay_us(200);
+	delay(200);
 }
 
 void lcd_RetHome()
 {
 	lcd_SendCmd(0x02);
-	_delay_us(2000);
+	delay(2000);
 }
 
 void lcd_SetCursor(uint8_t address)
@@ -131,7 +131,7 @@ void lcd_Shift(int8_t shift, bool sc)
 void lcd_Clear()
 {
 	lcd_SendCmd(0x01);
-	_delay_us(1500);
+	delay(1500);
 }
 
 int lcd_putchar(char c, FILE *stream)
