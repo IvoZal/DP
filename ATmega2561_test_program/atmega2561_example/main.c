@@ -8,7 +8,6 @@
 #include <string.h>
 #include <atmel_start.h>
 #include <usart_basic.h>
-//#include <usart_basic_example.h>
 #include <atomic.h>
 #include "module_test.h"
 
@@ -27,7 +26,8 @@ int main(void)
 	module_test_init();
 	
 	UART_CMD_T cmd_lut[] =
-		{{"STOP",(callback)printf},
+		{{"DUMMY_VALUE",},
+		{"STOP",(callback)stop_test},
 		{"TEST ATMEGA",(callback)printf},
 		{"TEST RELAY",(callback)printf},
 		{"TEST RTC",(callback)printf},
@@ -41,8 +41,6 @@ int main(void)
 	char input_string[USART_0_RX_BUFFER_SIZE];
 	
 	ENABLE_INTERRUPTS();
-
-	printf("Initialized");
 
 	uint8_t max_i = sizeof(cmd_lut) / sizeof(UART_CMD_T);
 	uint8_t i = 0;
@@ -80,7 +78,7 @@ int main(void)
 		else if(i > 0)	// if a command was found in the input string, process it
 		{
 			cmd_lut[i].cb(input_string);
-			if (i <= 3)	// for non repeating tests
+			if (i <= 4)	// for non repeating tests
 				i = 0;
 		}
 	}
