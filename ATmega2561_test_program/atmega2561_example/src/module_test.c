@@ -9,6 +9,8 @@
 
 #include "module_test.h"
 
+static uint32_t timestamp = 0;
+
 void module_test_init()
 {
 	TimerInit();
@@ -24,15 +26,34 @@ void module_test_init()
 	// RTC_init();
 }
 
+void stop_test(void)
+{
+	timestamp = 0;
+	Encoder_Init();
+}
+
 void encoder_test()
 {
 	// read if all states were reached - CW, CCW and button was pressed
 	// when all states reached - print PASS and terminate the test
 	// when something is missing - print fail
 	// if STOP received, terminate
+	if (timestamp < getTime())
+	{
+		if(timestamp != 0)
+		{
+			printf("FAIL: ");	
+			if (Encoder_Cw_Pulse_Count() < 3)
+				printf("CW ");
+			if (Encoder_Ccw_Pulse_Count() < 3)
+				printf("CCW ");
+			if (Encoder_Btn_Count() < 1)
+				printf("BTN");
+		}
+		timestamp = getTime() + 5000000U;
+	}
 	if (Encoder_Cw_Pulse_Count() > 3 && Encoder_Ccw_Pulse_Count() > 3 && Encoder_Btn_Count() > 0)
 	{
-		Encoder_Init();
 		printf("PASS");
 	}
 }

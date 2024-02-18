@@ -25,26 +25,26 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-/* Variable i16CwCounter stores number of clockwise pulses detected on encoder since Encoder_Init. */
-static volatile int16_t i16CwCounter = 0;
+/* Variable u8CwCounter stores number of clockwise pulses detected on encoder since Encoder_Init. */
+static volatile uint8_t u8CwCounter = 0;
 
-/* Variable i16CcwCounter stores number of counter clockwise pulses detected on encoder since Encoder_Init. */
-static volatile int16_t i16CcwCounter = 0;
+/* Variable u8CcwCounter stores number of counter clockwise pulses detected on encoder since Encoder_Init. */
+static volatile uint8_t u8CcwCounter = 0;
 
-/* Variable i16BtnCounter stores the number of times the button was pressed down. */
-static volatile int16_t i16BtnCounter = 0;
+/* Variable u8BtnCounter stores the number of times the button was pressed down. */
+static volatile uint8_t u8BtnCounter = 0;
 
 /* Initialize encoder pins, enable interrupts. */
 void Encoder_Init();
 
 /* Function returns the number of clockwise pulses detected by encoder since the Encoder_Init. */
-int16_t Encoder_Cw_Pulse_Count();
+uint8_t Encoder_Cw_Pulse_Count();
 
 /* Function returns the number of counter clockwise pulses detected by encoder since the Encoder_Init. */
-int16_t Encoder_Ccw_Pulse_Count();
+uint8_t Encoder_Ccw_Pulse_Count();
 
 /* Function returns the number of times the button was pressed down since Encoder_Init. */
-int16_t Encoder_Btn_Count();
+uint8_t Encoder_Btn_Count();
 
 /* Set encoder state initial state. 
 Called once during initialization by Encoder_Init function. */

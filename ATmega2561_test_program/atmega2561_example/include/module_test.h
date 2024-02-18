@@ -25,6 +25,9 @@
 /* Function initializes all peripherals for the module tests */
 void module_test_init(void);
 
+/* Function resets some test values to default */
+void stop_test(void);
+
 /* hw evaluated tests */
 // start test
 // print PASS/FAIL

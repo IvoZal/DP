@@ -18,12 +18,12 @@ volatile uint16_t u32TimeStamp;
 ISR(INT7_vect)
 {
 	Encoder_ChangeState();		// Check encoder state
-	if(i8StateChange == 4) {	// If encoder made 1 full pulse clockwise, increment i16CwCounter
-		i16CwCounter++;
+	if(i8StateChange == 4) {	// If encoder made 1 full pulse clockwise, increment u8CwCounter
+		u8CcwCounter++;
 		i8StateChange = 0;
 	}
-	else if(i8StateChange == -4) {	// If encoder made 1 full pulse anti-clockwise, decrement i16CcwCounter
-		i16CcwCounter++;
+	else if(i8StateChange == -4) {	// If encoder made 1 full pulse anti-clockwise, decrement u8CcwCounter
+		u8CwCounter++;
 		i8StateChange = 0;
 	}
 }
@@ -31,12 +31,12 @@ ISR(INT7_vect)
 ISR(INT6_vect)
 {
 	Encoder_ChangeState();		// Check encoder state
-	if(i8StateChange == 4) {	// If encoder made 1 full pulse clockwise, increment i16CwCounter
-		i16CwCounter++;
+	if(i8StateChange == 4) {	// If encoder made 1 full pulse clockwise, increment u8CwCounter
+		u8CcwCounter++;
 		i8StateChange = 0;
 	}
-	else if(i8StateChange == -4) {	// If encoder made 1 full pulse anti-clockwise, decrement i16CcwCounter
-		i16CcwCounter++;
+	else if(i8StateChange == -4) {	// If encoder made 1 full pulse anti-clockwise, decrement u8CcwCounter
+		u8CwCounter++;
 		i8StateChange = 0;
 	}
 }
@@ -46,20 +46,10 @@ ISR(INT5_vect)
 	if((PINE & BTN) == 0) {		// if the input is low for 60ms, increase the counter
 		_delay_ms(60);			// debounce
 		if((PINE & BTN) == 0) {
-			i16BtnCounter++;
+			u8BtnCounter++;
 		}
 	}
 }
-
-/*ISR(INT5_vect)
-{
-	if(getTime() > u32TimeStamp) {
-		if((PINE & BTN) == 0) {
-			i16BtnCounter++;
-		}
-		u32TimeStamp = getTime() + 60000;
-	}	
-}*/
 
 void Encoder_Init()
 {
@@ -70,24 +60,28 @@ void Encoder_Init()
 	
 	EIMSK = A | B | BTN;	// External interrupt enable
 	
+	u8CwCounter = 0;
+	u8CcwCounter = 0;
+	u8BtnCounter = 0;
+	
 	Encoder_SetState();		// Set initial state
 	
 	sei();	// enable interrupts
 }
 
-int16_t Encoder_Cw_Pulse_Count()
+uint8_t Encoder_Cw_Pulse_Count()
 {
-	return i16CwCounter;
+	return u8CwCounter;
 }
 
-int16_t Encoder_Ccw_Pulse_Count()
+uint8_t Encoder_Ccw_Pulse_Count()
 {
-	return i16CcwCounter;
+	return u8CcwCounter;
 }
 
-int16_t Encoder_Btn_Count()
+uint8_t Encoder_Btn_Count()
 {
-	return i16BtnCounter;
+	return u8BtnCounter;
 }
 
 void Encoder_SetState()
