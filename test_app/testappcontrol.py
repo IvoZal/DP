@@ -1,5 +1,6 @@
 import tkinter as tk
 import threading
+import time
 
 class Device:
     def __init__(self, name):
@@ -105,6 +106,7 @@ class TestAppController:
                     case "Rotacni enkoder":
                         if(device.run):
                             self.model.write("TEST ENCODER")
+                            device.err_message = ""
 
                             test_thread = threading.Thread(target=self.interact_test, args=(device,))
                             device.serial_read_flag = True
@@ -181,4 +183,5 @@ class TestAppController:
                     
                 self.view.update_status_label(device)
                 self.model.ser.reset_input_buffer()
+                time.sleep(0.01)
             self.model.close_serial()
