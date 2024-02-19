@@ -32,6 +32,67 @@ void stop_test(void)
 	Encoder_Init();
 }
 
+void relay_test(void)
+{
+	bool fail_K1 = false;
+	bool fail_K2 = false;
+	
+	/* Turn off both relays */
+	PORTF_set_pin_dir(K1_IN, PORT_DIR_OUT);
+	PORTF_set_pin_dir(K2_IN, PORT_DIR_OUT);
+	PORTF_set_pin_level(K1_IN, false);
+	PORTF_set_pin_level(K2_IN, false);
+	delay(15000U);
+
+	/* Measure the level when input is low */
+	if (!PORTF_get_pin_level(K1_NC) || PORTF_get_pin_level(K1_NO))
+		fail_K1 = true;	
+	if (!PORTF_get_pin_level(K2_NC) || PORTF_get_pin_level(K2_NO))
+		fail_K2 = true;
+	
+	/* Turn on K1 */
+	PORTF_set_pin_level(K1_IN, true);
+	delay(15000U);
+	
+	/* Measure the level when K1 is turned on */
+	if (PORTF_get_pin_level(K1_NC) || !PORTF_get_pin_level(K1_NO))
+		fail_K1 = true;
+	if (!PORTF_get_pin_level(K2_NC) || PORTF_get_pin_level(K2_NO))
+		fail_K2 = true;
+	/* Turn on K2 */
+	PORTF_set_pin_level(K1_IN, false);
+	PORTF_set_pin_level(K2_IN, true);
+	delay(15000U);
+	
+	/* Measure the level when K1 is turned on */
+	if (!PORTF_get_pin_level(K1_NC) || PORTF_get_pin_level(K1_NO))
+		fail_K1 = true;
+	if (PORTF_get_pin_level(K2_NC) || !PORTF_get_pin_level(K2_NO))
+		fail_K2 = true;
+	/* Turn on both K1 and K2 */
+	PORTF_set_pin_level(K1_IN, true);
+	PORTF_set_pin_level(K2_IN, true);
+	delay(15000U);
+	
+	/* Measure the level when K1 is turned on */
+	if (!PORTF_get_pin_level(K1_NC) || PORTF_get_pin_level(K1_NO))
+		fail_K1 = true;
+	if (!PORTF_get_pin_level(K2_NC) || PORTF_get_pin_level(K2_NO))
+		fail_K2 = true;
+	
+	if (!fail_K1 && !fail_K2)
+		printf("PASS\n");
+	else
+	{
+		printf("FAIL: ");
+		if (fail_K1)
+			printf("K1 ");
+		if (fail_K2)
+			printf("K2");
+		printf("\n");
+	}
+}
+
 void encoder_test()
 {
 	// read if all states were reached - CW, CCW and button was pressed

@@ -14,10 +14,17 @@
 #define MODULE_TEST_H_
 
 #define F_CPU 16000000
+#define K1_IN 3
+#define K1_NC 5
+#define K1_NO 6
+#define K2_IN 2
+#define K2_NC 4
+#define K2_NO 7
 
 #include <port.h>
 #include <adc_basic.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "timer.h"
 #include "DS1307.h"
 #include "encoder.h"
@@ -31,6 +38,7 @@ void stop_test(void);
 /* hw evaluated tests */
 // start test
 // print PASS/FAIL
+void relay_test(void);
 
 /* user interact, hw evaluated tests */
 void encoder_test(void);

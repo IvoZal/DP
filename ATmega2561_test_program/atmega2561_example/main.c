@@ -29,7 +29,7 @@ int main(void)
 		{{"DUMMY_VALUE",},
 		{"STOP",(callback)stop_test},
 		{"TEST ATMEGA",(callback)printf},
-		{"TEST RELAY",(callback)printf},
+		{"TEST RELAY",(callback)relay_test},
 		{"TEST RTC",(callback)printf},
 		{"TEST ENCODER",(callback)encoder_test},
 		{"TEST KEYBRD",(callback)keyboard_test},
@@ -49,12 +49,6 @@ int main(void)
 	{
 		if((USART_0_rx_peek_head() == 0xA) && (USART_0_rxbuf_length() > 0))	// if the last char was line feed
 		{
-			//uint8_t j = 0;
-			//while(USART_0_rxbuf_length() > 0)
-			//{
-				//input_string[j] = USART_0_read();
-				//j++;
-			//}
 			for(uint8_t j=0; j < USART_0_RX_BUFFER_SIZE; j++)
 			{
 				if(USART_0_rxbuf_length() > 0)
