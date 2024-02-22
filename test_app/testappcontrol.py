@@ -68,11 +68,11 @@ class TestAppController:
             for device in self.test_devices:
                 match device.name:
                     case "ATmega328P Xplained Mini":
+                        device.err_message = ""
                         if(device.run):
                             test_result = self.model.self_test("TEST ATMEGA")
                             if(test_result[0]):
                                 device.result = "PASS"
-                                device.err_message = ""
                             else:
                                 device.result = "FAIL"
                                 device.err_message = test_result[1]
@@ -80,11 +80,11 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Rele modul":
+                        device.err_message = ""
                         if(device.run):
                             test_result = self.model.self_test("TEST RELAY")
                             if(test_result[0]):
                                 device.result = "PASS"
-                                device.err_message = ""
                             else:
                                 device.result = "FAIL"
                                 device.err_message = test_result[1]
@@ -92,11 +92,11 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "RTC a EEPROM modul":
+                        device.err_message = ""
                         if(device.run):
                             test_result = self.model.self_test("TEST RTC")
                             if(test_result[0]):
                                 device.result = "PASS"
-                                device.err_message = ""
                             else:
                                 device.result = "FAIL"
                                 device.err_message = test_result[1]
@@ -104,9 +104,9 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Rotacni enkoder":
+                        device.err_message = ""
                         if(device.run):
                             self.model.write("TEST ENCODER")
-                            device.err_message = ""
 
                             test_thread = threading.Thread(target=self.interact_test, args=(device,))
                             device.serial_read_flag = True
@@ -119,6 +119,7 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Maticova klavesnice":
+                        device.err_message = ""
                         if(device.run):
                             device.result = "INIT"
                             self.model.write("TEST KEYBRD")
@@ -134,6 +135,7 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Tlacitka na LCD modulu":
+                        device.err_message = ""
                         if(device.run):
                             device.result = "INIT"
                             self.model.write("TEST BTN")
@@ -149,6 +151,7 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Modul LCD displeje":
+                        device.err_message = ""
                         if(device.run):
                             self.model.write("TEST LCD")
                             self.view.open_window(device)
