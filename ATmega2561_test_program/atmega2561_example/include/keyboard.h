@@ -19,21 +19,25 @@
 
 #include <avr/io.h>
 
-/* Pinout */
-#define Row1 (1 << DDB3)
-#define Row2 (1 << DDB2)
-#define Row3 (1 << DDB1)
-#define Row4 (1 << DDB0)
-#define Col1 (1 << DDC3)
-#define Col2 (1 << DDC2)
-#define Col3 (1 << DDC1)
-#define Col4 (1 << DDC0)
+/* Pinout definitions */
+#define Row1 (1 << PA0)
+#define Row2 (1 << PA1)
+#define Row3 (1 << PA2)
+#define Row4 (1 << PA3)
+#define Col1 (1 << PA4)
+#define Col2 (1 << PA5)
+#define Col3 (1 << PA6)
+#define Col4 (1 << PA7)
 
-/* Function returns pressed button on matrix keyboard as a char. */
+#define ALL_ROWS (Row1 | Row2 | Row3 | Row4)
+#define ALL_COL (Col1 | Col2 | Col3 | Col4)
+
+#define BTN_NUM 16
+
+/* Function returns index of pressed button on the matrix keyboard */
+uint8_t KeyboardReadIdx();
+
+/* Function returns pressed button on the matrix keyboard as a char. */
 char KeyboardRead();
-
-/* KeyboardRead function with delay used to avoid registering multiple key presses if the same key is pressed too quickly. */
-char KeyboardRead_OncePressed();
-
 
 #endif /* KEYBOARD_H_ */
