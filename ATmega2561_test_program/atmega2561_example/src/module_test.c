@@ -15,6 +15,7 @@ Local variables
 static uint32_t timestamp = 0;
 char cBtnMissing[BTN_NUM];
 extern char cButtons[];
+bool lcd_btn_pressed[LCD_BTN_NUM];
 
 /************************************************
 Function declaration
@@ -33,8 +34,13 @@ void module_test_init()
 	
 	// RTC_init();
 	
-	for(uint8_t i=0; i < BTN_NUM; i++)	/* Matrix keyboard initialization */
+	for(uint8_t i=0; i < BTN_NUM; i++)	/* Matrix keyboard pressed flag initialization */
 		cBtnMissing[i] = cButtons[i];
+		
+	for(uint8_t i=0; i < LCD_BTN_NUM; i++)		/* LCD buttons pressed flag initialization */
+		lcd_btn_pressed[i] = false;
+		
+	PORTE_set_pin_pull_mode(3, PORT_PULL_UP);
 }
 
 void stop_test(void)
@@ -42,8 +48,11 @@ void stop_test(void)
 	timestamp = 0;
 	Encoder_Init();
 	
-	for(uint8_t i=0; i < BTN_NUM; i++)	/* Matrix keyboard reinitialization */
+	for(uint8_t i=0; i < BTN_NUM; i++)	/* Matrix keyboard pressed flag reinitialization */
 		cBtnMissing[i] = cButtons[i];
+		
+	for(uint8_t i=0; i < LCD_BTN_NUM; i++)		/* LCD buttons pressed flag initialization */
+		lcd_btn_pressed[i] = false;
 }
 
 void relay_test(void)
@@ -181,6 +190,57 @@ void lcd_btn_test()
 {
 	// same as keyboard_test
 	// measuring adc
+	
+	adc_result_t val = ADC_0_get_conversion(1U);
+	if(val >= 0 && val < 50)
+		lcd_btn_pressed[0] = true;
+	else if(val >= 50 && val < 150)
+		lcd_btn_pressed[1] = true;
+	else if(val >= 150 && val < 300)
+		lcd_btn_pressed[2] = true;
+	else if(val >= 300 && val < 500)
+		lcd_btn_pressed[3] = true;
+	else if(val >= 500 && val <= 750)
+		lcd_btn_pressed[4] = true;
+		
+	if(PORTE_get_pin_level(3))
+		lcd_btn_pressed[5] = true;
+	
+	if (timestamp < getTime())		// after timeout for pressing all buttons elapsed
+	{
+		if (timestamp != 0)
+		{
+			printf("FAIL: ");
+			if(!lcd_btn_pressed[0])
+				printf("RIGHT ");
+			if(!lcd_btn_pressed[1])
+				printf("UP ");
+			if(!lcd_btn_pressed[2])
+				printf("DOWN ");
+			if(!lcd_btn_pressed[3])
+				printf("LEFT ");
+			if(!lcd_btn_pressed[4])
+				printf("SELECT ");
+			if(!lcd_btn_pressed[5])
+				printf("RST ");
+			printf("\n");
+			timestamp = getTime() + 1000000U;
+		}
+		else
+		{
+			timestamp = getTime() + 7000000U;
+		}
+	}
+	
+	bool btn_missing = false;
+	for(uint8_t i=0; i < LCD_BTN_NUM; i++)
+		if (lcd_btn_pressed[i] == true)
+			btn_missing = true;
+	
+	if (!btn_missing)
+	{
+		printf("PASS");
+	}
 }
 
 void lcd_test()

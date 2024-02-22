@@ -21,6 +21,8 @@
 #define K2_NC 4
 #define K2_NO 7
 
+#define LCD_BTN_NUM 6
+
 #include <port.h>
 #include <adc_basic.h>
 #include <stdio.h>
