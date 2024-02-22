@@ -9,13 +9,21 @@
 
 #include "module_test.h"
 
+/************************************************
+Local variables 
+*************************************************/
 static uint32_t timestamp = 0;
+char cBtnMissing[BTN_NUM];
+extern char cButtons[];
 
+/************************************************
+Function declaration
+*************************************************/
 void module_test_init()
 {
 	TimerInit();
 	
-	/* Init reproductor pin */
+	/* Init speaker pin */
 	PORTE_set_pin_dir(2U, PORT_DIR_OUT);
 
 	/* Init thermistor ADC */
@@ -24,12 +32,18 @@ void module_test_init()
 	Encoder_Init();
 	
 	// RTC_init();
+	
+	for(uint8_t i=0; i < BTN_NUM; i++)	/* Matrix keyboard initialization */
+		cBtnMissing[i] = cButtons[i];
 }
 
 void stop_test(void)
 {
 	timestamp = 0;
 	Encoder_Init();
+	
+	for(uint8_t i=0; i < BTN_NUM; i++)	/* Matrix keyboard reinitialization */
+		cBtnMissing[i] = cButtons[i];
 }
 
 void relay_test(void)
@@ -110,13 +124,17 @@ void encoder_test()
 				printf("CCW ");
 			if (Encoder_Btn_Count() < 1)
 				printf("BTN");
+			timestamp = getTime() + 1000000U;
 		}
-		timestamp = getTime() + 5000000U;
+		else
+		{
+			timestamp = getTime() + 7000000U;
+		}
+		
 	}
 	if (Encoder_Cw_Pulse_Count() > 3 && Encoder_Ccw_Pulse_Count() > 3 && Encoder_Btn_Count() > 0)
 	{
 		printf("PASS");
-		Encoder_Init();
 	}
 }
 
@@ -126,6 +144,37 @@ void keyboard_test()
 	// when all btns were pressed / print PASS and terminate the test
 	// when something is missing - print fail
 	// if STOP received, terminate
+	
+	uint8_t idx = KeyboardReadIdx();
+	if(idx != 0xFF)
+		cBtnMissing[idx] = 0;
+	
+	if (timestamp < getTime())		// after timeout for pressing all buttons elapsed
+	{
+		if (timestamp != 0)
+		{
+			printf("FAIL: ");
+			for(uint8_t i=0; i < BTN_NUM; i++)		// print characters which were not pressed
+				if (cBtnMissing[i] > 0)
+					printf("%c ",cBtnMissing[i]);
+			printf("\n");
+			timestamp = getTime() + 1000000U;
+		}
+		else
+		{
+			timestamp = getTime() + 10000000U;
+		}
+	}
+	
+	bool btn_missing = false;
+	for(uint8_t i=0; i < BTN_NUM; i++)
+		if (cBtnMissing[i] > 0)
+			btn_missing = true;
+			
+	if (!btn_missing)
+	{
+		printf("PASS");
+	}
 }
 
 void lcd_btn_test()
@@ -140,7 +189,7 @@ void lcd_test()
 	// wait for STOP from serial
 }
 
-void reproductor_test()
+void speaker_test()
 {
 	PORTE_toggle_pin_level(2U);
 	delay(500U);

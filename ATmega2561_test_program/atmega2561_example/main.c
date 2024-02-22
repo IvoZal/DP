@@ -35,7 +35,7 @@ int main(void)
 		{"TEST KEYBRD",(callback)keyboard_test},
 		{"TEST BTN",(callback)lcd_btn_test},
 		{"TEST LCD",(callback)lcd_test},
-		{"TEST REPRO",(callback)reproductor_test},
+		{"TEST REPRO",(callback)speaker_test},
 		{"TEST THERM",(callback)thermistor_test}};
 			
 	char input_string[USART_0_RX_BUFFER_SIZE];

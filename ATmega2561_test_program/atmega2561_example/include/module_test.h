@@ -28,6 +28,8 @@
 #include "timer.h"
 #include "DS1307.h"
 #include "encoder.h"
+#include "keyboard.h"
+
 
 /* Function initializes all peripherals for the module tests */
 void module_test_init(void);
@@ -35,22 +37,28 @@ void module_test_init(void);
 /* Function resets some test values to default */
 void stop_test(void);
 
-/* hw evaluated tests */
+/************************************************
+HW evaluated tests
+*************************************************/
 // start test
 // print PASS/FAIL
 void relay_test(void);
 
-/* user interact, hw evaluated tests */
+/************************************************
+User interact, HW evaluated tests
+*************************************************/
 void encoder_test(void);
 
 void keyboard_test(void);
 
 void lcd_btn_test(void);
 
-/* user interact, user evaluated tests */
+/************************************************
+User interact, user evaluated tests
+*************************************************/
 void lcd_test(void);
 
-void reproductor_test(void);
+void speaker_test(void);
 
 void thermistor_test(void);
 
