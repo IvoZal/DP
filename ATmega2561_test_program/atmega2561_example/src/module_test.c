@@ -32,7 +32,7 @@ void module_test_init()
 		
 	Encoder_Init();
 	
-	// RTC_init();
+	RTC_init();
 	
 	for(uint8_t i=0; i < BTN_NUM; i++)	/* Matrix keyboard pressed flag initialization */
 		cBtnMissing[i] = cButtons[i];
@@ -114,6 +114,25 @@ void relay_test(void)
 			printf("K2");
 		printf("\n");
 	}
+}
+
+void rtc_test(void)
+{
+	uint8_t data_set[REG_COUNT] = {0x59, 0x59, 0x23, 0x7, 0x31, 0x12, 0x99, 0x59, 0x59, 0x23, 0x71, 0x59, 0x23, 0x71};
+	uint8_t data_get[REG_COUNT];
+	
+	RTC_set_registers(data_set);
+	RTC_read_registers(data_get);
+	
+	bool reg_fail = false;
+	for(uint8_t i=0; i < REG_COUNT; i++)
+		if(data_set[i] != data_get[i])
+			reg_fail = true;
+			
+	if(reg_fail)
+		printf("FAIL: REGISTERS\n");
+	
+	// TODO: test SQW
 }
 
 void encoder_test()

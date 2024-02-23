@@ -30,7 +30,7 @@ int main(void)
 		{"STOP",(callback)stop_test},
 		{"TEST ATMEGA",(callback)printf},
 		{"TEST RELAY",(callback)relay_test},
-		{"TEST RTC",(callback)printf},
+		{"TEST RTC",(callback)rtc_test},
 		{"TEST ENCODER",(callback)encoder_test},
 		{"TEST KEYBRD",(callback)keyboard_test},
 		{"TEST BTN",(callback)lcd_btn_test},

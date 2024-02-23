@@ -46,6 +46,8 @@ HW evaluated tests
 // print PASS/FAIL
 void relay_test(void);
 
+void rtc_test(void);
+
 /************************************************
 User interact, HW evaluated tests
 *************************************************/
