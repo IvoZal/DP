@@ -17,6 +17,7 @@
 #include "I2C.h"
 
 #define DEV_ADDRESS 0b01101000
+#define REG_COUNT 14
 
 /* Function initializes IIC bus. Call once before using other RTC functions. */
 void RTC_init();
@@ -32,6 +33,12 @@ void RTC_set_date(uint16_t * u16Date);
 
 /* Function reads date stored in RTC. Date format is: u16Date = {Day,Month,Year}. */
 void RTC_read_date(uint16_t * u16Date);
+
+/* Function sets all RTC time/date registers. The u8Data array length is REG_COUNT. */
+void RTC_set_registers(uint8_t * u8Data);
+
+/* Function reads all RTC time/date registers. The u8Data array length is REG_COUNT. */
+void RTC_read_registers(uint8_t * u8Data);
 
 /* Function enables square-wave output generator. Frequency specified by bits RS (RS = 0x0 for 1Hz). */
 void RTC_set_generator(uint8_t u8RS);

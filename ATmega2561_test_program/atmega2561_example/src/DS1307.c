@@ -74,6 +74,30 @@ void RTC_read_date(uint16_t * u16Date)
 	IIC_stop();
 }
 
+void RTC_set_registers(uint8_t * u8Data)
+{
+	IIC_start();
+	IIC_write_address(DEV_ADDRESS,0);
+	IIC_write_data(0x00);	// Select first register
+	for(uint8_t i=0; i < REG_COUNT; i++)
+		IIC_write_data(u8Data[i]);
+	IIC_stop();
+}
+
+void RTC_read_registers(uint8_t * u8Data)
+{
+	IIC_start();
+	IIC_write_address(DEV_ADDRESS,0);
+	IIC_write_data(0x00);	// Select first register
+	IIC_repeated_start();
+	IIC_write_address(DEV_ADDRESS,1);
+	uint8_t i=0;
+	for(; i < (REG_COUNT - 1); i++)
+		u8Data[i] = IIC_read(true);
+	u8Data[i] = IIC_read(false);
+	IIC_stop();
+}
+
 void RTC_set_generator(uint8_t u8RS)
 {
 	IIC_start();
