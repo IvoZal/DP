@@ -63,28 +63,18 @@ void relay_test(void)
 	/* Turn off both relays */
 	PORTF_set_pin_dir(K1_IN, PORT_DIR_OUT);
 	PORTF_set_pin_dir(K2_IN, PORT_DIR_OUT);
-	PORTF_set_pin_level(K1_IN, false);
-	PORTF_set_pin_level(K2_IN, false);
+	PORTF_set_pin_level(K1_IN, true);
+	PORTF_set_pin_level(K2_IN, true);
 	delay(15000U);
 
-	/* Measure the level when input is low */
-	if (!PORTF_get_pin_level(K1_NC) || PORTF_get_pin_level(K1_NO))
+	/* Measure the level when K1 and K2 is turned off */
+	if (PORTF_get_pin_level(K1_NC) || !PORTF_get_pin_level(K1_NO))
 		fail_K1 = true;	
-	if (!PORTF_get_pin_level(K2_NC) || PORTF_get_pin_level(K2_NO))
+	if (PORTF_get_pin_level(K2_NC) || !PORTF_get_pin_level(K2_NO))
 		fail_K2 = true;
 	
 	/* Turn on K1 */
-	PORTF_set_pin_level(K1_IN, true);
-	delay(15000U);
-	
-	/* Measure the level when K1 is turned on */
-	if (PORTF_get_pin_level(K1_NC) || !PORTF_get_pin_level(K1_NO))
-		fail_K1 = true;
-	if (!PORTF_get_pin_level(K2_NC) || PORTF_get_pin_level(K2_NO))
-		fail_K2 = true;
-	/* Turn on K2 */
 	PORTF_set_pin_level(K1_IN, false);
-	PORTF_set_pin_level(K2_IN, true);
 	delay(15000U);
 	
 	/* Measure the level when K1 is turned on */
@@ -92,12 +82,22 @@ void relay_test(void)
 		fail_K1 = true;
 	if (PORTF_get_pin_level(K2_NC) || !PORTF_get_pin_level(K2_NO))
 		fail_K2 = true;
-	/* Turn on both K1 and K2 */
+	/* Turn on K2 */
 	PORTF_set_pin_level(K1_IN, true);
-	PORTF_set_pin_level(K2_IN, true);
+	PORTF_set_pin_level(K2_IN, false);
 	delay(15000U);
 	
-	/* Measure the level when K1 is turned on */
+	/* Measure the level when K2 is turned on */
+	if (PORTF_get_pin_level(K1_NC) || !PORTF_get_pin_level(K1_NO))
+		fail_K1 = true;
+	if (!PORTF_get_pin_level(K2_NC) || PORTF_get_pin_level(K2_NO))
+		fail_K2 = true;
+	/* Turn on both K1 and K2 */
+	PORTF_set_pin_level(K1_IN, false);
+	PORTF_set_pin_level(K2_IN, false);
+	delay(15000U);
+	
+	/* Measure the level when K1 and K2 is turned on */
 	if (!PORTF_get_pin_level(K1_NC) || PORTF_get_pin_level(K1_NO))
 		fail_K1 = true;
 	if (!PORTF_get_pin_level(K2_NC) || PORTF_get_pin_level(K2_NO))
@@ -114,11 +114,15 @@ void relay_test(void)
 			printf("K2");
 		printf("\n");
 	}
+	
+	PORTF_set_pin_level(K1_IN, true);
+	PORTF_set_pin_level(K2_IN, true);
 }
 
 void rtc_test(void)
 {
-	uint8_t data_set[REG_COUNT] = {0x59, 0x59, 0x23, 0x7, 0x31, 0x12, 0x99, 0x59, 0x59, 0x23, 0x71, 0x59, 0x23, 0x71};
+	/* Test RTC registers */
+	uint8_t data_set[REG_COUNT] = {0xD9, 0x59, 0x23, 0x7, 0x31, 0x12, 0x99};
 	uint8_t data_get[REG_COUNT];
 	
 	RTC_set_registers(data_set);
@@ -130,9 +134,38 @@ void rtc_test(void)
 			reg_fail = true;
 			
 	if(reg_fail)
-		printf("FAIL: REGISTERS\n");
+		printf("FAIL: REGISTERS ");
+		
+	/* Enable the RTC clock */
+	data_set[0] = 0x0; 
+	RTC_set_registers(data_set);
 	
-	// TODO: test SQW
+	/* Test RTC square wave output */
+	PORTE_set_pin_dir(4U, PORT_DIR_IN);
+	
+	/* Configure timer 5 for measuring RTC SQW pulse length */
+	PRR1 &= ~(1 << PRTIM5);
+	TCCR5B |= (1 << CS50);	// no prescaler
+	TIFR5 = (1 << TOV5) | (1 << OCF5A);
+	
+	RTC_set_generator(0x13U);	/* Set SQW for 32 kHz, enable output */
+	bool sqw_val = PORTE_get_pin_level(4U);
+	TCNT5 = 0;		// sets the counter to zero
+	
+	/* Check one period of RTC SQW */
+	while((sqw_val == PORTE_get_pin_level(4U)) && (TCNT5 < 500))
+		;
+	sqw_val = PORTE_get_pin_level(4U);
+	while((sqw_val == PORTE_get_pin_level(4U)) && (TCNT5 < 1000U))
+		;
+	uint16_t ticks = TCNT5;
+	
+	if((ticks < 200U) || (ticks > 800U))
+		printf("FAIL: SQW output");
+	else if(!reg_fail)
+		printf("PASS");
+		
+	printf("\n");
 }
 
 void encoder_test()
