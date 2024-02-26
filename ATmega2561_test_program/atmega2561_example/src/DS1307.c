@@ -98,11 +98,11 @@ void RTC_read_registers(uint8_t * u8Data)
 	IIC_stop();
 }
 
-void RTC_set_generator(uint8_t u8RS)
+void RTC_set_generator(uint8_t u8Control)
 {
 	IIC_start();
 	IIC_write_address(DEV_ADDRESS,0);
 	IIC_write_data(0x07);			// Control register address
-	IIC_write_data(0x10 | u8RS);
+	IIC_write_data(u8Control);
 	IIC_stop();
 }

@@ -17,7 +17,7 @@
 #include "I2C.h"
 
 #define DEV_ADDRESS 0b01101000
-#define REG_COUNT 14
+#define REG_COUNT 7
 
 /* Function initializes IIC bus. Call once before using other RTC functions. */
 void RTC_init();
