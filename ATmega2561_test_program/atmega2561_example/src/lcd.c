@@ -7,18 +7,13 @@
 
 #include "lcd.h"
 
-#define DB4 (1 << DDD4)
-#define DB5 (1 << DDD5)
-#define DB6 (1 << DDD6)
-#define DB7 (1 << DDD7)
-#define RS (1 << DDD3)
-#define E (1 << DDD2)
 
 /********** Function declarations **********/
 void lcd_Init()
 {
 	/* Set all display pins as output */
-	DDRD = DB4 | DB5 | DB6 | DB7 | RS | E;
+	DDRC |= DB4 | DB5 | DB6 | DB7 | RS;
+	DDRG |= E;
 	// Wait for 20 ms before first instruction
 	delay(20000);
 	// Function set
@@ -46,33 +41,33 @@ void lcd_Init()
 void lcd_SendCmd4b(uint8_t cmd)
 {
 	/* Set RS low */
-	PORTD &= ~RS;
+	PORTC &= ~RS;
 	/* Send data bits 0-4 */
-	PORTD = (PORTD & 0x0F) | (cmd << 4);
+	PORTC = (PORTC & 0x0F) | (cmd << 4);
 	/* Toggle E */
-	PORTD |= E;
+	PORTG |= E;
 	delay(1);
-	PORTD &= ~E;
+	PORTG &= ~E;
 	delay(200);
 }
 
 void lcd_SendCmd(uint8_t cmd)
 {
 	/* Set RS low */
-	PORTD &= ~RS;
+	PORTC &= ~RS;
 	// Send data bits 5-8
-	PORTD = (PORTD & 0x0F) | (cmd & 0xF0);
+	PORTC = (PORTC & 0x0F) | (cmd & 0xF0);
 	/* Toggle E */
-	PORTD |= E;
+	PORTG |= E;
 	delay(1);
-	PORTD &= ~E;
+	PORTG &= ~E;
 	delay(50);
 	/* Send data bits 0-4 */
-	PORTD = (PORTD & 0x0F) | (cmd << 4);
+	PORTC = (PORTC & 0x0F) | (cmd << 4);
 	/* Toggle E */
-	PORTD |= E;
+	PORTG |= E;
 	delay(1);
-	PORTD &= ~E;
+	PORTG &= ~E;
 	delay(200);
 }
 
@@ -83,20 +78,20 @@ void lcd_WriteChar(char data)
 		data = 0b11011111;
 	}
 	/* Set RS high */
-	PORTD |= RS;
+	PORTC |= RS;
 	/* Send data bits 5-8 */
-	PORTD = (PORTD & 0x0F) | (data & 0xF0);
+	PORTC = (PORTC & 0x0F) | (data & 0xF0);
 	/* Toggle E */
-	PORTD |= E;
+	PORTG |= E;
 	delay(1);
-	PORTD &= ~E;
+	PORTG &= ~E;
 	delay(50);
 	/* Send data bits 0-4 */
-	PORTD = (PORTD & 0x0F) | (data << 4);
+	PORTC = (PORTC & 0x0F) | (data << 4);
 	/* Toggle E */
-	PORTD |= E;
+	PORTG |= E;
 	delay(1);
-	PORTD &= ~E;
+	PORTG &= ~E;
 	delay(200);
 }
 

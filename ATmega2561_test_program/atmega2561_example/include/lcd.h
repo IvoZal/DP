@@ -27,6 +27,13 @@ volitelne blink, display, cursor, backlight (PWM)
 #include <stdlib.h>
 #include <timer.h>
 
+#define DB4 (1 << PC3)
+#define DB5 (1 << PC4)
+#define DB6 (1 << PC5)
+#define DB7 (1 << PC6)
+#define RS (1 << PC7)
+#define E (1 << PG2)
+
 /* Display initialization, call after power on. */
 void lcd_Init();
 
