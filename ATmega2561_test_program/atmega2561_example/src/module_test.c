@@ -255,7 +255,7 @@ void lcd_btn_test()
 	else if(val >= 500 && val <= 750)
 		lcd_btn_pressed[4] = true;
 		
-	if(PORTE_get_pin_level(3))
+	if(!PORTE_get_pin_level(3))
 		lcd_btn_pressed[5] = true;
 	
 	if (timestamp < getTime())		// after timeout for pressing all buttons elapsed
@@ -286,7 +286,7 @@ void lcd_btn_test()
 	
 	bool btn_missing = false;
 	for(uint8_t i=0; i < LCD_BTN_NUM; i++)
-		if (lcd_btn_pressed[i] == true)
+		if (lcd_btn_pressed[i] == false)
 			btn_missing = true;
 	
 	if (!btn_missing)
@@ -297,6 +297,9 @@ void lcd_btn_test()
 
 void lcd_test()
 {
+	lcd_Init();
+	lcd_WriteChar('h');
+	//fprintf(&display,"Hello world!");
 	// show test text
 	// wait for STOP from serial
 }
