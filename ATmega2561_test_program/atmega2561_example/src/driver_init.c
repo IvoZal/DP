@@ -43,12 +43,6 @@ void ADC_0_initialization(void)
 	ADC_0_init();
 }
 
-/* configure pins and initialize registers */
-void I2C_0_initialization(void)
-{
-	I2C_0_init();
-}
-
 /* configure the pins and initialize the registers */
 void SPI_0_initialization(void)
 {
@@ -150,8 +144,6 @@ void system_init()
 	sysctrl_init();
 
 	ADC_0_initialization();
-
-	I2C_0_initialization();
 
 	SPI_0_initialization();
 

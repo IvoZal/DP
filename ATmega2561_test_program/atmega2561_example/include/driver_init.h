@@ -45,8 +45,6 @@
 
 #include <adc_basic.h>
 
-#include <i2c_master.h>
-
 #include <spi_basic.h>
 
 #include <usart_basic.h>
