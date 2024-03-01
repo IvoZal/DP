@@ -13,6 +13,8 @@
 
 void IIC_init(uint32_t u32SCL_frequency)
 {
+	PRR0 &= ~(1 << PRTWI);	// Enable TWI
+	
 	DDRC &= ~(1 << DDC4) & ~(1 << DDC5); // Set SDA and SCL pins as input
 	TWSR = (1 << TWPS0);	// Prescaler 4
 	TWBR = (uint8_t)((CPU_frequency/u32SCL_frequency - 16)/(2*4));	// Set Bit rate
