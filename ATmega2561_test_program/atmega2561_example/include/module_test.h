@@ -45,6 +45,8 @@ HW evaluated tests
 *************************************************/
 // start test
 // print PASS/FAIL
+void atmega_test(void);
+
 void relay_test(void);
 
 void rtc_test(void);

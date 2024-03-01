@@ -27,7 +27,7 @@ int main(void)
 	UART_CMD_T cmd_lut[] =
 		{{"DUMMY_VALUE",},
 		{"STOP",(callback)stop_test},
-		{"TEST ATMEGA",(callback)printf},
+		{"TEST ATMEGA",(callback)atmega_test},
 		{"TEST RELAY",(callback)relay_test},
 		{"TEST RTC",(callback)rtc_test},
 		{"TEST ENCODER",(callback)encoder_test},

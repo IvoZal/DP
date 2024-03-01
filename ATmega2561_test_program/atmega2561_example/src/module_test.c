@@ -57,13 +57,6 @@ void stop_test(void)
 		lcd_btn_pressed[i] = false;
 }
 
-void atmega_test(void)
-{
-	// TODO flash binary
-	
-	
-}
-
 void relay_test(void)
 {
 	bool fail_K1 = false;

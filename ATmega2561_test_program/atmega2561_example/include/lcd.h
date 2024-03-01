@@ -12,11 +12,6 @@
  * Note: This file should be included after any system or third-party
  * header files that are needed by the library.
  */
- 
-/*
-TODO
-volitelne blink, display, cursor, backlight (PWM)
-*/
 
 #ifndef LCD_H_
 #define LCD_H_
