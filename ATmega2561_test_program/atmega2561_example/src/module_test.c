@@ -297,11 +297,26 @@ void lcd_btn_test()
 
 void lcd_test()
 {
-	lcd_Init();
-	lcd_WriteChar('h');
-	//fprintf(&display,"Hello world!");
 	// show test text
 	// wait for STOP from serial
+	lcd_Init();
+	
+	/* Turn all pixels on */
+	for(uint8_t i=0; i < 16; i++)
+		lcd_WriteChar(0xFF);
+	lcd_SetCursor(0x40);	// move to second row
+	for(uint8_t i=0; i < 16; i++)
+		lcd_WriteChar(0xFF);
+	
+	delay(2000000U);
+	
+	/* Write test character sequence */
+	lcd_RetHome();
+	fprintf(&display,"LCD test:       ");
+	lcd_SetCursor(0x40);	// move to second row
+	fprintf(&display,"0123456789,°#*/-");
+	
+	delay(4000000U);
 }
 
 void speaker_test()

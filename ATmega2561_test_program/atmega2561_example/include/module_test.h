@@ -31,6 +31,7 @@
 #include "DS1307.h"
 #include "encoder.h"
 #include "keyboard.h"
+#include "lcd.h"
 
 
 /* Function initializes all peripherals for the module tests */

@@ -3,7 +3,6 @@
 #define BAUD 38400
 #endif
 
-//#include <util/delay.h>
 #include <stdio.h>
 #include <string.h>
 #include <atmel_start.h>
