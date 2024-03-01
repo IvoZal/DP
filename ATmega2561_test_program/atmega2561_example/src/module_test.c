@@ -33,6 +33,8 @@ void module_test_init()
 	Encoder_Init();
 	
 	RTC_init();
+	PORTE_set_pin_dir(4U, PORT_DIR_IN);
+	PORTE_set_pin_pull_mode(4U, PORT_PULL_UP);
 	
 	for(uint8_t i=0; i < BTN_NUM; i++)	/* Matrix keyboard pressed flag initialization */
 		cBtnMissing[i] = cButtons[i];
@@ -53,6 +55,13 @@ void stop_test(void)
 		
 	for(uint8_t i=0; i < LCD_BTN_NUM; i++)		/* LCD buttons pressed flag initialization */
 		lcd_btn_pressed[i] = false;
+}
+
+void atmega_test(void)
+{
+	// TODO flash binary
+	
+	
 }
 
 void relay_test(void)
@@ -140,22 +149,20 @@ void rtc_test(void)
 	data_set[0] = 0x0; 
 	RTC_set_registers(data_set);
 	
-	/* Test RTC square wave output */
-	PORTE_set_pin_dir(4U, PORT_DIR_IN);
+	/* Test RTC square wave output */	
+	RTC_set_generator(0x13U);	/* Set SQW for 32 kHz, enable output */
 	
 	/* Configure timer 5 for measuring RTC SQW pulse length */
 	PRR1 &= ~(1 << PRTIM5);
 	TCCR5B |= (1 << CS50);	// no prescaler
 	TIFR5 = (1 << TOV5) | (1 << OCF5A);
-	
-	RTC_set_generator(0x13U);	/* Set SQW for 32 kHz, enable output */
-	bool sqw_val = PORTE_get_pin_level(4U);
 	TCNT5 = 0;		// sets the counter to zero
+	bool sqw_val = PORTE_get_pin_level(4U);
 	
 	/* Check one period of RTC SQW */
 	while((sqw_val == PORTE_get_pin_level(4U)) && (TCNT5 < 500))
 		;
-	sqw_val = PORTE_get_pin_level(4U);
+	sqw_val = !sqw_val;
 	while((sqw_val == PORTE_get_pin_level(4U)) && (TCNT5 < 1000U))
 		;
 	uint16_t ticks = TCNT5;
