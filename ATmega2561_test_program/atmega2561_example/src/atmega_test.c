@@ -36,6 +36,7 @@
 #define PG_PINS (D3 | D4 | D11 | D12)
 
 typedef struct pin_connection {
+	const uint8_t m2561_port_offset;
 	uint8_t m2561_pin;
 	const char* m328p_pin_name;	
 } PIN_CONNECTION_T;
@@ -43,55 +44,44 @@ typedef struct pin_connection {
 void atmega_test(void)
 {
 	PIN_CONNECTION_T pin_def[] = 
-	{{D1,"PC0"},
-	{D2,"PC1"},
-	{D3,"PC2"},
-	{D4,"PC3"},
-	{D5,"PC4"},
-	{D6,"PC5"},
-	{D7,"PB5"},
-	{D8,"PB4"},
-	{D9,"PB3"},
-	{D10,"PB2"},
-	{D11,"PB1"},
-	{D12,"PB0"},
-	{D13,"PD7"},
-	{D14,"PD6"},
-	{D15,"PD5"},
-	{D16,"PD4"},
-	{D17,"PD3"},
-	{D18,"PD2"},
-	{D19,"PD1"},
-	{D20,"PD0"}};
+		{{0x06,D1,"PC0"},
+		{0x06,D2,"PC1"},
+		{0x12,D3,"PC2"},
+		{0x12,D4,"PC3"},
+		{0x12,D5,"PC4"},
+		{0x09,D6,"PC5"},
+		{0x09,D7,"PB5"},
+		{0x09,D8,"PB4"},
+		{0x09,D9,"PB3"},
+		{0x09,D10,"PB2"},
+		{0x12,D11,"PB1"},
+		{0x12,D12,"PB0"},
+		{0x03,D13,"PD7"},
+		{0x03,D14,"PD6"},
+		{0x03,D15,"PD5"},
+		{0x03,D16,"PD4"},
+		{0x03,D17,"PD3"},
+		{0x03,D18,"PD2"},
+		{0x03,D19,"PD1"},
+		{0x03,D20,"PD0"}};
 	
 	// TODO flash binary
 	
 	// TODO init pins as inputs
-	// PB 0-5
-	// PC 0-5
-	// PD 0-7
 	// Set pin and send read request
-	PORTB_set_port_dir(PB_PINS, PORT_DIR_IN);
-	PORTC_set_port_dir(PC_PINS, PORT_DIR_IN);
-	PORTD_set_port_dir(PD_PINS, PORT_DIR_IN);
-	PORTG_set_port_dir(PG_PINS, PORT_DIR_IN);
+	PORTB_set_port_dir(PB_PINS, PORT_DIR_OUT);
+	PORTC_set_port_dir(PC_PINS, PORT_DIR_OUT);
+	PORTD_set_port_dir(PD_PINS, PORT_DIR_OUT);
+	PORTG_set_port_dir(PG_PINS, PORT_DIR_OUT);
+	
+	PORTB_set_port_level(PB_PINS, true);
+	PORTC_set_port_level(PC_PINS, true);
+	PORTD_set_port_level(PD_PINS, true);
+	PORTG_set_port_level(PG_PINS, true);
 	
 	for(uint8_t i=0; i < sizeof(pin_def)/sizeof(PIN_CONNECTION_T); i++)
 	{
-		switch (pin_def[i].m328p_pin_name[1])
-		{
-			case 0x43:	// PORT C
-				break;
-				
-			case 0x42:	// PORT B
-				break;
-				
-			case 0x44:	// PORT D
-				break;
-				
-			default:
-				break;
-		}
+		fprintf(&USART_1_stream,"dio_read_%s",pin_def[i].m328p_pin_name);
 	}
 	
 	// TODO set pin as outputs

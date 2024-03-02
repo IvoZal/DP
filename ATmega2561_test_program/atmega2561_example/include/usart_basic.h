@@ -30,6 +30,7 @@
 
 #include <atmel_start.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -103,6 +104,10 @@ uint8_t USART_1_read(void);
 void USART_1_write(const uint8_t data);
 
 void USART_1_set_ISR_cb(usart_cb_t cb, usart_cb_type_t type);
+
+int USART_1_printCHAR(char character, FILE *stream);
+
+extern FILE USART_1_stream;
 
 #ifdef __cplusplus
 }

@@ -39,7 +39,7 @@
 #include <usart_basic.h>
 #include <atomic.h>
 
-#include <stdio.h>
+//#include <stdio.h>
 
 #if defined(__GNUC__)
 
@@ -361,9 +361,9 @@ uint8_t USART_0_rxbuf_length()
 	return USART_0_rx_elements;
 }
 
-#include <stdio.h>
-
-#if defined(__GNUC__)
+//#include <stdio.h>
+//
+//#if defined(__GNUC__)
 
 int USART_1_printCHAR(char character, FILE *stream)
 {
@@ -373,14 +373,14 @@ int USART_1_printCHAR(char character, FILE *stream)
 
 FILE USART_1_stream = FDEV_SETUP_STREAM(USART_1_printCHAR, NULL, _FDEV_SETUP_WRITE);
 
-#elif defined(__ICCAVR__)
-
-int putchar(int outChar)
-{
-	USART_0_write(outChar);
-	return outChar;
-}
-#endif
+//#elif defined(__ICCAVR__)
+//
+//int putchar(int outChar)
+//{
+	//USART_0_write(outChar);
+	//return outChar;
+//}
+//#endif
 
 /* Static Variables holding the ringbuffer used in IRQ mode */
 static uint8_t          USART_1_rxbuf[USART_1_RX_BUFFER_SIZE];
@@ -599,7 +599,7 @@ int8_t USART_1_init()
 	USART_1_tx_elements = x;
 
 #if defined(__GNUC__)
-	stdout = &USART_1_stream;
+	// stdout = &USART_1_stream;
 #endif
 
 	return 0;

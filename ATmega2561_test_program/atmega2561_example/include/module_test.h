@@ -27,6 +27,7 @@
 #include <adc_basic.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <usart_basic.h>
 #include "timer.h"
 #include "DS1307.h"
 #include "encoder.h"
