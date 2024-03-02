@@ -61,6 +61,6 @@ void lcd_Clear();
 int lcd_putchar(char c, FILE *stream);
 
 /* Definition of stream display. */
-static FILE display = FDEV_SETUP_STREAM(lcd_putchar, NULL,_FDEV_SETUP_WRITE);
+extern FILE display;
 
 #endif /* LCD_H_ */

@@ -142,3 +142,5 @@ int lcd_putchar(char c, FILE *stream)
 	lcd_WriteChar(c);
 	return 0;
 }
+
+FILE display = FDEV_SETUP_STREAM(lcd_putchar, NULL,_FDEV_SETUP_WRITE);
