@@ -81,7 +81,7 @@ static void dio_output_test(bool tested_value)
 	for(uint8_t i=0; i < sizeof(pin_def)/sizeof(PIN_CONNECTION_T); i++)
 	{
 		fprintf(&UART_1_stream,"dio_read_%s\n",pin_def[i].m328p_pin_name);
-		uint32_t timestamp = getTime() + 1000;	// set response timeout
+		uint32_t timestamp = getTime() + 50000;	// set response timeout
 		while(timestamp > getTime())
 		{
 			if((UART1_buf_peek_head() == 0xA) && (UART1_buf_length() > 0))	// if the last char was line feed
@@ -117,7 +117,7 @@ void atmega_test(void)
 	PORTG_set_port_dir(PG_PINS, PORT_DIR_OUT);
 	
 	dio_output_test(true);
-	
+		
 	dio_output_test(false);
 	
 	// TODO set pin as outputs

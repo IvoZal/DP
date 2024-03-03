@@ -145,7 +145,7 @@ void system_init()
 
 	ADC_0_initialization();
 
-	SPI_0_initialization();
+	//SPI_0_initialization();
 
 	USART_0_initialization();
 
