@@ -8,7 +8,7 @@
 #include "module_test.h"
 
 /* Pin define on ATmega2561 side */
-#define D0 (1 << PC2)
+//#define D0 (1 << PC2)		// m328p RESET
 #define D1 (1 << PC1)
 #define D2 (1 << PC0)
 #define D3 (1 << PG1)
@@ -31,7 +31,7 @@
 #define D20 (1 << PB1)
 
 #define PB_PINS (D13 | D14 | D15 | D16 | D17 | D18 | D19 | D20)
-#define PC_PINS (D0 | D1 | D2)
+#define PC_PINS (D1 | D2)
 #define PD_PINS (D5 | D6 | D9 | D10)
 #define PG_PINS (D3 | D4 | D11 | D12)
 
@@ -48,20 +48,20 @@ PIN_CONNECTION_T pin_def[] =
 	{0x12,D4,"PC3"},
 	{0x12,D5,"PC4"},
 	{0x09,D6,"PC5"},
-	//{0x09,D7,"PB5"},
-	//{0x09,D8,"PB4"},
-	{0x09,D9,"PB3"},
-	{0x09,D10,"PB2"},
-	{0x12,D11,"PB1"},
-	{0x12,D12,"PB0"},
-	{0x03,D13,"PD7"},
-	{0x03,D14,"PD6"},
-	{0x03,D15,"PD5"},
-	{0x03,D16,"PD4"},
-	{0x03,D17,"PD3"},
-	{0x03,D18,"PD2"},
-	{0x03,D19,"PD1"},
-	{0x03,D20,"PD0"}};
+	//{0x09,D7,"PD0"},
+	//{0x09,D8,"PD1"},
+	{0x09,D9,"PD2"},
+	{0x09,D10,"PD3"},
+	{0x12,D11,"PD4"},
+	{0x12,D12,"PD5"},
+	{0x03,D13,"PD6"},
+	{0x03,D14,"PD7"},
+	{0x03,D15,"PB0"},
+	{0x03,D16,"PB1"},
+	{0x03,D17,"PB2"},
+	{0x03,D18,"PB3"},
+	{0x03,D19,"PB4"},
+	{0x03,D20,"PB5"}};
 
 static void dio_output_test(bool tested_value)
 {
