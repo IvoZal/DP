@@ -316,16 +316,10 @@
     <Compile Include="examples\include\spi_basic_example.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="examples\include\usart_basic_example.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="examples\src\adc_basic_example.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="examples\src\spi_basic_example.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="examples\src\usart_basic_example.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\adc_basic.h">
