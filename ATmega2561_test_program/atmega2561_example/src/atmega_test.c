@@ -15,8 +15,8 @@
 #define D4 (1 << PG0)
 #define D5 (1 << PD7)
 #define D6 (1 << PD6)
-//#define D7 (1 << PD3)
-//#define D8 (1 << PD2)
+//#define D7 (1 << PD3)		// m328p USART rx
+//#define D8 (1 << PD2)		// m328p USART tx
 #define D9 (1 << PD4)
 #define D10 (1 << PD5)
 #define D11 (1 << PG4)
@@ -41,52 +41,47 @@ typedef struct pin_connection {
 	const char* m328p_pin_name;	
 } PIN_CONNECTION_T;
 
-void atmega_test(void)
+PIN_CONNECTION_T pin_def[] =
+	{{0x06,D1,"PC0"},
+	{0x06,D2,"PC1"},
+	{0x12,D3,"PC2"},
+	{0x12,D4,"PC3"},
+	{0x12,D5,"PC4"},
+	{0x09,D6,"PC5"},
+	//{0x09,D7,"PB5"},
+	//{0x09,D8,"PB4"},
+	{0x09,D9,"PB3"},
+	{0x09,D10,"PB2"},
+	{0x12,D11,"PB1"},
+	{0x12,D12,"PB0"},
+	{0x03,D13,"PD7"},
+	{0x03,D14,"PD6"},
+	{0x03,D15,"PD5"},
+	{0x03,D16,"PD4"},
+	{0x03,D17,"PD3"},
+	{0x03,D18,"PD2"},
+	{0x03,D19,"PD1"},
+	{0x03,D20,"PD0"}};
+
+static void dio_output_test(bool tested_value)
 {
-	PIN_CONNECTION_T pin_def[] = 
-		{{0x06,D1,"PC0"},
-		{0x06,D2,"PC1"},
-		{0x12,D3,"PC2"},
-		{0x12,D4,"PC3"},
-		{0x12,D5,"PC4"},
-		{0x09,D6,"PC5"},
-		//{0x09,D7,"PB5"},
-		//{0x09,D8,"PB4"},
-		{0x09,D9,"PB3"},
-		{0x09,D10,"PB2"},
-		{0x12,D11,"PB1"},
-		{0x12,D12,"PB0"},
-		{0x03,D13,"PD7"},
-		{0x03,D14,"PD6"},
-		{0x03,D15,"PD5"},
-		{0x03,D16,"PD4"},
-		{0x03,D17,"PD3"},
-		{0x03,D18,"PD2"},
-		{0x03,D19,"PD1"},
-		{0x03,D20,"PD0"}};
-			
 	char input_string[BUFFER_SIZE];
 	
-	// TODO flash binary
+	PORTB_set_port_level(PB_PINS, tested_value);
+	PORTC_set_port_level(PC_PINS, tested_value);
+	PORTD_set_port_level(PD_PINS, tested_value);
+	PORTG_set_port_level(PG_PINS, tested_value);
 	
-	// TODO init pins as inputs
-	// Set pin and send read request
-	PORTB_set_port_dir(PB_PINS, PORT_DIR_OUT);
-	PORTC_set_port_dir(PC_PINS, PORT_DIR_OUT);
-	PORTD_set_port_dir(PD_PINS, PORT_DIR_OUT);
-	PORTG_set_port_dir(PG_PINS, PORT_DIR_OUT);
-	
-	PORTB_set_port_level(PB_PINS, true);
-	PORTC_set_port_level(PC_PINS, true);
-	PORTD_set_port_level(PD_PINS, true);
-	PORTG_set_port_level(PG_PINS, true);
+	char tested_char;
+	if(tested_value == true)
+		tested_char = 0x30;	// "0"
+	else
+		tested_char = 0x31; // "1"
 	
 	for(uint8_t i=0; i < sizeof(pin_def)/sizeof(PIN_CONNECTION_T); i++)
-	//for(uint8_t i=0; i < 1; i++)
 	{
-		//printf("dio_read_%s\n",pin_def[i].m328p_pin_name);
-		fprintf(&UART_1_stream,"dio_read_PC0\n");
-		uint32_t timestamp = getTime() + 2000000;
+		fprintf(&UART_1_stream,"dio_read_%s\n",pin_def[i].m328p_pin_name);
+		uint32_t timestamp = getTime() + 1000;	// set response timeout
 		while(timestamp > getTime())
 		{
 			if((UART1_buf_peek_head() == 0xA) && (UART1_buf_length() > 0))	// if the last char was line feed
@@ -98,11 +93,32 @@ void atmega_test(void)
 					else
 						input_string[j] = 0;
 				}
-				if(input_string[4] == 0)
+				if(input_string[4] == tested_char)
 					printf("FAIL: %s\n",pin_def[i].m328p_pin_name);
+				else if(input_string[4] == 0)
+					printf("FAIL: COMMUNICATION\n");
+				timestamp = 0;
 			}
 		}
+		if(timestamp > 0)
+			printf("FAIL: COMMUNICATION\n");
 	}
+}
+
+void atmega_test(void)
+{			
+	// TODO flash binary
+	
+	// TODO init pins as inputs
+	// Set pin and send read request
+	PORTB_set_port_dir(PB_PINS, PORT_DIR_OUT);
+	PORTC_set_port_dir(PC_PINS, PORT_DIR_OUT);
+	PORTD_set_port_dir(PD_PINS, PORT_DIR_OUT);
+	PORTG_set_port_dir(PG_PINS, PORT_DIR_OUT);
+	
+	dio_output_test(true);
+	
+	dio_output_test(false);
 	
 	// TODO set pin as outputs
 	// read outputs
