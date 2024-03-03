@@ -171,54 +171,54 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <AvrGcc>
-        <avrgcc.common.Device>-mmcu=atmega2561 -B "%24(PackRepoDir)\Atmel\ATmega_DFP\1.6.364\gcc\dev\atmega2561"</avrgcc.common.Device>
-        <avrgcc.common.optimization.RelaxBranches>True</avrgcc.common.optimization.RelaxBranches>
-        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
-        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
-        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
-        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
-        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
-        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
-        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
-        <avrgcc.compiler.symbols.DefSymbols>
-          <ListValues>
-            <Value>DEBUG</Value>
-          </ListValues>
-        </avrgcc.compiler.symbols.DefSymbols>
-        <avrgcc.compiler.directories.IncludePaths>
-          <ListValues>
-            <Value>../Config</Value>
-            <Value>../examples/include</Value>
-            <Value>../include</Value>
-            <Value>../utils</Value>
-            <Value>../utils/assembler</Value>
-            <Value>../</Value>
-            <Value>%24(PackRepoDir)\Atmel\ATmega_DFP\1.6.364\include\</Value>
-          </ListValues>
-        </avrgcc.compiler.directories.IncludePaths>
-        <avrgcc.compiler.optimization.level>Optimize debugging experience (-Og)</avrgcc.compiler.optimization.level>
-        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
-        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
-        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-        <avrgcc.linker.libraries.Libraries>
-          <ListValues>
-            <Value>libm</Value>
-          </ListValues>
-        </avrgcc.linker.libraries.Libraries>
-        <avrgcc.assembler.general.IncludePaths>
-          <ListValues>
-            <Value>../Config</Value>
-            <Value>../examples/include</Value>
-            <Value>../include</Value>
-            <Value>../utils</Value>
-            <Value>../utils/assembler</Value>
-            <Value>../</Value>
-            <Value>%24(PackRepoDir)\Atmel\ATmega_DFP\1.6.364\include\</Value>
-          </ListValues>
-        </avrgcc.assembler.general.IncludePaths>
-        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
-      </AvrGcc>
+  <avrgcc.common.Device>-mmcu=atmega2561 -B "%24(PackRepoDir)\Atmel\ATmega_DFP\1.6.364\gcc\dev\atmega2561"</avrgcc.common.Device>
+  <avrgcc.common.optimization.RelaxBranches>True</avrgcc.common.optimization.RelaxBranches>
+  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+  <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+  <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+  <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+  <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>DEBUG</Value>
+    </ListValues>
+  </avrgcc.compiler.symbols.DefSymbols>
+  <avrgcc.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>../Config</Value>
+      <Value>../examples/include</Value>
+      <Value>../include</Value>
+      <Value>../utils</Value>
+      <Value>../utils/assembler</Value>
+      <Value>../</Value>
+      <Value>%24(PackRepoDir)\Atmel\ATmega_DFP\1.6.364\include\</Value>
+    </ListValues>
+  </avrgcc.compiler.directories.IncludePaths>
+  <avrgcc.compiler.optimization.level>Optimize debugging experience (-Og)</avrgcc.compiler.optimization.level>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
+  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+  <avrgcc.linker.libraries.Libraries>
+    <ListValues>
+      <Value>libm</Value>
+    </ListValues>
+  </avrgcc.linker.libraries.Libraries>
+  <avrgcc.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>../Config</Value>
+      <Value>../examples/include</Value>
+      <Value>../include</Value>
+      <Value>../utils</Value>
+      <Value>../utils/assembler</Value>
+      <Value>../</Value>
+      <Value>%24(PackRepoDir)\Atmel\ATmega_DFP\1.6.364\include\</Value>
+    </ListValues>
+  </avrgcc.assembler.general.IncludePaths>
+  <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+</AvrGcc>
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
@@ -255,12 +255,6 @@
       <SubType>compile</SubType>
     </None>
     <None Include="doxygen\generator\DoxygenLayout.xml">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="doxygen\i2c.dox">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="doxygen\i2c_master.dox">
       <SubType>compile</SubType>
     </None>
     <None Include="doxygen\mainpage.dox">
@@ -319,9 +313,6 @@
     <Compile Include="examples\include\adc_basic_example.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="examples\include\i2c_master_example.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="examples\include\spi_basic_example.h">
       <SubType>compile</SubType>
     </Compile>
@@ -329,9 +320,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="examples\src\adc_basic_example.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="examples\src\i2c_master_example.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="examples\src\spi_basic_example.c">
@@ -349,13 +337,22 @@
     <Compile Include="include\driver_init.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\i2c_master.h">
+    <Compile Include="include\DS1307.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\i2c_simple_master.h">
+    <Compile Include="include\EEPROM.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\i2c_types.h">
+    <Compile Include="include\encoder.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\I2C.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\keyboard.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\lcd.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\module_test.h">
@@ -376,7 +373,10 @@
     <Compile Include="include\system.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\usart_basic.h">
+    <Compile Include="include\timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\uart.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
@@ -385,16 +385,28 @@
     <Compile Include="src\adc_basic.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\atmega_test.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\driver_init.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\i2c_master.c">
+    <Compile Include="src\DS1307.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\i2c_simple_master.c">
+    <Compile Include="src\EEPROM.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\i2c_types.c">
+    <Compile Include="src\encoder.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\IIC.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\keyboard.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\lcd.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\module_test.c">
@@ -406,7 +418,10 @@
     <Compile Include="src\spi_basic.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\usart_basic.c">
+    <Compile Include="src\timer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\uart.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="utils\assembler.h">

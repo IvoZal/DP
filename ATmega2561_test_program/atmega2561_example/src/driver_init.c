@@ -104,7 +104,7 @@ void USART_0_initialization(void)
 	    // <true"> High
 	    false);
 
-	USART_0_init();
+	USART0_init(38400);
 }
 
 /* configure pins and initialize registers */
@@ -131,7 +131,7 @@ void USART_1_initialization(void)
 	    // <true"> High
 	    false);
 
-	USART_1_init();
+	USART1_init(38400);
 }
 
 /**

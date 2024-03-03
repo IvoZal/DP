@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <atmel_start.h>
-#include <usart_basic.h>
 #include <atomic.h>
+#include "uart.h"
 #include "module_test.h"
 
 typedef void (*callback)(char* cmd);
@@ -37,7 +37,7 @@ int main(void)
 		{"TEST REPRO",(callback)speaker_test},
 		{"TEST THERM",(callback)thermistor_test}};
 			
-	char input_string[USART_0_RX_BUFFER_SIZE];
+	char input_string[BUFFER_SIZE];
 	
 	ENABLE_INTERRUPTS();
 
@@ -46,12 +46,12 @@ int main(void)
 
 	while (1) 
 	{
-		if((USART_0_rx_peek_head() == 0xA) && (USART_0_rxbuf_length() > 0))	// if the last char was line feed
+		if((UART0_buf_peek_head() == 0xA) && (UART0_buf_length() > 0))	// if the last char was line feed
 		{
-			for(uint8_t j=0; j < USART_0_RX_BUFFER_SIZE; j++)
+			for(uint8_t j=0; j < BUFFER_SIZE; j++)
 			{
-				if(USART_0_rxbuf_length() > 0)
-					input_string[j] = USART_0_read();
+				if(UART0_buf_length() > 0)
+					input_string[j] = UART0_buf_get();
 				else
 					input_string[j] = 0;
 			}

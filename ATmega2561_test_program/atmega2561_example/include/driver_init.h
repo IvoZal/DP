@@ -47,7 +47,7 @@
 
 #include <spi_basic.h>
 
-#include <usart_basic.h>
+#include "uart.h"
 
 #ifdef __cplusplus
 extern "C" {

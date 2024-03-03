@@ -15,8 +15,8 @@
 #define D4 (1 << PG0)
 #define D5 (1 << PD7)
 #define D6 (1 << PD6)
-#define D7 (1 << PD3)
-#define D8 (1 << PD2)
+//#define D7 (1 << PD3)
+//#define D8 (1 << PD2)
 #define D9 (1 << PD4)
 #define D10 (1 << PD5)
 #define D11 (1 << PG4)
@@ -32,7 +32,7 @@
 
 #define PB_PINS (D13 | D14 | D15 | D16 | D17 | D18 | D19 | D20)
 #define PC_PINS (D0 | D1 | D2)
-#define PD_PINS (D5 | D6 | D7 | D8 | D9 | D10)
+#define PD_PINS (D5 | D6 | D9 | D10)
 #define PG_PINS (D3 | D4 | D11 | D12)
 
 typedef struct pin_connection {
@@ -50,8 +50,8 @@ void atmega_test(void)
 		{0x12,D4,"PC3"},
 		{0x12,D5,"PC4"},
 		{0x09,D6,"PC5"},
-		{0x09,D7,"PB5"},
-		{0x09,D8,"PB4"},
+		//{0x09,D7,"PB5"},
+		//{0x09,D8,"PB4"},
 		{0x09,D9,"PB3"},
 		{0x09,D10,"PB2"},
 		{0x12,D11,"PB1"},
@@ -64,6 +64,8 @@ void atmega_test(void)
 		{0x03,D18,"PD2"},
 		{0x03,D19,"PD1"},
 		{0x03,D20,"PD0"}};
+			
+	char input_string[BUFFER_SIZE];
 	
 	// TODO flash binary
 	
@@ -80,8 +82,26 @@ void atmega_test(void)
 	PORTG_set_port_level(PG_PINS, true);
 	
 	for(uint8_t i=0; i < sizeof(pin_def)/sizeof(PIN_CONNECTION_T); i++)
+	//for(uint8_t i=0; i < 1; i++)
 	{
-		fprintf(&USART_1_stream,"dio_read_%s",pin_def[i].m328p_pin_name);
+		//printf("dio_read_%s\n",pin_def[i].m328p_pin_name);
+		fprintf(&UART_1_stream,"dio_read_PC0\n");
+		uint32_t timestamp = getTime() + 2000000;
+		while(timestamp > getTime())
+		{
+			if((UART1_buf_peek_head() == 0xA) && (UART1_buf_length() > 0))	// if the last char was line feed
+			{
+				for(uint8_t j=0; j < BUFFER_SIZE; j++)
+				{
+					if(UART1_buf_length() > 0)
+						input_string[j] = UART1_buf_get();
+					else
+						input_string[j] = 0;
+				}
+				if(input_string[4] == 0)
+					printf("FAIL: %s\n",pin_def[i].m328p_pin_name);
+			}
+		}
 	}
 	
 	// TODO set pin as outputs
