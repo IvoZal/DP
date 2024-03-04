@@ -45,7 +45,7 @@
 
 #include <adc_basic.h>
 
-#include <spi_basic.h>
+#include "spi.h"
 
 #include "uart.h"
 

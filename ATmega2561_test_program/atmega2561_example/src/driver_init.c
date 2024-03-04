@@ -77,7 +77,8 @@ void SPI_0_initialization(void)
 	    // <true"> High
 	    false);
 
-	SPI_0_init();
+	SPI_init();
+	SPI_disable();
 }
 
 /* configure pins and initialize registers */
@@ -145,7 +146,7 @@ void system_init()
 
 	ADC_0_initialization();
 
-	//SPI_0_initialization();
+	SPI_0_initialization();
 
 	USART_0_initialization();
 

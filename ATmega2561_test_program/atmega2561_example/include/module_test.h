@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include "spi.h"
 #include "uart.h"
 #include "timer.h"
 #include "DS1307.h"
@@ -47,6 +48,8 @@ HW evaluated tests
 *************************************************/
 // start test
 // print PASS/FAIL
+void atmega_flash(void);
+
 void atmega_test(void);
 
 void relay_test(void);
