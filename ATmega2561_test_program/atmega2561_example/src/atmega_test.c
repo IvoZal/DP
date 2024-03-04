@@ -30,6 +30,8 @@
 #define D19 (1 << PB2)
 #define D20 (1 << PB1)
 
+#define RST PC2				// m328p RESET
+
 #define PB_PINS (D13 | D14 | D15 | D16 | D17 | D18 | D19 | D20)
 #define PC_PINS (D1 | D2)
 #define PD_PINS (D5 | D6 | D9 | D10)
@@ -103,6 +105,29 @@ static void dio_output_test(bool tested_value)
 		if(timestamp > 0)
 			printf("FAIL: COMMUNICATION\n");
 	}
+}
+
+void atmega_flash(void)
+{
+	SPI_enable();
+
+	/* Programming enable */
+	uint8_t echo = 0;
+	uint8_t prog_enable[] = {0xAC, 0x53, 0x00, 0x00};
+	while(echo != 0x53)	// Check that the communication is synchronized
+	{
+		PORTC_set_pin_level(RST, true);		// Give RESET a positive pulse
+		delay(1);
+		PORTC_set_pin_level(RST, false);
+		delay(30000U);						// Wait 30ms 
+		
+		SPI_transfer_byte(prog_enable[0]);
+		SPI_transfer_byte(prog_enable[1]);
+		echo = SPI_transfer_byte(prog_enable[2]);
+		SPI_transfer_byte(prog_enable[3]);
+	}
+
+	
 }
 
 void atmega_test(void)
