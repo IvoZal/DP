@@ -16,7 +16,17 @@ class TestModel:
         
     def write(self, message):
         message += '\n'
+        # self.ser.timeout = 0.3
+        # acknowledge = ""        
+        # while(acknowledge.find("ACK") < 0):
+        #     self.ser.write(message.encode('utf-8'))
+        #     acknowledge = self.ser.readline().decode('utf-8')
+        #     print(acknowledge)
         self.ser.write(message.encode('utf-8'))
+        self.ser.timeout = 0.3
+        acknowledge = self.ser.readline().decode('utf-8')
+        print(acknowledge)
+
 
     def eval_test(self, timeout):
         self.ser.timeout = timeout
