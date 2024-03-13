@@ -15,6 +15,8 @@ void SPI_init(void);
 
 uint8_t SPI_transfer_byte(uint8_t data);
 
+uint8_t SPI_transfer_block(uint8_t* data_in);
+
 void SPI_disable(void);
 
 void SPI_enable(void);

@@ -14,7 +14,7 @@
 void SPI_init(void)
 {
     PRR0 &= ~(1 << PRSPI);  // Enable SPI
-	SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0);
+	SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR1) | (1 << SPR0);
 }
 
 uint8_t SPI_transfer_byte(uint8_t data) {
@@ -24,6 +24,14 @@ uint8_t SPI_transfer_byte(uint8_t data) {
 	while(!(SPSR & (1 << SPIF))) {}
 
 	return SPDR; // Return received data
+}
+
+uint8_t SPI_transfer_block(uint8_t* data_in)
+{
+	SPI_transfer_byte(data_in[0]);
+	SPI_transfer_byte(data_in[1]);
+	SPI_transfer_byte(data_in[2]);
+	return SPI_transfer_byte(data_in[3]);
 }
 
 void SPI_disable(void)

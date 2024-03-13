@@ -114,20 +114,29 @@ void atmega_flash(void)
 	/* Programming enable */
 	uint8_t echo = 0;
 	uint8_t prog_enable[] = {0xAC, 0x53, 0x00, 0x00};
-	while(echo != 0x53)	// Check that the communication is synchronized
-	{
+	//while(echo != 0x53)	// Check that the communication is synchronized
+	//{
 		PORTC_set_pin_level(RST, true);		// Give RESET a positive pulse
-		delay(1);
+		delay(100);
 		PORTC_set_pin_level(RST, false);
-		delay(30000U);						// Wait 30ms 
+		delay(50000U);						// Wait 30ms 
 		
 		SPI_transfer_byte(prog_enable[0]);
 		SPI_transfer_byte(prog_enable[1]);
 		echo = SPI_transfer_byte(prog_enable[2]);
 		SPI_transfer_byte(prog_enable[3]);
-	}
-
+	//}
+	uint8_t fuse[] = {0xAC, 0xA0, 0x00, 0xDE};
+	SPI_transfer_block(fuse);
 	
+	uint8_t hfuse[] = {0xAC, 0xA8, 0x00, 0xD9};
+	SPI_transfer_block(hfuse);
+
+	//uint8_t read_fuse_b[] = {0x50, 0x00, 0x00, 0x00};
+	//uint8_t fuse_bits = SPI_transfer_block(read_fuse_b);
+	
+	uint8_t read_h_fuse[] = {0x58, 0x08, 0x00, 0x00};
+	uint8_t ffuse_bits = SPI_transfer_block(read_h_fuse);
 }
 
 void atmega_test(void)
