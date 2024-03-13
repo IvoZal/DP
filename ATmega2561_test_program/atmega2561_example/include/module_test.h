@@ -13,7 +13,8 @@
 #ifndef MODULE_TEST_H_
 #define MODULE_TEST_H_
 
-#define F_CPU 16000000
+#define F_CPU 16000000UL
+
 #define K1_IN 3
 #define K1_NC 5
 #define K1_NO 6
@@ -28,6 +29,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <avr/interrupt.h>
 #include "spi.h"
 #include "uart.h"
 #include "timer.h"
@@ -68,6 +70,9 @@ void lcd_btn_test(void);
 /************************************************
 User interact, user evaluated tests
 *************************************************/
+
+ISR(TIMER5_COMPA_vect);
+
 void lcd_test(void);
 
 void speaker_test(void);

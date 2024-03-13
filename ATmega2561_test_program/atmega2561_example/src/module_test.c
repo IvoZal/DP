@@ -24,6 +24,8 @@ void module_test_init()
 {
 	TimerInit();
 	
+	PRR1 &= ~(1 << PRTIM5);	// timer 5 enable
+	
 	/* Init m328p reset pin */
 	PORTC_set_pin_dir(2U, PORT_DIR_OUT);
 	
@@ -52,6 +54,7 @@ void module_test_init()
 
 void stop_test(void)
 {
+	TCCR5B &= ~((1 << CS50) | (1 << CS51) | (1 << CS52));
 	timestamp = 0;
 	Encoder_Init();
 	
@@ -151,8 +154,8 @@ void rtc_test(void)
 	RTC_set_generator(0x13U);	/* Set SQW for 32 kHz, enable output */
 	
 	/* Configure timer 5 for measuring RTC SQW pulse length */
-	PRR1 &= ~(1 << PRTIM5);
-	TCCR5B |= (1 << CS50);	// no prescaler
+	TCCR5B = (1 << CS50);	// no prescaler
+	TIMSK5 = 0;		// disable interrupts from timer 5
 	TIFR5 = (1 << TOV5) | (1 << OCF5A);
 	TCNT5 = 0;		// sets the counter to zero
 	bool sqw_val = PORTE_get_pin_level(4U);
@@ -164,6 +167,7 @@ void rtc_test(void)
 	while((sqw_val == PORTE_get_pin_level(4U)) && (TCNT5 < 1000U))
 		;
 	uint16_t ticks = TCNT5;
+	TCCR5B &= ~((1 << CS50) | (1 << CS51) | (1 << CS52));
 	
 	if((ticks < 200U) || (ticks > 800U))
 		printf("FAIL: SQW output");
@@ -319,15 +323,22 @@ void lcd_test()
 	lcd_RetHome();
 	fprintf(&display,"LCD test:       ");
 	lcd_SetCursor(0x40);	// move to second row
-	fprintf(&display,"0123456789,°#*/-");
+	fprintf(&display,"0123456789,ï¿½#*/-");
 	
 	delay(4000000U);
 }
 
-void speaker_test()
+ISR(TIMER5_COMPA_vect)
 {
 	PORTE_toggle_pin_level(2U);
-	delay(500U);
+}
+
+void speaker_test()
+{
+	/* Configure timer 5 for 2 kHz ISR generation */
+	TCCR5B = (1 << WGM52) | (1 << CS52) | (1 << CS50);	// prescaler 1024, CTC mode
+	OCR5A = 4U;					// set for 2 kHz - F_CPU / (2*1024*F_SPEAKER) - 1
+	TIMSK5 |= (1 << OCIE5A);	// output compare interrupt enable
 }
 
 void thermistor_test()
