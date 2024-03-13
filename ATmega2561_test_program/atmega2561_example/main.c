@@ -59,6 +59,7 @@ int main(void)
 			{
 				if(strstr(input_string,cmd_lut[i].cmd) != NULL)
 				{
+					printf("ACK\n");
 					break;
 				}
 			}
@@ -66,13 +67,16 @@ int main(void)
 		if(i == max_i)
 		{
 			// printf("ERROR: Unsupported command!\n");
+			printf("ERR\n");
 			i = 0;
 		}
 		else if(i > 0)	// if a command was found in the input string, process it
 		{
 			cmd_lut[i].cb(input_string);
-			if (i <= 4)	// for non repeating tests
+			if ((i <= 4) || (i == 8))	// for non repeating tests
+			{
 				i = 0;
+			}
 		}
 	}
 }

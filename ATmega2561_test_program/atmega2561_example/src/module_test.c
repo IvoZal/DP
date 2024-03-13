@@ -167,7 +167,6 @@ void rtc_test(void)
 	while((sqw_val == PORTE_get_pin_level(4U)) && (TCNT5 < 1000U))
 		;
 	uint16_t ticks = TCNT5;
-	TCCR5B &= ~((1 << CS50) | (1 << CS51) | (1 << CS52));
 	
 	if((ticks < 200U) || (ticks > 800U))
 		printf("FAIL: SQW output");
