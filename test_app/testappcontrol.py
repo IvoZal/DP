@@ -1,5 +1,6 @@
 import tkinter as tk
 import threading
+import time
 
 class Device:
     def __init__(self, name):
@@ -37,23 +38,28 @@ class TestAppController:
                     device.data.pop(0)
             except ValueError:
                 pass
-
+            
     def interact_test(self, device):
-        test_result = [False, ""]
-        while device.serial_read_flag:
-            try:
-                test_result = self.model.eval_test(0)
-            except:
-                pass
-            else:
-                if(test_result[0]):
-                    device.result = "PASS"
-                    device.err_message = ""
-                    self.view.window.save_result(True)
-                elif(test_result[1] != ""):
-                    device.result = "FAIL"
-                    device.err_message = test_result[1]
-                    self.view.window.missing_input(device.err_message)
+        def check_serial_data():
+            nonlocal device
+            while device.serial_read_flag:
+                try:
+                    test_result = self.model.eval_test(0)
+                    if test_result[0]:
+                        device.result = "PASS"
+                        device.err_message = ""
+                        self.view.window.save_result(True)
+                    elif test_result[1] != "":
+                        device.result = "FAIL"
+                        device.err_message = test_result[1]
+                        self.view.window.missing_input(device.err_message)
+                except Exception as e:
+                    print(f"Error in check_serial_data: {e}")
+                time.sleep(0.1)
+
+        # Start the serial reading loop in a separate thread
+        serial_reader_thread = threading.Thread(target=check_serial_data)
+        serial_reader_thread.start()
         
     def start_clicked(self):
         com_port = self.selected_port.get()
@@ -67,11 +73,11 @@ class TestAppController:
             for device in self.test_devices:
                 match device.name:
                     case "ATmega328P Xplained Mini":
+                        device.err_message = ""
                         if(device.run):
                             test_result = self.model.self_test("TEST ATMEGA")
                             if(test_result[0]):
                                 device.result = "PASS"
-                                device.err_message = ""
                             else:
                                 device.result = "FAIL"
                                 device.err_message = test_result[1]
@@ -79,11 +85,11 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Rele modul":
+                        device.err_message = ""
                         if(device.run):
                             test_result = self.model.self_test("TEST RELAY")
                             if(test_result[0]):
                                 device.result = "PASS"
-                                device.err_message = ""
                             else:
                                 device.result = "FAIL"
                                 device.err_message = test_result[1]
@@ -91,11 +97,11 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "RTC a EEPROM modul":
+                        device.err_message = ""
                         if(device.run):
-                            test_result = self.model.self_test("TEST RTC")
+                            test_result = self.model.self_test("TEST RTC", timeout=1)
                             if(test_result[0]):
                                 device.result = "PASS"
-                                device.err_message = ""
                             else:
                                 device.result = "FAIL"
                                 device.err_message = test_result[1]
@@ -103,6 +109,7 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Rotacni enkoder":
+                        device.err_message = ""
                         if(device.run):
                             self.model.write("TEST ENCODER")
 
@@ -117,6 +124,7 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Maticova klavesnice":
+                        device.err_message = ""
                         if(device.run):
                             device.result = "INIT"
                             self.model.write("TEST KEYBRD")
@@ -132,6 +140,7 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Tlacitka na LCD modulu":
+                        device.err_message = ""
                         if(device.run):
                             device.result = "INIT"
                             self.model.write("TEST BTN")
@@ -147,6 +156,7 @@ class TestAppController:
                             device.result = "SKIPPED"
 
                     case "Modul LCD displeje":
+                        device.err_message = ""
                         if(device.run):
                             self.model.write("TEST LCD")
                             self.view.open_window(device)
@@ -181,4 +191,5 @@ class TestAppController:
                     
                 self.view.update_status_label(device)
                 self.model.ser.reset_input_buffer()
+                time.sleep(0.01)
             self.model.close_serial()

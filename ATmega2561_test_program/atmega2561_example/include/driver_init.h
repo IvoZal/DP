@@ -45,13 +45,9 @@
 
 #include <adc_basic.h>
 
-#include <i2c_master.h>
+#include "spi.h"
 
-#include <spi_basic.h>
-
-#include <usart_basic.h>
-
-#include <usart_basic.h>
+#include "uart.h"
 
 #ifdef __cplusplus
 extern "C" {

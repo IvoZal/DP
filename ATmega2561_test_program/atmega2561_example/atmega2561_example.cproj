@@ -116,6 +116,29 @@
     </com_atmel_avrdbg_tool_atmelice>
     <avrtoolinterface>JTAG</avrtoolinterface>
     <avrtoolinterfaceclock>200000</avrtoolinterfaceclock>
+    <custom>
+      <ToolOptions>
+        <InterfaceProperties>
+          <JtagDbgClock>200000</JtagDbgClock>
+        </InterfaceProperties>
+        <InterfaceName>
+        </InterfaceName>
+      </ToolOptions>
+      <ToolType>custom</ToolType>
+      <ToolNumber>
+      </ToolNumber>
+      <ToolName>Custom Programming Tool</ToolName>
+    </custom>
+    <com_atmel_avrdbg_tool_medbg>
+      <ToolOptions>
+        <InterfaceProperties>
+        </InterfaceProperties>
+        <InterfaceName>ISP</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.medbg</ToolType>
+      <ToolNumber>ATML2323052700003442</ToolNumber>
+      <ToolName>mEDBG</ToolName>
+    </com_atmel_avrdbg_tool_medbg>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -196,10 +219,9 @@
             <Value>%24(PackRepoDir)\Atmel\ATmega_DFP\1.6.364\include\</Value>
           </ListValues>
         </avrgcc.compiler.directories.IncludePaths>
-        <avrgcc.compiler.optimization.level>Optimize debugging experience (-Og)</avrgcc.compiler.optimization.level>
         <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
         <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
         <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
         <avrgcc.linker.libraries.Libraries>
           <ListValues>
@@ -257,19 +279,10 @@
     <None Include="doxygen\generator\DoxygenLayout.xml">
       <SubType>compile</SubType>
     </None>
-    <None Include="doxygen\i2c.dox">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="doxygen\i2c_master.dox">
-      <SubType>compile</SubType>
-    </None>
     <None Include="doxygen\mainpage.dox">
       <SubType>compile</SubType>
     </None>
     <None Include="doxygen\spi.dox">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="doxygen\spi_basic.dox">
       <SubType>compile</SubType>
     </None>
     <None Include="doxygen\system.dox">
@@ -319,25 +332,7 @@
     <Compile Include="examples\include\adc_basic_example.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="examples\include\i2c_master_example.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="examples\include\spi_basic_example.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="examples\include\usart_basic_example.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="examples\src\adc_basic_example.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="examples\src\i2c_master_example.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="examples\src\spi_basic_example.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="examples\src\usart_basic_example.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\adc_basic.h">
@@ -349,13 +344,22 @@
     <Compile Include="include\driver_init.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\i2c_master.h">
+    <Compile Include="include\DS1307.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\i2c_simple_master.h">
+    <Compile Include="include\EEPROM.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\i2c_types.h">
+    <Compile Include="include\encoder.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\I2C.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\keyboard.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\lcd.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\module_test.h">
@@ -367,7 +371,7 @@
     <Compile Include="include\protected_io.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\spi_basic.h">
+    <Compile Include="include\spi.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\sysctrl.h">
@@ -376,7 +380,10 @@
     <Compile Include="include\system.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\usart_basic.h">
+    <Compile Include="include\timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\uart.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
@@ -385,16 +392,28 @@
     <Compile Include="src\adc_basic.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\atmega_test.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\driver_init.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\i2c_master.c">
+    <Compile Include="src\DS1307.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\i2c_simple_master.c">
+    <Compile Include="src\EEPROM.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\i2c_types.c">
+    <Compile Include="src\encoder.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\IIC.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\keyboard.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\lcd.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\module_test.c">
@@ -403,10 +422,13 @@
     <Compile Include="src\protected_io.S">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\spi_basic.c">
+    <Compile Include="src\spi.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\usart_basic.c">
+    <Compile Include="src\timer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\uart.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="utils\assembler.h">

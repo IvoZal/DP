@@ -43,12 +43,6 @@ void ADC_0_initialization(void)
 	ADC_0_init();
 }
 
-/* configure pins and initialize registers */
-void I2C_0_initialization(void)
-{
-	I2C_0_init();
-}
-
 /* configure the pins and initialize the registers */
 void SPI_0_initialization(void)
 {
@@ -83,7 +77,8 @@ void SPI_0_initialization(void)
 	    // <true"> High
 	    false);
 
-	SPI_0_init();
+	SPI_init();
+	SPI_disable();
 }
 
 /* configure pins and initialize registers */
@@ -110,7 +105,7 @@ void USART_0_initialization(void)
 	    // <true"> High
 	    false);
 
-	USART_0_init();
+	USART0_init(38400);
 }
 
 /* configure pins and initialize registers */
@@ -137,7 +132,7 @@ void USART_1_initialization(void)
 	    // <true"> High
 	    false);
 
-	USART_1_init();
+	USART1_init(38400);
 }
 
 /**
@@ -150,8 +145,6 @@ void system_init()
 	sysctrl_init();
 
 	ADC_0_initialization();
-
-	I2C_0_initialization();
 
 	SPI_0_initialization();
 
