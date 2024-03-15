@@ -30,7 +30,7 @@ void module_test_init()
 	/* Init m328p reset pin */
 	PORTC_set_pin_dir(2U, PORT_DIR_OUT);
 	
-	atmega_flash();
+	//atmega_flash();
 	
 	/* Init speaker pin */
 	PORTE_set_pin_dir(2U, PORT_DIR_OUT);
