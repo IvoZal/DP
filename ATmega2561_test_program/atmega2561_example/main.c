@@ -73,7 +73,7 @@ int main(void)
 		else if(i > 0)	// if a command was found in the input string, process it
 		{
 			cmd_lut[i].cb(input_string);
-			if ((i <= 4) || (i == 8))	// for non repeating tests
+			if ((i <= 4) || (i == 9))	// for non repeating tests
 			{
 				i = 0;
 			}

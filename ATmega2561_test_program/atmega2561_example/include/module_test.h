@@ -13,7 +13,9 @@
 #ifndef MODULE_TEST_H_
 #define MODULE_TEST_H_
 
+#ifndef F_CPU
 #define F_CPU 16000000UL
+#endif
 
 #define K1_IN 3
 #define K1_NC 5

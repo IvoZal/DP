@@ -16,6 +16,7 @@ static uint32_t timestamp = 0;
 char cBtnMissing[BTN_NUM];
 extern char cButtons[];
 bool lcd_btn_pressed[LCD_BTN_NUM];
+bool test_flag;
 
 /************************************************
 Function declaration
@@ -50,6 +51,9 @@ void module_test_init()
 		lcd_btn_pressed[i] = false;
 		
 	PORTE_set_pin_pull_mode(3, PORT_PULL_UP);
+	
+	test_flag = true;
+	lcd_Init();
 }
 
 void stop_test(void)
@@ -63,6 +67,8 @@ void stop_test(void)
 		
 	for(uint8_t i=0; i < LCD_BTN_NUM; i++)		/* LCD buttons pressed flag initialization */
 		lcd_btn_pressed[i] = false;
+		
+	test_flag = true;
 }
 
 void relay_test(void)
@@ -306,25 +312,29 @@ void lcd_btn_test()
 void lcd_test()
 {
 	// show test text
-	// wait for STOP from serial
-	lcd_Init();
-	
-	/* Turn all pixels on */
-	for(uint8_t i=0; i < 16; i++)
-		lcd_WriteChar(0xFF);
-	lcd_SetCursor(0x40);	// move to second row
-	for(uint8_t i=0; i < 16; i++)
-		lcd_WriteChar(0xFF);
-	
-	delay(2000000U);
-	
-	/* Write test character sequence */
-	lcd_RetHome();
-	fprintf(&display,"LCD test:       ");
-	lcd_SetCursor(0x40);	// move to second row
-	fprintf(&display,"0123456789,�#*/-");
-	
-	delay(4000000U);
+	// wait for STOP from serial	
+	if(((timestamp + 4000000U) < getTime()) && test_flag)
+	{
+		timestamp = getTime();
+		/* Turn all pixels on */
+		lcd_RetHome();
+		for(uint8_t i=0; i < 16; i++)
+			lcd_WriteChar(0xFF);
+		lcd_SetCursor(0x40);	// move to second row
+		for(uint8_t i=0; i < 16; i++)
+			lcd_WriteChar(0xFF);
+		test_flag = false;
+	}
+	else if(((timestamp + 2000000U) < getTime()) && !test_flag)
+	{
+		timestamp = getTime();
+		/* Write test character sequence */
+		lcd_RetHome();
+		fprintf(&display,"LCD test:       ");
+		lcd_SetCursor(0x40);	// move to second row
+		fprintf(&display,"0123456789,�#*/-");
+		test_flag = true;
+	}
 }
 
 ISR(TIMER5_COMPA_vect)
