@@ -65,7 +65,7 @@ PIN_CONNECTION_T pin_def[] =
 	{0x03,D19,"PB4"},
 	{0x03,D20,"PB5"}};
 
-static void dio_output_test(bool tested_value)
+static void dio_input_test(bool tested_value, bool* comm_fail)
 {
 	char input_string[BUFFER_SIZE];
 	
@@ -98,13 +98,46 @@ static void dio_output_test(bool tested_value)
 				if(input_string[4] == tested_char)
 					printf("FAIL: %s\n",pin_def[i].m328p_pin_name);
 				else if(input_string[4] == 0)
-					printf("FAIL: COMMUNICATION\n");
+					*comm_fail = true;
 				timestamp = 0;
 			}
 		}
 		if(timestamp > 0)
-			printf("FAIL: COMMUNICATION\n");
+			*comm_fail = true;
 	}
+}
+
+static void dio_output_test(void)
+{
+	for(uint8_t i=0; i < sizeof(pin_def)/sizeof(PIN_CONNECTION_T); i++)
+	{
+		fprintf(&UART_1_stream,"dio_high_%s\n",pin_def[i].m328p_pin_name);
+	}
+	delay(50000);
+	if((PORTB_get_port_level(0) & PB_PINS) != PB_PINS)
+		printf("FAIL: PORTB ");
+	if((PORTC_get_port_level(0) & PC_PINS) != PC_PINS)
+		printf("FAIL: PORTC ");
+	if((PORTD_get_port_level(0) & PD_PINS) != PD_PINS)
+		printf("FAIL: PORTD ");
+	if((PORTG_get_port_level(0) & PG_PINS) != PG_PINS)
+		printf("FAIL: PORTG ");
+		
+	for(uint8_t i=0; i < sizeof(pin_def)/sizeof(PIN_CONNECTION_T); i++)
+	{
+		fprintf(&UART_1_stream,"dio_low_%s\n",pin_def[i].m328p_pin_name);
+	}
+	delay(50000);
+	if((PORTB_get_port_level(0) & PB_PINS) != 0)
+		printf("FAIL: PORTB ");
+	if((PORTC_get_port_level(0) & PC_PINS) != 0)
+		printf("FAIL: PORTC ");
+	if((PORTD_get_port_level(0) & PD_PINS) != 0)
+		printf("FAIL: PORTD ");
+	if((PORTG_get_port_level(0) & PG_PINS) != 0)
+		printf("FAIL: PORTG ");
+	
+	printf("\n");
 }
 
 void atmega_flash(void)
@@ -143,17 +176,29 @@ void atmega_test(void)
 {			
 	// TODO flash binary
 	
-	// TODO init pins as inputs
-	// Set pin and send read request
+	/* Set atmega2561 pins as output */
 	PORTB_set_port_dir(PB_PINS, PORT_DIR_OUT);
 	PORTC_set_port_dir(PC_PINS, PORT_DIR_OUT);
 	PORTD_set_port_dir(PD_PINS, PORT_DIR_OUT);
 	PORTG_set_port_dir(PG_PINS, PORT_DIR_OUT);
 	
-	dio_output_test(true);
-		
-	dio_output_test(false);
+	bool comm_fail = false;
 	
-	// TODO set pin as outputs
-	// read outputs
+	/* Read both logical values */
+	dio_input_test(true, &comm_fail);
+	dio_input_test(false, &comm_fail);
+	
+	/* Set atmega2561 pins as input */
+	PORTB_set_port_dir(PB_PINS, PORT_DIR_IN);
+	PORTC_set_port_dir(PC_PINS, PORT_DIR_IN);
+	PORTD_set_port_dir(PD_PINS, PORT_DIR_IN);
+	PORTG_set_port_dir(PG_PINS, PORT_DIR_IN);
+	
+	/* Set both logical values */
+	dio_output_test();
+	
+	if(comm_fail)
+	{
+		printf("FAIL: COMMUNICATION\n");
+	}
 }
