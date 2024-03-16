@@ -18,10 +18,12 @@ void adc_init()
 uint16_t adc_read_from_ch(uint8_t channel)
 {
 	DIDR0 |= (1 << channel);		// digital input on pin "u8Channel" disable
+	PORTC &= ~(1 << channel);
+	DDRC &= ~(1 << channel);
 	ADMUX = channel | (0xF0 & ADMUX);		// select "u8Channel"
 	ADCSRA |= (1 << ADSC);			// start ADC
 	while((ADCSRA & (1 << ADIF)) == 0) {}	// wait for result
-	DIDR0 &= !(1 << channel);
+	DIDR0 &= ~(1 << channel);
 	uint16_t conv_val = ADC;
 	printf("ADC%u=%u\n", channel, conv_val);
 	return conv_val;
