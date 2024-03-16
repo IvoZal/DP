@@ -140,6 +140,93 @@ static void dio_output_test(void)
 	printf("\n");
 }
 
+static uint16_t adc_decode(bool* comm_fail)
+{
+	uint32_t timestamp = getTime() + 50000;	// set response timeout
+	while(timestamp > getTime())
+	{
+		if((UART1_buf_peek_head() == 0xA) && (UART1_buf_length() > 0))	// if the last char was line feed
+		{
+			uint16_t adc_val = 0;
+			char buf_ch = 0;
+			while((buf_ch != 0x3D) && (UART1_buf_length() > 0))
+			{
+				buf_ch = UART1_buf_get();
+			}
+			while((buf_ch != 0xA) && (UART1_buf_length() > 0))
+			{
+				uint8_t buf_ch = UART1_buf_get();
+				if(buf_ch > 0x29 && buf_ch < 0x3A)
+				{
+					adc_val = adc_val * 10U;
+					adc_val += buf_ch - 0x30;
+				}
+				else if(buf_ch != 0xA)
+					*comm_fail = true;
+			}
+			timestamp = 0;
+			return adc_val;
+		}
+	}
+	if(timestamp > 0)
+		*comm_fail = true;
+	return 0xFFFF;
+}
+
+static void adc_test(bool* comm_fail)
+{	
+	/* Set atmega2561 pins to Hi-Z */
+	PORTB_set_port_dir(PB_PINS, PORT_DIR_IN);
+	PORTC_set_port_dir(PC_PINS, PORT_DIR_IN);
+	PORTD_set_port_dir(PD_PINS, PORT_DIR_IN);
+	PORTG_set_port_dir(PG_PINS, PORT_DIR_IN);
+	
+	fprintf(&UART_1_stream,"aio_read_ADCF\n");
+	uint16_t adc_val = adc_decode(comm_fail);
+	if(adc_val > 50)
+		printf("FAIL: 0V REF ");
+	
+	fprintf(&UART_1_stream,"aio_read_ADCE\n");
+	adc_val = adc_decode(comm_fail);
+	
+	/* For ADC channel 0 to 5 */
+	for(uint8_t adc_ch=0; adc_ch <= 0x5; adc_ch++)
+	{
+		fprintf(&UART_1_stream,"aio_read_ADC%u\n",adc_ch);
+		adc_val = adc_decode(comm_fail);
+	}
+	
+	/* Set atmega2561 pins as output */
+	PORTB_set_port_dir(PB_PINS, PORT_DIR_OUT);
+	PORTC_set_port_dir(PC_PINS, PORT_DIR_OUT);
+	PORTD_set_port_dir(PD_PINS, PORT_DIR_OUT);
+	PORTG_set_port_dir(PG_PINS, PORT_DIR_OUT);
+	
+	PORTB_set_port_level(PB_PINS, false);
+	PORTC_set_port_level(PC_PINS, false);
+	PORTD_set_port_level(PD_PINS, false);
+	PORTG_set_port_level(PG_PINS, false);
+	
+	/* For ADC channel 0 to 5 */
+	for(uint8_t adc_ch=0; adc_ch <= 0x5; adc_ch++)
+	{
+		fprintf(&UART_1_stream,"aio_read_ADC%u\n",adc_ch);
+		adc_val = adc_decode(comm_fail);
+	}
+	
+	PORTB_set_port_level(PB_PINS, true);
+	PORTC_set_port_level(PC_PINS, true);
+	PORTD_set_port_level(PD_PINS, true);
+	PORTG_set_port_level(PG_PINS, true);
+	
+	/* For ADC channel 0 to 5 */
+	for(uint8_t adc_ch=0; adc_ch <= 0x5; adc_ch++)
+	{
+		fprintf(&UART_1_stream,"aio_read_ADC%u\n",adc_ch);
+		adc_val = adc_decode(comm_fail);
+	}
+}
+
 void atmega_flash(void)
 {
 	SPI_enable();
@@ -186,7 +273,10 @@ void atmega_test(void)
 	
 	/* Read both logical values */
 	dio_input_test(true, &comm_fail);
-	dio_input_test(false, &comm_fail);
+	if(!comm_fail)
+	{
+		dio_input_test(false, &comm_fail);
+	}
 	
 	/* Set atmega2561 pins as input */
 	PORTB_set_port_dir(PB_PINS, PORT_DIR_IN);
@@ -195,7 +285,11 @@ void atmega_test(void)
 	PORTG_set_port_dir(PG_PINS, PORT_DIR_IN);
 	
 	/* Set both logical values */
-	dio_output_test();
+	if(!comm_fail)
+	{
+		dio_output_test();
+		adc_test(&comm_fail);
+	}
 	
 	if(comm_fail)
 	{
