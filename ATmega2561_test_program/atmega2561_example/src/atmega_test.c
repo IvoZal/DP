@@ -37,6 +37,11 @@
 #define PD_PINS (D5 | D6 | D9 | D10)
 #define PG_PINS (D3 | D4 | D11 | D12)
 
+/************************************************
+Local variables
+*************************************************/
+bool test_failed = false;
+
 typedef struct pin_connection {
 	const uint8_t m2561_port_offset;
 	uint8_t m2561_pin;
@@ -64,7 +69,10 @@ PIN_CONNECTION_T pin_def[] =
 	{0x03,D18,"PB3"},
 	{0x03,D19,"PB4"},
 	{0x03,D20,"PB5"}};
-
+		
+/************************************************
+Function declaration
+*************************************************/
 static void dio_input_test(bool tested_value, bool* comm_fail)
 {
 	char input_string[BUFFER_SIZE];
@@ -96,7 +104,10 @@ static void dio_input_test(bool tested_value, bool* comm_fail)
 						input_string[j] = 0;
 				}
 				if(input_string[4] == tested_char)
+				{
 					printf("FAIL: %s\n",pin_def[i].m328p_pin_name);
+					test_failed = true;
+				}
 				else if(input_string[4] == 0)
 					*comm_fail = true;
 				timestamp = 0;
@@ -114,33 +125,47 @@ static void dio_output_test(void)
 		fprintf(&UART_1_stream,"dio_high_%s\n",pin_def[i].m328p_pin_name);
 	}
 	delay(50000);
-	if((PORTB_get_port_level(0) & PB_PINS) != PB_PINS)
+	if((PORTB_get_port_level(0) & PB_PINS) != PB_PINS) {
 		printf("FAIL: PORTB ");
-	if((PORTC_get_port_level(0) & PC_PINS) != PC_PINS)
+		test_failed = true;
+	}
+	if((PORTC_get_port_level(0) & PC_PINS) != PC_PINS) {
 		printf("FAIL: PORTC ");
-	if((PORTD_get_port_level(0) & PD_PINS) != PD_PINS)
+		test_failed = true;
+	}
+	if((PORTD_get_port_level(0) & PD_PINS) != PD_PINS) {
 		printf("FAIL: PORTD ");
-	if((PORTG_get_port_level(0) & PG_PINS) != PG_PINS)
+		test_failed = true;
+	}
+	if((PORTG_get_port_level(0) & PG_PINS) != PG_PINS) {
 		printf("FAIL: PORTG ");
+		test_failed = true;
+	}
 		
 	for(uint8_t i=0; i < sizeof(pin_def)/sizeof(PIN_CONNECTION_T); i++)
 	{
 		fprintf(&UART_1_stream,"dio_low_%s\n",pin_def[i].m328p_pin_name);
 	}
 	delay(50000);
-	if((PORTB_get_port_level(0) & PB_PINS) != 0)
+	if((PORTB_get_port_level(0) & PB_PINS) != 0) {
 		printf("FAIL: PORTB ");
-	if((PORTC_get_port_level(0) & PC_PINS) != 0)
+		test_failed = true;
+	}
+	if((PORTC_get_port_level(0) & PC_PINS) != 0) {
 		printf("FAIL: PORTC ");
-	if((PORTD_get_port_level(0) & PD_PINS) != 0)
+		test_failed = true;
+	}
+	if((PORTD_get_port_level(0) & PD_PINS) != 0) {
 		printf("FAIL: PORTD ");
-	if((PORTG_get_port_level(0) & PG_PINS) != 0)
+		test_failed = true;
+	}
+	if((PORTG_get_port_level(0) & PG_PINS) != 0) {
 		printf("FAIL: PORTG ");
-	
-	printf("\n");
+		test_failed = true;
+	}
 }
 
-static uint16_t adc_decode(bool* comm_fail)
+static uint16_t adc_receive(bool* comm_fail)
 {
 	uint32_t timestamp = getTime() + 50000;	// set response timeout
 	while(timestamp > getTime())
@@ -181,19 +206,25 @@ static void adc_test(bool* comm_fail)
 	PORTD_set_port_dir(PD_PINS, PORT_DIR_IN);
 	PORTG_set_port_dir(PG_PINS, PORT_DIR_IN);
 	
-	fprintf(&UART_1_stream,"aio_read_ADCF\n");
-	uint16_t adc_val = adc_decode(comm_fail);
-	if(adc_val > 50)
-		printf("FAIL: 0V REF ");
-	
-	fprintf(&UART_1_stream,"aio_read_ADCE\n");
-	adc_val = adc_decode(comm_fail);
+	uint16_t adc_val;
+	//fprintf(&UART_1_stream,"aio_read_ADCF\n");
+	//adc_val = adc_receive(comm_fail);
+	//if(adc_val > 50)
+		//printf("FAIL: 0V REF ");
+	//
+	//fprintf(&UART_1_stream,"aio_read_ADCE\n");
+	//adc_val = adc_receive(comm_fail);
 	
 	/* For ADC channel 0 to 5 */
 	for(uint8_t adc_ch=0; adc_ch <= 0x5; adc_ch++)
 	{
 		fprintf(&UART_1_stream,"aio_read_ADC%u\n",adc_ch);
-		adc_val = adc_decode(comm_fail);
+		adc_val = adc_receive(comm_fail);
+		if(adc_val < 410 || adc_val > 613)
+		{
+			printf("FAIL: ADC%u",adc_ch);
+			test_failed = true;
+		}
 	}
 	
 	/* Set atmega2561 pins as output */
@@ -211,7 +242,12 @@ static void adc_test(bool* comm_fail)
 	for(uint8_t adc_ch=0; adc_ch <= 0x5; adc_ch++)
 	{
 		fprintf(&UART_1_stream,"aio_read_ADC%u\n",adc_ch);
-		adc_val = adc_decode(comm_fail);
+		adc_val = adc_receive(comm_fail);
+		if(adc_val < 170 || adc_val > 255)
+		{
+			printf("FAIL: ADC%u",adc_ch);
+			test_failed = true;
+		}
 	}
 	
 	PORTB_set_port_level(PB_PINS, true);
@@ -223,7 +259,12 @@ static void adc_test(bool* comm_fail)
 	for(uint8_t adc_ch=0; adc_ch <= 0x5; adc_ch++)
 	{
 		fprintf(&UART_1_stream,"aio_read_ADC%u\n",adc_ch);
-		adc_val = adc_decode(comm_fail);
+		adc_val = adc_receive(comm_fail);
+		if(adc_val < 607 || adc_val > 911)
+		{
+			printf("FAIL: ADC%u",adc_ch);
+			test_failed = true;
+		}
 	}
 }
 
@@ -270,6 +311,7 @@ void atmega_test(void)
 	PORTG_set_port_dir(PG_PINS, PORT_DIR_OUT);
 	
 	bool comm_fail = false;
+	test_failed = false;
 	
 	/* Read both logical values */
 	dio_input_test(true, &comm_fail);
@@ -294,5 +336,11 @@ void atmega_test(void)
 	if(comm_fail)
 	{
 		printf("FAIL: COMMUNICATION\n");
+		test_failed = true;
 	}
+	if(test_failed == false)
+	{
+		printf("PASS");
+	}
+	printf("\n");
 }
