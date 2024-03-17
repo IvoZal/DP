@@ -29,6 +29,7 @@ int main(void)
 	UART_CMD_T cmd_lut[] =
 		{{"DUMMY_VALUE",},
 		{"STOP",(callback)stop_test},
+		{"TEST INIT",(callback)module_test_init},
 		{"TEST ATMEGA",(callback)atmega_test},
 		{"TEST RELAY",(callback)relay_test},
 		{"TEST RTC",(callback)rtc_test},
@@ -75,7 +76,7 @@ int main(void)
 		else if(i > 0)	// if a command was found in the input string, process it
 		{
 			cmd_lut[i].cb(input_string);
-			if ((i <= 4) || (i == 9))	// for non repeating tests
+			if ((i <= 5) || (i == 10))	// for non repeating tests
 			{
 				i = 0;
 			}
