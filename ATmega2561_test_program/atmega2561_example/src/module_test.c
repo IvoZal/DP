@@ -332,7 +332,7 @@ void lcd_test()
 		lcd_RetHome();
 		fprintf(&display,"LCD test:       ");
 		lcd_SetCursor(0x40);	// move to second row
-		fprintf(&display,"0123456789,�#*/-");
+		fprintf(&display,"0123456789,.#*  ");
 		test_flag = true;
 	}
 }
@@ -352,6 +352,7 @@ void speaker_test()
 
 void thermistor_test()
 {
+	ADC_0_get_conversion(0U);
 	printf("ADC: %u\n",ADC_0_get_conversion(0U));
 	delay(300000U);
 }
