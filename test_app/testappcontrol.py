@@ -67,9 +67,13 @@ class TestAppController:
             self.model.init_serial(com_port, 38400)
             self.view.comm_label.config(text="Vybrán port " + com_port)
         except Exception as e:
-            self.view.comm_label.config(text="Vybraný COM port není přístupný: " + com_port)
+            if(com_port == ""):
+                self.view.comm_label.config(text="COM port nebyl vybrán!")
+            else:
+                self.view.comm_label.config(text="Vybraný COM port není přístupný: " + com_port)
             pass
         else:
+            self.model.write("TEST INIT")
             for device in self.test_devices:
                 match device.name:
                     case "ATmega328P Xplained Mini":
