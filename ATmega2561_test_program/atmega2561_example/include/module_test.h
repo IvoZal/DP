@@ -40,8 +40,10 @@
 #include "keyboard.h"
 #include "lcd.h"
 
+/* Function intializes ATmega2561 peripherals used in testing */
+void test_init(void);
 
-/* Function initializes all peripherals for the module tests */
+/* Function initializes all modules before tests */
 void module_test_init(void);
 
 /* Function resets some test values to default */

@@ -21,7 +21,7 @@ bool test_flag;
 /************************************************
 Function declaration
 *************************************************/
-void module_test_init()
+void test_init()
 {
 	TimerInit();
 	
@@ -30,27 +30,30 @@ void module_test_init()
 	/* Init m328p reset pin */
 	PORTC_set_pin_dir(2U, PORT_DIR_OUT);
 	
-	//atmega_flash();
-	
 	/* Init speaker pin */
 	PORTE_set_pin_dir(2U, PORT_DIR_OUT);
 
 	/* Init thermistor ADC */
 	DIDR0 |= (1 << ADC0D);
+	
+	PORTE_set_pin_dir(4U, PORT_DIR_IN);
+	PORTE_set_pin_pull_mode(4U, PORT_PULL_UP);
+	PORTE_set_pin_pull_mode(3, PORT_PULL_UP);
+}
+
+void module_test_init()
+{
+	//atmega_flash();
 		
 	Encoder_Init();
 	
 	RTC_init();
-	PORTE_set_pin_dir(4U, PORT_DIR_IN);
-	PORTE_set_pin_pull_mode(4U, PORT_PULL_UP);
 	
 	for(uint8_t i=0; i < BTN_NUM; i++)	/* Matrix keyboard pressed flag initialization */
 		cBtnMissing[i] = cButtons[i];
 		
 	for(uint8_t i=0; i < LCD_BTN_NUM; i++)		/* LCD buttons pressed flag initialization */
 		lcd_btn_pressed[i] = false;
-		
-	PORTE_set_pin_pull_mode(3, PORT_PULL_UP);
 	
 	test_flag = true;
 	lcd_Init();
