@@ -169,6 +169,17 @@ class DefaultView:
 
             i += 1
 
+        sel_all_btn = tk.Button(device_frame, text="Vybrat vše", font=("Arial",14), command=lambda d=self.controller.test_devices: self.select_all(d, True))
+        sel_all_btn.grid(row=i, column=0, sticky=tk.W, padx=5, pady=5)
+
+        sel_all_none = tk.Button(device_frame, text="Zrušit výběr všech", font=("Arial",14), command=lambda d=self.controller.test_devices: self.select_all(d, False))
+        sel_all_none.grid(row=i+1, column=0, sticky=tk.W, padx=5, pady=5)
+
+    def select_all(self, devices, sel):
+        for device in devices:
+            device.run = sel
+            device.tk_var.set(sel)
+
     def update_state(self, device):
         device.run = device.tk_var.get()
 
