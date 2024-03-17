@@ -207,13 +207,22 @@ static void adc_test(bool* comm_fail)
 	PORTG_set_port_dir(PG_PINS, PORT_DIR_IN);
 	
 	uint16_t adc_val;
-	//fprintf(&UART_1_stream,"aio_read_ADCF\n");
-	//adc_val = adc_receive(comm_fail);
-	//if(adc_val > 50)
-		//printf("FAIL: 0V REF ");
-	//
-	//fprintf(&UART_1_stream,"aio_read_ADCE\n");
-	//adc_val = adc_receive(comm_fail);
+	fprintf(&UART_1_stream,"aio_read_ADCF\n");
+	adc_receive(comm_fail);
+	fprintf(&UART_1_stream,"aio_read_ADCF\n");
+	adc_val = adc_receive(comm_fail);
+	if(adc_val > 20) {
+		printf("FAIL: ADC 0V REF ");
+		test_failed = true;
+	}
+	
+	fprintf(&UART_1_stream,"aio_read_ADCE\n");
+	adc_val = adc_receive(comm_fail);
+	if(adc_val < 160 || adc_val > 270)
+	{
+		printf("FAIL: ADC VBG REF ");
+		test_failed = true;
+	}
 	
 	/* For ADC channel 0 to 5 */
 	for(uint8_t adc_ch=0; adc_ch <= 0x5; adc_ch++)
