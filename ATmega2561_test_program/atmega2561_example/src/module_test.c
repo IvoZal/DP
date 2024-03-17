@@ -142,7 +142,11 @@ void rtc_test(void)
 	uint8_t data_get[REG_COUNT];
 	
 	RTC_set_registers(data_set);
-	RTC_read_registers(data_get);
+	if(!RTC_read_registers(data_get))
+	{
+		printf("FAIL: I2C");
+		return;
+	}
 	
 	bool reg_fail = false;
 	for(uint8_t i=0; i < REG_COUNT; i++)

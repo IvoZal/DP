@@ -84,7 +84,7 @@ void RTC_set_registers(uint8_t * u8Data)
 	IIC_stop();
 }
 
-void RTC_read_registers(uint8_t * u8Data)
+bool RTC_read_registers(uint8_t * u8Data)
 {
 	IIC_start();
 	IIC_write_address(DEV_ADDRESS,0);
@@ -93,9 +93,15 @@ void RTC_read_registers(uint8_t * u8Data)
 	IIC_write_address(DEV_ADDRESS,1);
 	uint8_t i=0;
 	for(; i < (REG_COUNT - 1); i++)
-		u8Data[i] = IIC_read(true);
+	{
+		uint8_t data = IIC_read(true);
+		if(data == 0xFF)
+			return false;
+		u8Data[i] = data;		
+	}
 	u8Data[i] = IIC_read(false);
 	IIC_stop();
+	return true;
 }
 
 void RTC_set_generator(uint8_t u8Control)
