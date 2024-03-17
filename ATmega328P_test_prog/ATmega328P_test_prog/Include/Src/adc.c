@@ -35,7 +35,7 @@ uint16_t adc_read(char* cmd)
 	if (cmd[12] > 0x29 && cmd[12] < 0x3A)	// numbers 0x0 - 0x9
 		channel = cmd[12] - 0x30;
 	else if (cmd[12] > 0x40 && cmd[12] < 0x47)	// numbers 0xA - 0xF
-		channel = cmd[12] - 0x40 + 0xa;
+		channel = cmd[12] - 0x40 + 0x9;
 	else {
 		printf("ERROR: Invalid ADC channel!\n");
 		return 0xFFFF;
