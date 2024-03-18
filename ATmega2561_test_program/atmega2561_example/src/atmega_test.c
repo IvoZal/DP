@@ -208,19 +208,21 @@ static void adc_test(bool* comm_fail)
 	
 	uint16_t adc_val;
 	fprintf(&UART_1_stream,"aio_read_ADCF\n");
-	adc_receive(comm_fail);
-	fprintf(&UART_1_stream,"aio_read_ADCF\n");
 	adc_val = adc_receive(comm_fail);
 	if(adc_val > 20) {
-		printf("FAIL: ADC 0V REF ");
+		printf("FAIL: ADC 0V REF");
 		test_failed = true;
 	}
 	
 	fprintf(&UART_1_stream,"aio_read_ADCE\n");
+	adc_receive(comm_fail);
+	delay(1000);	// wait for the reference voltage to stabilize
+	// read stabilized voltage reference
+	fprintf(&UART_1_stream,"aio_read_ADCE\n");
 	adc_val = adc_receive(comm_fail);
 	if(adc_val < 160 || adc_val > 270)
 	{
-		printf("FAIL: ADC VBG REF ");
+		printf("FAIL: ADC VBG REF: %u",adc_val);
 		test_failed = true;
 	}
 	
