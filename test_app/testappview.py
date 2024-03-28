@@ -1,4 +1,5 @@
 import tkinter as tk
+from PIL import ImageTk, Image
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
@@ -49,12 +50,13 @@ class UserEvalView(tk.Toplevel):
         self.plot = None
         self.axis = None
         self.canvas = None
+        self.tk_image = None
 
         yes_btn = tk.Button(self, text="Ano", font=("Arial",14), background='green', command=lambda: self.save_result(True))
-        yes_btn.grid(column=0,row=1, sticky=tk.W, padx=5, pady=5)
+        yes_btn.grid(column=0,row=2, sticky=tk.W, padx=5, pady=5)
 
         no_btn = tk.Button(self, text="Ne", font=("Arial",14), background='red', command=lambda: self.save_result(False))
-        no_btn.grid(column=0,row=2, sticky=tk.W, padx=5, pady=5)
+        no_btn.grid(column=0,row=3, sticky=tk.W, padx=5, pady=5)
 
     def reproductor_view(self):
         self.title("Test reproduktoru")
@@ -64,6 +66,13 @@ class UserEvalView(tk.Toplevel):
 
     def display_view(self):
         self.title("Test LCD displeje")
+
+        image_path = "lcd_image.png"
+        image = Image.open(image_path)
+        self.tk_image = ImageTk.PhotoImage(image)
+
+        image_label = tk.Label(self, image=self.tk_image)
+        image_label.grid(column=0, row=1, sticky=tk.W, padx=5, pady=5)
 
         comm_label = tk.Label(self, text="Potvrťe, zda je na displeji správně zobrazený testovací obrazec:", font=("Arial",14))
         comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
@@ -93,7 +102,7 @@ class UserEvalView(tk.Toplevel):
         
         self.canvas = FigureCanvasTkAgg(figure, master=self)
         canvas_widget = self.canvas.get_tk_widget()
-        canvas_widget.grid(column=0, row=3)
+        canvas_widget.grid(column=0, row=4)
 
         self.plot = animation.FuncAnimation(figure, self.update_graph, blit=False, interval=300, cache_frame_data=False)
         self.animation_running = True
