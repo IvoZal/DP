@@ -42,9 +42,7 @@ void test_init()
 }
 
 void module_test_init()
-{
-	//atmega_flash();
-		
+{		
 	Encoder_Init();
 	
 	RTC_init();
