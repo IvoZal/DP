@@ -139,21 +139,31 @@ class DefaultView:
         for port in self.controller.model.com_list:
             port_menu.add_command(label=port, command=lambda port=port: self.controller.selected_port.set(port))
 
+        # Menu for m328p programming
+        prog_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
+        prog_frame.grid(column=0, row=5, padx=10, pady=10, sticky=tk.W)
+
+        prog_btn = tk.Button(prog_frame, text="Nahrát program do ATmega328P Xplained Mini", font=("Arial",14), background='green',command=self.controller.program_m328p)
+        prog_btn.grid(column=0, row=5)
+
+        self.prog_label = tk.Label(prog_frame, text="", font=("Arial",14))
+        self.prog_label.grid(column=0, row=6, sticky=tk.W, padx=5, pady=5)
+
         # Device specific labels
         device_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
-        device_frame.grid(column=0, row=5, padx=10, pady=10, sticky=tk.W)
+        device_frame.grid(column=0, row=7, padx=10, pady=10, sticky=tk.W)
 
         test_label = tk.Label(device_frame, text="Vyberte, ktere moduly testovat:", font=("Arial",14))
-        test_label.grid(column=0,row=5, sticky=tk.W, padx=5, pady=5)
+        test_label.grid(column=0,row=7, sticky=tk.W, padx=5, pady=5)
 
         result_label = tk.Label(device_frame, text="Vysledky testu:", font=("Arial",14))
-        result_label.grid(column=1, row=5, sticky=tk.W, padx=50, pady=5)  
+        result_label.grid(column=1, row=7, sticky=tk.W, padx=50, pady=5)  
 
         result_label = tk.Label(device_frame, text="Chybová hláška:", font=("Arial",14))
-        result_label.grid(column=2, row=5, sticky=tk.W, padx=50, pady=5)        
+        result_label.grid(column=2, row=7, sticky=tk.W, padx=50, pady=5)        
 
         # Checkboxes for each test with status label
-        i = 6
+        i = 8
         for device in self.controller.test_devices:
             check_btn = tk.Checkbutton(device_frame, text=device.name, variable=device.tk_var, font=("Arial", 14),
                                         command=lambda d=device: self.update_state(d))
@@ -182,6 +192,9 @@ class DefaultView:
 
     def update_state(self, device):
         device.run = device.tk_var.get()
+
+    def update_prog_status(self, message):
+        self.prog_label.config(text=message)
 
     def update_status_label(self, device):
         match device.result:
