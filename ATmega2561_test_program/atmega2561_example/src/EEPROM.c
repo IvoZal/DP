@@ -13,7 +13,7 @@ void EEPROM_init()
 	IIC_init(10000);
 }
 
-void EEPROM_read(uint8_t u8Page, uint8_t u8Offset, uint8_t u8N, uint8_t * u8Data)
+bool EEPROM_read(uint8_t u8Page, uint8_t u8Offset, uint8_t u8N, uint8_t * u8Data)
 {
 	IIC_start();
 	IIC_write_address(EEPROM_ADDRESS,0);
@@ -21,13 +21,17 @@ void EEPROM_read(uint8_t u8Page, uint8_t u8Offset, uint8_t u8N, uint8_t * u8Data
 	IIC_write_data((u8Page << 5) | u8Offset);
 	IIC_repeated_start();
 	IIC_write_address(EEPROM_ADDRESS,1);
-	uint8_t u8i = 0;
-	for (; u8i < (u8N-1); u8i++)
+	uint8_t i = 0;
+	for (; i < (u8N-1); i++)
 	{
-		u8Data[u8i] = IIC_read(true);
+		uint8_t data = IIC_read(true);
+		if(data == 0xFF)
+			return false;
+		u8Data[i] = data;
 	}
-	u8Data[u8i] = IIC_read(false);
+	u8Data[i] = IIC_read(false);
 	IIC_stop();
+	return true;
 }
 
 void EEPROM_write(uint8_t u8Page, uint8_t u8Offset, uint8_t u8N, uint8_t * u8Data)
@@ -36,9 +40,9 @@ void EEPROM_write(uint8_t u8Page, uint8_t u8Offset, uint8_t u8N, uint8_t * u8Dat
 	IIC_write_address(EEPROM_ADDRESS,0);
 	IIC_write_data(u8Page >> 3);
 	IIC_write_data((u8Page << 5) | u8Offset);
-	for (uint8_t u8i = 0; u8i < u8N; u8i++)
+	for (uint8_t i = 0; i < u8N; i++)
 	{
-		IIC_write_data(u8Data[u8i]);
+		IIC_write_data(u8Data[i]);
 	}
 	IIC_stop();
 }
