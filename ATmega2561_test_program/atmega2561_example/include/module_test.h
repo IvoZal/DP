@@ -39,6 +39,7 @@
 #include "encoder.h"
 #include "keyboard.h"
 #include "lcd.h"
+#include "EEPROM.h"
 
 /* Function intializes ATmega2561 peripherals used in testing */
 void test_init(void);
@@ -59,6 +60,8 @@ void atmega_test(void);
 void relay_test(void);
 
 void rtc_test(void);
+
+void eeprom_test(void);
 
 /************************************************
 User interact, HW evaluated tests

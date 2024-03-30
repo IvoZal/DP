@@ -184,7 +184,40 @@ void rtc_test(void)
 	else if(!reg_fail)
 		printf("PASS");
 		
+	eeprom_test();
+		
 	printf("\n");
+}
+
+void eeprom_test(void)
+{
+	uint8_t data[32];
+	
+	for(uint8_t page=0; page < 128; page++)
+	{
+		for(uint8_t i=1; i <= 32; i++)
+		{
+			data[i] = (page+1)*i;
+		}
+		EEPROM_write(page, 0, 32, data);
+	}
+	
+	for(uint8_t page=0; page < 128; page++)
+	{
+		if(!EEPROM_read(page, 0, 32, data))
+		{
+			printf("FAIL: I2C");
+			return;
+		}
+		for(uint8_t i=1; i <= 32; i++)
+		{
+			if(data[i] != ((page+1)*i))
+			{
+				printf("FAIL: EEPROM page %u, word %u",page,i);
+				return;
+			}
+		}
+	}
 }
 
 void encoder_test()
