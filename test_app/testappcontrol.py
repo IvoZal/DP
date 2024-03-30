@@ -1,6 +1,7 @@
 import tkinter as tk
 import threading
 import time
+import subprocess
 
 class Device:
     def __init__(self, name):
@@ -60,6 +61,17 @@ class TestAppController:
         # Start the serial reading loop in a separate thread
         serial_reader_thread = threading.Thread(target=check_serial_data)
         serial_reader_thread.start()
+
+    def program_m328p(self):
+        self.view.update_prog_status("Nahrávání...")
+        time.sleep(0.1)
+        binary_path = "m328p_binary/ATmega328P_test_prog.hex"
+        avrdude_cmd = "avrdude/avrdude -p m328p -c xplainedmini_dw -U flash:w:" + binary_path
+        try:
+            subprocess.check_output(avrdude_cmd)
+            self.view.update_prog_status("Program byl úspěšně nahrán.")
+        except subprocess.CalledProcessError as e:
+            self.view.update_prog_status("Nahrávání programu selhalo.")
         
     def start_clicked(self):
         com_port = self.selected_port.get()
