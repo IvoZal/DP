@@ -87,6 +87,8 @@ static void dio_input_test(bool tested_value, bool* comm_fail)
 		tested_char = 0x30;	// "0"
 	else
 		tested_char = 0x31; // "1"
+		
+	fprintf(&UART_1_stream,"dio_high_PD3\n");
 	
 	for(uint8_t i=0; i < sizeof(pin_def)/sizeof(PIN_CONNECTION_T); i++)
 	{
@@ -280,7 +282,7 @@ static void adc_test(bool* comm_fail)
 }
 
 void atmega_test(void)
-{			
+{
 	/* Set atmega2561 pins as output */
 	PORTB_set_port_dir(PB_PINS, PORT_DIR_OUT);
 	PORTC_set_port_dir(PC_PINS, PORT_DIR_OUT);
