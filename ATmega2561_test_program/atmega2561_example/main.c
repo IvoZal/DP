@@ -32,7 +32,7 @@ int main(void)
 		{"TEST INIT",(callback)module_test_init},
 		{"TEST ATMEGA",(callback)atmega_test},
 		{"TEST RELAY",(callback)relay_test},
-		{"TEST RTC",(callback)rtc_test},
+		{"TEST RTC",(callback)rtc_eeprom_test},
 		{"TEST ENCODER",(callback)encoder_test},
 		{"TEST KEYBRD",(callback)keyboard_test},
 		{"TEST BTN",(callback)lcd_btn_test},

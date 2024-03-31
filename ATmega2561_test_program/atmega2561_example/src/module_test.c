@@ -136,6 +136,12 @@ void relay_test(void)
 	PORTF_set_pin_level(K2_IN, true);
 }
 
+void rtc_eeprom_test(void)
+{
+	rtc_test();
+	eeprom_test();
+}
+
 void rtc_test(void)
 {
 	/* Test RTC registers */
@@ -183,9 +189,7 @@ void rtc_test(void)
 		printf("FAIL: SQW output");
 	else if(!reg_fail)
 		printf("PASS");
-		
-	eeprom_test();
-		
+			
 	printf("\n");
 }
 

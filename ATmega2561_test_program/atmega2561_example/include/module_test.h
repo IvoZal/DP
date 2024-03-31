@@ -59,6 +59,8 @@ void atmega_test(void);
 
 void relay_test(void);
 
+void rtc_eeprom_test(void);
+
 void rtc_test(void);
 
 void eeprom_test(void);
