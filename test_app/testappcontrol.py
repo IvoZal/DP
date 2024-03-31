@@ -19,6 +19,8 @@ class TestAppController:
         self.model = model
         self.view = view
         self.selected_port = tk.StringVar(value="")
+        self.log_flag = tk.IntVar()
+        self.log_filename = ""
         self.test_devices = [Device("ATmega328P Xplained Mini"),
                              Device("Rele modul"),
                              Device("RTC a EEPROM modul"),
@@ -209,3 +211,4 @@ class TestAppController:
                 self.model.ser.reset_input_buffer()
                 time.sleep(0.01)
             self.model.close_serial()
+            self.view.update_prog_status("")
