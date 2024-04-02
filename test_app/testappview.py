@@ -74,7 +74,7 @@ class UserEvalView(tk.Toplevel):
         image_label = tk.Label(self, image=self.tk_image)
         image_label.grid(column=0, row=1, sticky=tk.W, padx=5, pady=5)
 
-        comm_label = tk.Label(self, text="Potvrťe, zda je na displeji správně zobrazený testovací obrazec:", font=("Arial",14))
+        comm_label = tk.Label(self, text="Potvrťe, zda na displeji svítí všechny pixely a správně se zobrazuje následující obrazec:", font=("Arial",14))
         comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
     def update_graph(self, frame):
