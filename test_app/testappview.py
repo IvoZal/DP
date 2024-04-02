@@ -162,6 +162,9 @@ class DefaultView:
         self.log_entry.grid(column=1 ,row=4, sticky=tk.W, padx=50, pady=5)
         self.log_entry.bind("<Return>", self.submit)
 
+        self.err_label = tk.Label(settings_frame, text="", font=("Arial",14))
+        self.err_label.grid(column=1 ,row=5, sticky=tk.W, padx=50, pady=5)
+
         # Menu for m328p programming
         prog_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
         prog_frame.grid(column=0, row=5, padx=10, pady=10, sticky=tk.W)
@@ -217,7 +220,10 @@ class DefaultView:
             self.log_switch.config(text="Logování vypnuto")
 
     def submit(self, event=None):
-        self.controller.log_filename = self.log_entry.get()
+        try:
+            self.controller.logfile = open(f"{self.log_entry.get()}.csv", 'w', newline='')
+        except Exception as e:
+            self.err_label.config(text="Chyba při vytváření souboru!")
 
     def select_all(self, devices, sel):
         for device in devices:
