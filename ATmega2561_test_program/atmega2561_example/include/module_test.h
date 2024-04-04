@@ -61,9 +61,9 @@ void relay_test(void);
 
 void rtc_eeprom_test(void);
 
-void rtc_test(void);
+bool rtc_test(void);
 
-void eeprom_test(void);
+bool eeprom_test(void);
 
 /************************************************
 User interact, HW evaluated tests

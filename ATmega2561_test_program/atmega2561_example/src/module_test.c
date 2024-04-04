@@ -138,11 +138,16 @@ void relay_test(void)
 
 void rtc_eeprom_test(void)
 {
-	rtc_test();
-	eeprom_test();
+	bool rtc_pass = rtc_test();
+	bool eeprom_pass = eeprom_test();
+	
+	if(rtc_pass && eeprom_pass)
+		printf("PASS");
+	
+	printf("\n");
 }
 
-void rtc_test(void)
+bool rtc_test(void)
 {
 	/* Test RTC registers */
 	uint8_t data_set[REG_COUNT] = {0xD9, 0x59, 0x23, 0x7, 0x31, 0x12, 0x99};
@@ -152,7 +157,7 @@ void rtc_test(void)
 	if(!RTC_read_registers(data_get))
 	{
 		printf("FAIL: I2C");
-		return;
+		return false;
 	}
 	
 	bool reg_fail = false;
@@ -188,40 +193,39 @@ void rtc_test(void)
 	if((ticks < 200U) || (ticks > 800U))
 		printf("FAIL: SQW output");
 	else if(!reg_fail)
-		printf("PASS");
-			
-	printf("\n");
+		return true;
+	
+	return false;
 }
 
-void eeprom_test(void)
+bool eeprom_test(void)
 {
 	uint8_t data[32];
 	
 	for(uint8_t page=0; page < 128; page++)
 	{
-		for(uint8_t i=1; i <= 32; i++)
+		for(uint8_t i=0; i < 32; i++)
 		{
-			data[i] = (page+1)*i;
+			data[i] = (32*page + 1) + i;
 		}
 		EEPROM_write(page, 0, 32, data);
 	}
 	
 	for(uint8_t page=0; page < 128; page++)
 	{
-		if(!EEPROM_read(page, 0, 32, data))
+		EEPROM_read(page, 0, 32, data);
+		for(uint8_t i=0; i < 32; i++)
 		{
-			printf("FAIL: I2C");
-			return;
-		}
-		for(uint8_t i=1; i <= 32; i++)
-		{
-			if(data[i] != ((page+1)*i))
+			uint8_t compare_val = ((32*page + 1) + i);
+			if(data[i] != compare_val)
 			{
 				printf("FAIL: EEPROM page %u, word %u",page,i);
-				return;
+				return false;
 			}
 		}
 	}
+	
+	return true;
 }
 
 void encoder_test()
