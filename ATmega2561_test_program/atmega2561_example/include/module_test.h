@@ -63,7 +63,7 @@ void rtc_eeprom_test(void);
 
 bool rtc_test(void);
 
-bool eeprom_test(void);
+bool eeprom_test(uint8_t compare_value);
 
 /************************************************
 User interact, HW evaluated tests

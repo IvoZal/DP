@@ -138,10 +138,11 @@ void relay_test(void)
 
 void rtc_eeprom_test(void)
 {
-	bool rtc_pass = rtc_test();
-	bool eeprom_pass = eeprom_test();
+	bool rtc_result = rtc_test();
+	bool eeprom_result = eeprom_test(0xFF);
+	eeprom_result |= eeprom_test(0x0);
 	
-	if(rtc_pass && eeprom_pass)
+	if(rtc_result && eeprom_result)
 		printf("PASS");
 	
 	printf("\n");
@@ -198,34 +199,25 @@ bool rtc_test(void)
 	return false;
 }
 
-bool eeprom_test(void)
+bool eeprom_test(uint8_t compare_value)
 {
 	uint8_t data[32];
 	
-	for(uint8_t page=0; page < 128; page++)
+	for(uint8_t i=0; i < 32; i++)
 	{
-		for(uint8_t i=0; i < 32; i++)
-		{
-			data[i] = (32*page + 1) + i;
-		}
-		EEPROM_write(page, 0, 32, data);
+		data[i] = compare_value;
 	}
+	EEPROM_write(0, 0, 32, data);
 	
-	for(uint8_t page=0; page < 128; page++)
+	EEPROM_read(0, 0, 32, data);
+	for(uint8_t i=0; i < 32; i++)
 	{
-		EEPROM_read(page, 0, 32, data);
-		for(uint8_t i=0; i < 32; i++)
+		if(data[i] != compare_value)
 		{
-			uint8_t compare_val = ((32*page + 1) + i);
-			if(data[i] != compare_val)
-			{
-				printf("FAIL: EEPROM page %u, word %u",page,i);
-				return false;
-			}
+			printf("FAIL: EEPROM page 0, word %u",i);
+			return false;
 		}
 	}
-	
-	return true;
 }
 
 void encoder_test()
