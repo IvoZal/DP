@@ -1,4 +1,5 @@
 import tkinter as tk
+import csv
 from PIL import ImageTk, Image
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
@@ -74,7 +75,7 @@ class UserEvalView(tk.Toplevel):
         image_label = tk.Label(self, image=self.tk_image)
         image_label.grid(column=0, row=1, sticky=tk.W, padx=5, pady=5)
 
-        comm_label = tk.Label(self, text="Potvrťe, zda je na displeji správně zobrazený testovací obrazec:", font=("Arial",14))
+        comm_label = tk.Label(self, text="Potvrťe, zda na displeji svítí všechny pixely a správně se zobrazuje následující obrazec:", font=("Arial",14))
         comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
     def update_graph(self, frame):
@@ -148,6 +149,23 @@ class DefaultView:
         for port in self.controller.model.com_list:
             port_menu.add_command(label=port, command=lambda port=port: self.controller.selected_port.set(port))
 
+        # Test report log settings
+        log_label = tk.Label(settings_frame, text="Nastavení ukládání protokolů o zkoušce:", font=("Arial",14))
+        log_label.grid(column=1, row=1, sticky=tk.W, padx=50, pady=5)
+
+        self.log_switch = tk.Checkbutton(settings_frame, text="Logování vypnuto", variable=self.controller.log_flag, font=("Arial",14), command=self.toggle, onvalue=1, offvalue=0)
+        self.log_switch.grid(column=1, row=2, sticky=tk.W, padx=50, pady=5)
+
+        log_name_label = tk.Label(settings_frame, text="Zadejte název souboru:", font=("Arial",14))
+        log_name_label.grid(column=1 ,row=3, sticky=tk.W, padx=50, pady=5)
+
+        self.log_entry = tk.Entry(settings_frame, font=("Arial",14))
+        self.log_entry.grid(column=1 ,row=4, sticky=tk.W, padx=50, pady=5)
+        self.log_entry.bind("<Return>", self.submit)
+
+        self.err_label = tk.Label(settings_frame, text="", font=("Arial",14))
+        self.err_label.grid(column=1 ,row=5, sticky=tk.W, padx=50, pady=5)
+
         # Menu for m328p programming
         prog_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
         prog_frame.grid(column=0, row=5, padx=10, pady=10, sticky=tk.W)
@@ -190,9 +208,28 @@ class DefaultView:
 
         sel_all_btn = tk.Button(device_frame, text="Vybrat vše", font=("Arial",14), command=lambda d=self.controller.test_devices: self.select_all(d, True))
         sel_all_btn.grid(row=i, column=0, sticky=tk.W, padx=5, pady=5)
+        i += 1
 
         sel_all_none = tk.Button(device_frame, text="Zrušit výběr všech", font=("Arial",14), command=lambda d=self.controller.test_devices: self.select_all(d, False))
-        sel_all_none.grid(row=i+1, column=0, sticky=tk.W, padx=5, pady=5)
+        sel_all_none.grid(row=i, column=0, sticky=tk.W, padx=5, pady=5)
+        i += 1
+
+    def toggle(self):
+        if(self.controller.log_flag.get() == 1):
+            self.log_switch.config(text="Logování zapnuto")
+        else:
+            self.log_switch.config(text="Logování vypnuto")
+
+    def submit(self, event=None):
+        try:
+            self.controller.log_filename = f"{self.log_entry.get()}.csv"
+            with open(self.controller.log_filename, 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(["Kit number", "ATmega328P Xplained Mini", "Rele modul", 
+                                 "RTC a EEPROM modul", "Rotacni enkoder", "Maticova klavesnice", 
+                                 "Tlacitka na LCD modulu", "Modul LCD displeje", "Reproduktor", "Modul s termistorem"])
+        except Exception as e:
+            self.err_label.config(text="Chyba při vytváření souboru!")
 
     def select_all(self, devices, sel):
         for device in devices:

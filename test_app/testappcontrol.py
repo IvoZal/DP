@@ -2,6 +2,7 @@ import tkinter as tk
 import threading
 import time
 import subprocess
+import csv
 
 class Device:
     def __init__(self, name):
@@ -19,6 +20,8 @@ class TestAppController:
         self.model = model
         self.view = view
         self.selected_port = tk.StringVar(value="")
+        self.log_flag = tk.IntVar()
+        self.log_filename = ""
         self.test_devices = [Device("ATmega328P Xplained Mini"),
                              Device("Rele modul"),
                              Device("RTC a EEPROM modul"),
@@ -209,3 +212,16 @@ class TestAppController:
                 self.model.ser.reset_input_buffer()
                 time.sleep(0.01)
             self.model.close_serial()
+            self.view.update_prog_status("")
+
+            if((self.log_flag.get() == 1) & (self.log_filename != "")):
+                try:
+                    csvfile = open(self.log_filename, 'a', newline='')
+                    writer = csv.writer(csvfile)
+                    report_list = ["#1"]
+                    for device in self.test_devices:
+                        report_list.append(device.result)
+                    writer.writerow(report_list)
+                    csvfile.close()
+                except Exception as e:
+                    self.view.err_label.config(text="Chyba při zápisu do souboru!")

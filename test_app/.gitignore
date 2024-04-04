@@ -1,5 +1,6 @@
 # Ignore pycache directory
 __pycache__/
+build/
 build/main/
 dist/
 *.spec
