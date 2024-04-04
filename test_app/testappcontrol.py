@@ -1,6 +1,8 @@
 import tkinter as tk
 import threading
 import time
+import subprocess
+import csv
 
 class Device:
     def __init__(self, name):
@@ -18,6 +20,8 @@ class TestAppController:
         self.model = model
         self.view = view
         self.selected_port = tk.StringVar(value="")
+        self.log_flag = tk.IntVar()
+        self.log_filename = ""
         self.test_devices = [Device("ATmega328P Xplained Mini"),
                              Device("Rele modul"),
                              Device("RTC a EEPROM modul"),
@@ -60,6 +64,17 @@ class TestAppController:
         # Start the serial reading loop in a separate thread
         serial_reader_thread = threading.Thread(target=check_serial_data)
         serial_reader_thread.start()
+
+    def program_m328p(self):
+        self.view.update_prog_status("Nahrávání...")
+        time.sleep(0.1)
+        binary_path = "m328p_binary/ATmega328P_test_prog.hex"
+        avrdude_cmd = "avrdude/avrdude -p m328p -c xplainedmini_dw -U flash:w:" + binary_path
+        try:
+            subprocess.check_output(avrdude_cmd)
+            self.view.update_prog_status("Program byl úspěšně nahrán.")
+        except subprocess.CalledProcessError as e:
+            self.view.update_prog_status("Nahrávání programu selhalo.")
         
     def start_clicked(self):
         com_port = self.selected_port.get()
@@ -197,3 +212,16 @@ class TestAppController:
                 self.model.ser.reset_input_buffer()
                 time.sleep(0.01)
             self.model.close_serial()
+            self.view.update_prog_status("")
+
+            if((self.log_flag.get() == 1) & (self.log_filename != "")):
+                try:
+                    csvfile = open(self.log_filename, 'a', newline='')
+                    writer = csv.writer(csvfile)
+                    report_list = ["#1"]
+                    for device in self.test_devices:
+                        report_list.append(device.result)
+                    writer.writerow(report_list)
+                    csvfile.close()
+                except Exception as e:
+                    self.view.err_label.config(text="Chyba při zápisu do souboru!")

@@ -1,4 +1,6 @@
 import tkinter as tk
+import csv
+from PIL import ImageTk, Image
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
@@ -49,12 +51,13 @@ class UserEvalView(tk.Toplevel):
         self.plot = None
         self.axis = None
         self.canvas = None
+        self.tk_image = None
 
         yes_btn = tk.Button(self, text="Ano", font=("Arial",14), background='green', command=lambda: self.save_result(True))
-        yes_btn.grid(column=0,row=1, sticky=tk.W, padx=5, pady=5)
+        yes_btn.grid(column=0,row=2, sticky=tk.W, padx=5, pady=5)
 
         no_btn = tk.Button(self, text="Ne", font=("Arial",14), background='red', command=lambda: self.save_result(False))
-        no_btn.grid(column=0,row=2, sticky=tk.W, padx=5, pady=5)
+        no_btn.grid(column=0,row=3, sticky=tk.W, padx=5, pady=5)
 
     def reproductor_view(self):
         self.title("Test reproduktoru")
@@ -65,7 +68,14 @@ class UserEvalView(tk.Toplevel):
     def display_view(self):
         self.title("Test LCD displeje")
 
-        comm_label = tk.Label(self, text="Potvrťe, zda je na displeji správně zobrazený testovací obrazec:", font=("Arial",14))
+        image_path = "lcd_image.png"
+        image = Image.open(image_path)
+        self.tk_image = ImageTk.PhotoImage(image)
+
+        image_label = tk.Label(self, image=self.tk_image)
+        image_label.grid(column=0, row=1, sticky=tk.W, padx=5, pady=5)
+
+        comm_label = tk.Label(self, text="Potvrťe, zda na displeji svítí všechny pixely a správně se zobrazuje následující obrazec:", font=("Arial",14))
         comm_label.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
     def update_graph(self, frame):
@@ -93,7 +103,7 @@ class UserEvalView(tk.Toplevel):
         
         self.canvas = FigureCanvasTkAgg(figure, master=self)
         canvas_widget = self.canvas.get_tk_widget()
-        canvas_widget.grid(column=0, row=3)
+        canvas_widget.grid(column=0, row=4)
 
         self.plot = animation.FuncAnimation(figure, self.update_graph, blit=False, interval=300, cache_frame_data=False)
         self.animation_running = True
@@ -139,21 +149,48 @@ class DefaultView:
         for port in self.controller.model.com_list:
             port_menu.add_command(label=port, command=lambda port=port: self.controller.selected_port.set(port))
 
+        # Test report log settings
+        log_label = tk.Label(settings_frame, text="Nastavení ukládání protokolů o zkoušce:", font=("Arial",14))
+        log_label.grid(column=1, row=1, sticky=tk.W, padx=50, pady=5)
+
+        self.log_switch = tk.Checkbutton(settings_frame, text="Logování vypnuto", variable=self.controller.log_flag, font=("Arial",14), command=self.toggle, onvalue=1, offvalue=0)
+        self.log_switch.grid(column=1, row=2, sticky=tk.W, padx=50, pady=5)
+
+        log_name_label = tk.Label(settings_frame, text="Zadejte název souboru:", font=("Arial",14))
+        log_name_label.grid(column=1 ,row=3, sticky=tk.W, padx=50, pady=5)
+
+        self.log_entry = tk.Entry(settings_frame, font=("Arial",14))
+        self.log_entry.grid(column=1 ,row=4, sticky=tk.W, padx=50, pady=5)
+        self.log_entry.bind("<Return>", self.submit)
+
+        self.err_label = tk.Label(settings_frame, text="", font=("Arial",14))
+        self.err_label.grid(column=1 ,row=5, sticky=tk.W, padx=50, pady=5)
+
+        # Menu for m328p programming
+        prog_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
+        prog_frame.grid(column=0, row=5, padx=10, pady=10, sticky=tk.W)
+
+        prog_btn = tk.Button(prog_frame, text="Nahrát program do ATmega328P Xplained Mini", font=("Arial",14), background='green',command=self.controller.program_m328p)
+        prog_btn.grid(column=0, row=5)
+
+        self.prog_label = tk.Label(prog_frame, text="", font=("Arial",14))
+        self.prog_label.grid(column=0, row=6, sticky=tk.W, padx=5, pady=5)
+
         # Device specific labels
         device_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
-        device_frame.grid(column=0, row=5, padx=10, pady=10, sticky=tk.W)
+        device_frame.grid(column=0, row=7, padx=10, pady=10, sticky=tk.W)
 
         test_label = tk.Label(device_frame, text="Vyberte, ktere moduly testovat:", font=("Arial",14))
-        test_label.grid(column=0,row=5, sticky=tk.W, padx=5, pady=5)
+        test_label.grid(column=0,row=7, sticky=tk.W, padx=5, pady=5)
 
         result_label = tk.Label(device_frame, text="Vysledky testu:", font=("Arial",14))
-        result_label.grid(column=1, row=5, sticky=tk.W, padx=50, pady=5)  
+        result_label.grid(column=1, row=7, sticky=tk.W, padx=50, pady=5)  
 
         result_label = tk.Label(device_frame, text="Chybová hláška:", font=("Arial",14))
-        result_label.grid(column=2, row=5, sticky=tk.W, padx=50, pady=5)        
+        result_label.grid(column=2, row=7, sticky=tk.W, padx=50, pady=5)        
 
         # Checkboxes for each test with status label
-        i = 6
+        i = 8
         for device in self.controller.test_devices:
             check_btn = tk.Checkbutton(device_frame, text=device.name, variable=device.tk_var, font=("Arial", 14),
                                         command=lambda d=device: self.update_state(d))
@@ -171,9 +208,28 @@ class DefaultView:
 
         sel_all_btn = tk.Button(device_frame, text="Vybrat vše", font=("Arial",14), command=lambda d=self.controller.test_devices: self.select_all(d, True))
         sel_all_btn.grid(row=i, column=0, sticky=tk.W, padx=5, pady=5)
+        i += 1
 
         sel_all_none = tk.Button(device_frame, text="Zrušit výběr všech", font=("Arial",14), command=lambda d=self.controller.test_devices: self.select_all(d, False))
-        sel_all_none.grid(row=i+1, column=0, sticky=tk.W, padx=5, pady=5)
+        sel_all_none.grid(row=i, column=0, sticky=tk.W, padx=5, pady=5)
+        i += 1
+
+    def toggle(self):
+        if(self.controller.log_flag.get() == 1):
+            self.log_switch.config(text="Logování zapnuto")
+        else:
+            self.log_switch.config(text="Logování vypnuto")
+
+    def submit(self, event=None):
+        try:
+            self.controller.log_filename = f"{self.log_entry.get()}.csv"
+            with open(self.controller.log_filename, 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(["Kit number", "ATmega328P Xplained Mini", "Rele modul", 
+                                 "RTC a EEPROM modul", "Rotacni enkoder", "Maticova klavesnice", 
+                                 "Tlacitka na LCD modulu", "Modul LCD displeje", "Reproduktor", "Modul s termistorem"])
+        except Exception as e:
+            self.err_label.config(text="Chyba při vytváření souboru!")
 
     def select_all(self, devices, sel):
         for device in devices:
@@ -182,6 +238,9 @@ class DefaultView:
 
     def update_state(self, device):
         device.run = device.tk_var.get()
+
+    def update_prog_status(self, message):
+        self.prog_label.config(text=message)
 
     def update_status_label(self, device):
         match device.result:
