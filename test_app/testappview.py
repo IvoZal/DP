@@ -59,7 +59,7 @@ class UserEvalView(tk.Toplevel):
         no_btn = tk.Button(self, text="Ne", font=("Arial",14), background='red', command=lambda: self.save_result(False))
         no_btn.grid(column=0,row=3, sticky=tk.W, padx=5, pady=5)
 
-    def reproductor_view(self):
+    def speaker_view(self):
         self.title("Test reproduktoru")
 
         comm_label = tk.Label(self, text="Potvrťe, zda slyšíte tón z reproduktoru:", font=("Arial",14))
@@ -228,9 +228,10 @@ class DefaultView:
             self.controller.log_filename = f"{self.log_entry.get()}.csv"
             with open(self.controller.log_filename, 'w', newline='') as csvfile:
                 writer = csv.writer(csvfile)
-                writer.writerow(["Kit number", "ATmega328P Xplained Mini", "Rele modul", 
-                                 "RTC a EEPROM modul", "Rotacni enkoder", "Maticova klavesnice", 
-                                 "Tlacitka na LCD modulu", "Modul LCD displeje", "Reproduktor", "Modul s termistorem"])
+                header = ["Kit number"]
+                for device in self.controller.test_devices:
+                    header.append(device.name)
+                writer.writerow(header)
         except Exception as e:
             self.err_label.config(text="Chyba při vytváření souboru!")
         else:
@@ -283,7 +284,7 @@ class DefaultView:
 
             case "Reproduktor":
                 self.window = UserEvalView(self.root, device)
-                self.window.reproductor_view()
+                self.window.speaker_view()
                 self.root.wait_window(self.window)
 
             case "Modul LCD displeje":
