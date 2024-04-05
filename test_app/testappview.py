@@ -228,9 +228,10 @@ class DefaultView:
             self.controller.log_filename = f"{self.log_entry.get()}.csv"
             with open(self.controller.log_filename, 'w', newline='') as csvfile:
                 writer = csv.writer(csvfile)
-                writer.writerow(["Kit number", "ATmega328P Xplained Mini", "Rele modul", 
-                                 "RTC a EEPROM modul", "Rotacni enkoder", "Maticova klavesnice", 
-                                 "Tlacitka na LCD modulu", "Modul LCD displeje", "Reproduktor", "Modul s termistorem"])
+                header = ["Kit number"]
+                for device in self.controller.test_devices:
+                    header.append(device.name)
+                writer.writerow(header)
         except Exception as e:
             self.err_label.config(text="Chyba při vytváření souboru!")
         else:
