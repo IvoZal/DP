@@ -8,7 +8,7 @@
 #include "keyboard.h"
 
 // Definition of button order
-char cButtons[] = {'1','2','3','A','4','5','6','B','7','8','9','C','*','0','#','D'};
+const char cButtons[] = {'1','2','3','A','4','5','6','B','7','8','9','C','*','0','#','D'};
 
 uint8_t KeyboardReadIdx()
 {
@@ -27,18 +27,18 @@ uint8_t KeyboardReadIdx()
 				break;
 				
 			case 0x1:
-				DDRA = (DDRB & ~ALL_ROWS) | Row2;
-				PORTA = (PORTB | ALL_ROWS) & ~Row2;
+				DDRA = (DDRA & ~ALL_ROWS) | Row2;
+				PORTA = (PORTA | ALL_ROWS) & ~Row2;
 				break;
 				
 			case 0x2:
-				DDRA = (DDRB & ~ALL_ROWS) | Row3;
-				PORTA = (PORTB | ALL_ROWS) & ~Row3;
+				DDRA = (DDRA & ~ALL_ROWS) | Row3;
+				PORTA = (PORTA | ALL_ROWS) & ~Row3;
 				break;
 				
 			case 0x3:
-				DDRA = (DDRB & ~ALL_ROWS) | Row4;
-				PORTA = (PORTB | ALL_ROWS) & ~Row4;
+				DDRA = (DDRA & ~ALL_ROWS) | Row4;
+				PORTA = (PORTA | ALL_ROWS) & ~Row4;
 				break;
 		}
 		switch (~PINA & ALL_COL)			// Read if any column is pressed down

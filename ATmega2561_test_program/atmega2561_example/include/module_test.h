@@ -39,9 +39,12 @@
 #include "encoder.h"
 #include "keyboard.h"
 #include "lcd.h"
+#include "EEPROM.h"
 
+/* Function intializes ATmega2561 peripherals used in testing */
+void test_init(void);
 
-/* Function initializes all peripherals for the module tests */
+/* Function initializes all modules before tests */
 void module_test_init(void);
 
 /* Function resets some test values to default */
@@ -52,13 +55,15 @@ HW evaluated tests
 *************************************************/
 // start test
 // print PASS/FAIL
-void atmega_flash(void);
-
 void atmega_test(void);
 
 void relay_test(void);
 
-void rtc_test(void);
+void rtc_eeprom_test(void);
+
+bool rtc_test(void);
+
+bool eeprom_test(uint8_t compare_value);
 
 /************************************************
 User interact, HW evaluated tests

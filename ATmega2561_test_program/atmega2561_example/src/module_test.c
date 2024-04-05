@@ -21,7 +21,7 @@ bool test_flag;
 /************************************************
 Function declaration
 *************************************************/
-void module_test_init()
+void test_init()
 {
 	TimerInit();
 	
@@ -30,27 +30,28 @@ void module_test_init()
 	/* Init m328p reset pin */
 	PORTC_set_pin_dir(2U, PORT_DIR_OUT);
 	
-	//atmega_flash();
-	
 	/* Init speaker pin */
 	PORTE_set_pin_dir(2U, PORT_DIR_OUT);
 
 	/* Init thermistor ADC */
 	DIDR0 |= (1 << ADC0D);
-		
+	
+	PORTE_set_pin_dir(4U, PORT_DIR_IN);
+	PORTE_set_pin_pull_mode(4U, PORT_PULL_UP);
+	PORTE_set_pin_pull_mode(3, PORT_PULL_UP);
+}
+
+void module_test_init()
+{		
 	Encoder_Init();
 	
 	RTC_init();
-	PORTE_set_pin_dir(4U, PORT_DIR_IN);
-	PORTE_set_pin_pull_mode(4U, PORT_PULL_UP);
 	
 	for(uint8_t i=0; i < BTN_NUM; i++)	/* Matrix keyboard pressed flag initialization */
 		cBtnMissing[i] = cButtons[i];
 		
 	for(uint8_t i=0; i < LCD_BTN_NUM; i++)		/* LCD buttons pressed flag initialization */
 		lcd_btn_pressed[i] = false;
-		
-	PORTE_set_pin_pull_mode(3, PORT_PULL_UP);
 	
 	test_flag = true;
 	lcd_Init();
@@ -135,14 +136,30 @@ void relay_test(void)
 	PORTF_set_pin_level(K2_IN, true);
 }
 
-void rtc_test(void)
+void rtc_eeprom_test(void)
+{
+	bool rtc_result = rtc_test();
+	bool eeprom_result = eeprom_test(0xFF);
+	eeprom_result |= eeprom_test(0x0);
+	
+	if(rtc_result && eeprom_result)
+		printf("PASS");
+	
+	printf("\n");
+}
+
+bool rtc_test(void)
 {
 	/* Test RTC registers */
 	uint8_t data_set[REG_COUNT] = {0xD9, 0x59, 0x23, 0x7, 0x31, 0x12, 0x99};
 	uint8_t data_get[REG_COUNT];
 	
 	RTC_set_registers(data_set);
-	RTC_read_registers(data_get);
+	if(!RTC_read_registers(data_get))
+	{
+		printf("FAIL: I2C");
+		return false;
+	}
 	
 	bool reg_fail = false;
 	for(uint8_t i=0; i < REG_COUNT; i++)
@@ -177,9 +194,30 @@ void rtc_test(void)
 	if((ticks < 200U) || (ticks > 800U))
 		printf("FAIL: SQW output");
 	else if(!reg_fail)
-		printf("PASS");
-		
-	printf("\n");
+		return true;
+	
+	return false;
+}
+
+bool eeprom_test(uint8_t compare_value)
+{
+	uint8_t data[32];
+	
+	for(uint8_t i=0; i < 32; i++)
+	{
+		data[i] = compare_value;
+	}
+	EEPROM_write(0, 0, 32, data);
+	
+	EEPROM_read(0, 0, 32, data);
+	for(uint8_t i=0; i < 32; i++)
+	{
+		if(data[i] != compare_value)
+		{
+			printf("FAIL: EEPROM page 0, word %u",i);
+			return false;
+		}
+	}
 }
 
 void encoder_test()
@@ -332,7 +370,7 @@ void lcd_test()
 		lcd_RetHome();
 		fprintf(&display,"LCD test:       ");
 		lcd_SetCursor(0x40);	// move to second row
-		fprintf(&display,"0123456789,�#*/-");
+		fprintf(&display,"0123456789,.#*  ");
 		test_flag = true;
 	}
 }
@@ -352,6 +390,7 @@ void speaker_test()
 
 void thermistor_test()
 {
+	ADC_0_get_conversion(0U);
 	printf("ADC: %u\n",ADC_0_get_conversion(0U));
 	delay(300000U);
 }

@@ -75,6 +75,13 @@ bool IIC_write_data(uint8_t u8Data)
 uint8_t IIC_read(bool bAck)
 {
 	TWCR = (bAck << TWEA) | (1 << TWEN) | (1 << TWINT);
-	while (!(TWCR & (1<<TWINT)));
+	uint16_t timeout = 0;
+	while (!(TWCR & (1<<TWINT)))
+	{
+		delay(1);
+		timeout++;
+		if(timeout == 0xFFF)
+			return 0xFF;	// 0xFF returned because it can't be content of DS1307 register
+	}
 	return TWDR;
 }

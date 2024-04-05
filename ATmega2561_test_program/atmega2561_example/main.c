@@ -22,19 +22,22 @@ int main(void)
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 
+	test_init();
+
 	module_test_init();
 	
 	UART_CMD_T cmd_lut[] =
 		{{"DUMMY_VALUE",},
 		{"STOP",(callback)stop_test},
+		{"TEST INIT",(callback)module_test_init},
 		{"TEST ATMEGA",(callback)atmega_test},
 		{"TEST RELAY",(callback)relay_test},
-		{"TEST RTC",(callback)rtc_test},
+		{"TEST RTC",(callback)rtc_eeprom_test},
 		{"TEST ENCODER",(callback)encoder_test},
 		{"TEST KEYBRD",(callback)keyboard_test},
 		{"TEST BTN",(callback)lcd_btn_test},
 		{"TEST LCD",(callback)lcd_test},
-		{"TEST REPRO",(callback)speaker_test},
+		{"TEST SPEAKER",(callback)speaker_test},
 		{"TEST THERM",(callback)thermistor_test}};
 			
 	char input_string[BUFFER_SIZE];
@@ -73,7 +76,7 @@ int main(void)
 		else if(i > 0)	// if a command was found in the input string, process it
 		{
 			cmd_lut[i].cb(input_string);
-			if ((i <= 4) || (i == 9))	// for non repeating tests
+			if ((i <= 5) || (i == 10))	// for non repeating tests
 			{
 				i = 0;
 			}

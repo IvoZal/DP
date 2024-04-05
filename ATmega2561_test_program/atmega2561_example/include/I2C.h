@@ -13,7 +13,7 @@
 #include <avr/interrupt.h>
 #include <stdbool.h>
 #include <util/twi.h>
-
+#include "timer.h"
 
 /* Function initializes the IIC interface. Call before using other functions. */
 void IIC_init(uint32_t u32SCL_frequency);

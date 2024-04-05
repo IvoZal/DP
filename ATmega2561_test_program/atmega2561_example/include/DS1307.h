@@ -37,8 +37,8 @@ void RTC_read_date(uint16_t * u16Date);
 /* Function sets all RTC time/date registers. The u8Data array length is REG_COUNT. */
 void RTC_set_registers(uint8_t * u8Data);
 
-/* Function reads all RTC time/date registers. The u8Data array length is REG_COUNT. */
-void RTC_read_registers(uint8_t * u8Data);
+/* Function reads all RTC time/date registers. The u8Data array length is REG_COUNT. Returns false is communication fails. */
+bool RTC_read_registers(uint8_t * u8Data);
 
 /* Function enables square-wave output generator. Frequency specified by bits RS (RS = 0x0 for 1Hz). */
 void RTC_set_generator(uint8_t u8RS);
