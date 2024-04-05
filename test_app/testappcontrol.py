@@ -78,6 +78,7 @@ class TestAppController:
         
     def start_clicked(self):
         com_port = self.selected_port.get()
+        self.view.err_label.config(text="")
         try:
             self.model.init_serial(com_port, 38400)
             self.view.comm_label.config(text="Vybrán port " + com_port)
