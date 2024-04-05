@@ -123,23 +123,23 @@ class DefaultView:
         
         ## Common test setting
         settings_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
-        settings_frame.grid(column=0, row=0, padx=10, pady=10, sticky=tk.W)
+        settings_frame.grid(column=0, row=0, padx=10, pady=5, sticky=tk.W)
 
         setup_label = tk.Label(settings_frame, text="Nastavení:", font=("Arial",14))
         setup_label.grid(column=0,row=0, sticky=tk.W, padx=5, pady=5)
 
         self.comm_label = tk.Label(settings_frame, text="", font=("Arial",14))
-        self.comm_label.grid(column=0, row=2, sticky=tk.W, padx=5, pady=5)
+        self.comm_label.grid(column=0, row=2, sticky=tk.W, padx=5, pady=0)
 
         start_btn = tk.Button(settings_frame, text="Start", font=("Arial",14), background='green', command=self.controller.start_clicked)
-        start_btn.grid(column=0,row=3, sticky=tk.W, padx=5, pady=5)
+        start_btn.grid(column=0,row=3, sticky=tk.W, padx=5, pady=2)
 
         exit_btn = tk.Button(settings_frame, text="Ukončit", font=("Arial",14), background='red', command=lambda: self.root.quit())
-        exit_btn.grid(column=0, row=4, sticky=tk.W, padx=5, pady=5)
+        exit_btn.grid(column=0, row=4, sticky=tk.W, padx=5, pady=2)
 
         # Menu for com port selection
         menu_frame = tk.Frame(settings_frame)
-        menu_frame.grid(column=0, row=1, sticky=tk.W)
+        menu_frame.grid(column=0, row=1, sticky=tk.W, padx=5, pady=2)
 
         menu_btn = tk.Menubutton(menu_frame, text="Vyberte COM port", relief="raised", indicatoron=True, font=("Arial",14))
         menu_btn.grid(column=0, row=1)
@@ -151,26 +151,29 @@ class DefaultView:
 
         # Test report log settings
         log_label = tk.Label(settings_frame, text="Nastavení ukládání protokolů o zkoušce:", font=("Arial",14))
-        log_label.grid(column=1, row=1, sticky=tk.W, padx=50, pady=5)
+        log_label.grid(column=1, row=1, sticky=tk.W, padx=50, pady=2)
 
         self.log_switch = tk.Checkbutton(settings_frame, text="Logování vypnuto", variable=self.controller.log_flag, font=("Arial",14), command=self.toggle, onvalue=1, offvalue=0)
-        self.log_switch.grid(column=1, row=2, sticky=tk.W, padx=50, pady=5)
+        self.log_switch.grid(column=1, row=2, sticky=tk.W, padx=50, pady=0)
 
         log_name_label = tk.Label(settings_frame, text="Zadejte název souboru:", font=("Arial",14))
-        log_name_label.grid(column=1 ,row=3, sticky=tk.W, padx=50, pady=5)
+        log_name_label.grid(column=1 ,row=3, sticky=tk.W, padx=50, pady=0)
 
         self.log_entry = tk.Entry(settings_frame, font=("Arial",14))
-        self.log_entry.grid(column=1 ,row=4, sticky=tk.W, padx=50, pady=5)
+        self.log_entry.grid(column=1 ,row=4, sticky=tk.W, padx=50, pady=0)
         self.log_entry.bind("<Return>", self.submit)
 
+        log_btn = tk.Button(settings_frame, text="Vytvořit logovací soubor", font=("Arial",14), background='green', command=self.submit)
+        log_btn.grid(column=1, row=5, sticky=tk.W, padx=50, pady=2)
+
         self.err_label = tk.Label(settings_frame, text="", font=("Arial",14))
-        self.err_label.grid(column=1 ,row=5, sticky=tk.W, padx=50, pady=5)
+        self.err_label.grid(column=2 ,row=5, sticky=tk.W)
 
         # Menu for m328p programming
         prog_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
-        prog_frame.grid(column=0, row=5, padx=10, pady=10, sticky=tk.W)
+        prog_frame.grid(column=0, row=5, padx=10, pady=5, sticky=tk.W)
 
-        prog_btn = tk.Button(prog_frame, text="Nahrát program do ATmega328P Xplained Mini", font=("Arial",14), background='green',command=self.controller.program_m328p)
+        prog_btn = tk.Button(prog_frame, text="Nahrát program do ATmega328P Xplained Mini", font=("Arial",14), background='grey',command=self.controller.program_m328p)
         prog_btn.grid(column=0, row=5)
 
         self.prog_label = tk.Label(prog_frame, text="", font=("Arial",14))
@@ -178,7 +181,7 @@ class DefaultView:
 
         # Device specific labels
         device_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
-        device_frame.grid(column=0, row=7, padx=10, pady=10, sticky=tk.W)
+        device_frame.grid(column=0, row=7, padx=10, pady=5, sticky=tk.W)
 
         test_label = tk.Label(device_frame, text="Vyberte, ktere moduly testovat:", font=("Arial",14))
         test_label.grid(column=0,row=7, sticky=tk.W, padx=5, pady=5)
@@ -194,24 +197,24 @@ class DefaultView:
         for device in self.controller.test_devices:
             check_btn = tk.Checkbutton(device_frame, text=device.name, variable=device.tk_var, font=("Arial", 14),
                                         command=lambda d=device: self.update_state(d))
-            check_btn.grid(row=i, column=0, padx=5, pady=5, sticky=tk.W)
+            check_btn.grid(row=i, column=0, padx=5, pady=2, sticky=tk.W)
             
             status_label = tk.Label(device_frame, text=device.result, font=("Arial", 14), bg='green')
-            status_label.grid(row=i, column=1, padx=50, pady=5, sticky=tk.W)
+            status_label.grid(row=i, column=1, padx=50, pady=2, sticky=tk.W)
             device.label["status"] = status_label
 
             error_label = tk.Label(device_frame, text="", font=("Arial", 14))
-            error_label.grid(row=i, column=2, padx=5, pady=5, sticky=tk.W)
+            error_label.grid(row=i, column=2, padx=5, pady=2, sticky=tk.W)
             device.label["error"] = error_label
 
             i += 1
 
-        sel_all_btn = tk.Button(device_frame, text="Vybrat vše", font=("Arial",14), command=lambda d=self.controller.test_devices: self.select_all(d, True))
-        sel_all_btn.grid(row=i, column=0, sticky=tk.W, padx=5, pady=5)
+        sel_all_btn = tk.Button(device_frame, text="Vybrat vše", font=("Arial",14), background='grey', command=lambda d=self.controller.test_devices: self.select_all(d, True))
+        sel_all_btn.grid(row=i, column=0, sticky=tk.W, padx=5, pady=2)
         i += 1
 
-        sel_all_none = tk.Button(device_frame, text="Zrušit výběr všech", font=("Arial",14), command=lambda d=self.controller.test_devices: self.select_all(d, False))
-        sel_all_none.grid(row=i, column=0, sticky=tk.W, padx=5, pady=5)
+        sel_all_none = tk.Button(device_frame, text="Zrušit výběr všech", font=("Arial",14), background='grey', command=lambda d=self.controller.test_devices: self.select_all(d, False))
+        sel_all_none.grid(row=i, column=0, sticky=tk.W, padx=5, pady=2)
         i += 1
 
     def toggle(self):
@@ -230,6 +233,11 @@ class DefaultView:
                                  "Tlacitka na LCD modulu", "Modul LCD displeje", "Reproduktor", "Modul s termistorem"])
         except Exception as e:
             self.err_label.config(text="Chyba při vytváření souboru!")
+        else:
+            self.err_label.config(text="Soubor vytvořen")
+
+    def get_kit_name(self):
+        return tk.simpledialog.askstring("Číslo kitu","Zadejte číslo testovaného kitu:")
 
     def select_all(self, devices, sel):
         for device in devices:

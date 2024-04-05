@@ -78,6 +78,7 @@ class TestAppController:
         
     def start_clicked(self):
         com_port = self.selected_port.get()
+        self.view.err_label.config(text="")
         try:
             self.model.init_serial(com_port, 38400)
             self.view.comm_label.config(text="Vybrán port " + com_port)
@@ -215,10 +216,11 @@ class TestAppController:
             self.view.update_prog_status("")
 
             if((self.log_flag.get() == 1) & (self.log_filename != "")):
+                kit_name = self.view.get_kit_name()
                 try:
                     csvfile = open(self.log_filename, 'a', newline='')
                     writer = csv.writer(csvfile)
-                    report_list = ["#1"]
+                    report_list = [kit_name]
                     for device in self.test_devices:
                         report_list.append(device.result)
                     writer.writerow(report_list)
