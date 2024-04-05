@@ -186,7 +186,7 @@ class TestAppController:
 
                     case "Reproduktor":
                         if(device.run):
-                            self.model.write("TEST REPRO")
+                            self.model.write("TEST SPEAKER")
                             self.view.open_window(device)
                             self.model.write("STOP")
                         else:

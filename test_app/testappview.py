@@ -59,7 +59,7 @@ class UserEvalView(tk.Toplevel):
         no_btn = tk.Button(self, text="Ne", font=("Arial",14), background='red', command=lambda: self.save_result(False))
         no_btn.grid(column=0,row=3, sticky=tk.W, padx=5, pady=5)
 
-    def reproductor_view(self):
+    def speaker_view(self):
         self.title("Test reproduktoru")
 
         comm_label = tk.Label(self, text="Potvrťe, zda slyšíte tón z reproduktoru:", font=("Arial",14))
@@ -283,7 +283,7 @@ class DefaultView:
 
             case "Reproduktor":
                 self.window = UserEvalView(self.root, device)
-                self.window.reproductor_view()
+                self.window.speaker_view()
                 self.root.wait_window(self.window)
 
             case "Modul LCD displeje":
