@@ -236,6 +236,9 @@ class DefaultView:
         else:
             self.err_label.config(text="Soubor vytvořen")
 
+    def get_kit_name(self):
+        return tk.simpledialog.askstring("Číslo kitu","Zadejte číslo testovaného kitu:")
+
     def select_all(self, devices, sel):
         for device in devices:
             device.run = sel
