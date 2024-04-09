@@ -1,5 +1,6 @@
 import tkinter as tk
 import csv
+import sys
 from PIL import ImageTk, Image
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
@@ -68,7 +69,13 @@ class UserEvalView(tk.Toplevel):
     def display_view(self):
         self.title("Test LCD displeje")
 
-        image_path = "lcd_image.png"
+        if getattr(sys, 'frozen', False):
+            # Running in PyInstaller
+            image_path = sys._MEIPASS + "/lcd_image.png"
+        else:
+            # Running in a Python environment
+            image_path = "lcd_image.png"
+            
         image = Image.open(image_path)
         self.tk_image = ImageTk.PhotoImage(image)
 
