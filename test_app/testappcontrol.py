@@ -3,6 +3,7 @@ import threading
 import time
 import subprocess
 import csv
+import sys
 
 class Device:
     def __init__(self, name):
@@ -68,8 +69,17 @@ class TestAppController:
     def program_m328p(self):
         self.view.update_prog_status("Nahrávání...")
         time.sleep(0.1)
-        binary_path = "m328p_binary/ATmega328P_test_prog.hex"
-        avrdude_cmd = "avrdude/avrdude -p m328p -c xplainedmini_dw -U flash:w:" + binary_path
+        if getattr(sys, 'frozen', False):
+            # Running in PyInstaller
+            avrdude_path = sys._MEIPASS + "/avrdude"
+            binary_path = sys._MEIPASS + "/ATmega328P_test_prog.hex"
+        else:
+            # Running in a Python environment
+            avrdude_path = "avrdude/avrdude"
+            binary_path = "m328p_binary/ATmega328P_test_prog.hex"
+        
+        avrdude_cmd = avrdude_path + " -p m328p -c xplainedmini_dw -U flash:w:" + binary_path
+        print(avrdude_cmd)
         try:
             subprocess.check_output(avrdude_cmd)
             self.view.update_prog_status("Program byl úspěšně nahrán.")
