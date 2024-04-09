@@ -215,15 +215,21 @@ class TestAppController:
             self.model.close_serial()
             self.view.update_prog_status("")
 
-            if((self.log_flag.get() == 1) & (self.log_filename != "")):
-                kit_name = self.view.get_kit_name()
-                try:
-                    csvfile = open(self.log_filename, 'a', newline='')
-                    writer = csv.writer(csvfile)
-                    report_list = [kit_name]
-                    for device in self.test_devices:
-                        report_list.append(device.result)
-                    writer.writerow(report_list)
-                    csvfile.close()
-                except Exception as e:
-                    self.view.err_label.config(text="Chyba při zápisu do souboru!")
+            if(self.log_flag.get() == 1):
+                if(self.log_filename != ""):
+                    kit_name = self.view.get_kit_name()
+                    if kit_name is not None:
+                        try:
+                            csvfile = open(self.log_filename, 'a', newline='')
+                            writer = csv.writer(csvfile)
+                            report_list = [kit_name]
+                            for device in self.test_devices:
+                                report_list.append(device.result)
+                            writer.writerow(report_list)
+                            csvfile.close()
+                        except Exception as e:
+                            self.view.err_label.config(text="Chyba při zápisu do souboru!")
+                    else:
+                        self.view.err_label.config(text="Nebylo zadáno číslo kitu, report nebyl uložen!")
+                else:
+                    self.view.err_label.config(text="Logovací soubor nebyl vytvořen!")
