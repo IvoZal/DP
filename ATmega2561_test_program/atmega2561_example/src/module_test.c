@@ -218,6 +218,7 @@ bool eeprom_test(uint8_t compare_value)
 			return false;
 		}
 	}
+	return true;
 }
 
 void encoder_test()
@@ -275,7 +276,7 @@ void keyboard_test()
 		}
 		else
 		{
-			timestamp = getTime() + 10000000U;
+			timestamp = getTime() + 7000000U;
 		}
 	}
 	
@@ -332,7 +333,7 @@ void lcd_btn_test()
 		}
 		else
 		{
-			timestamp = getTime() + 7000000U;
+			timestamp = getTime() + 5000000U;
 		}
 	}
 	
