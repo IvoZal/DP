@@ -4,6 +4,14 @@
 
   (paper "A4")
 
+  (title_block
+    (title "Test benches for microcontroller kits")
+    (date "2023")
+    (rev "v0.1")
+    (company "Company: VUT Brno")
+    (comment 1 "Author: Ivo Zaludek")
+  )
+
   (lib_symbols
     (symbol "Connector:TestPoint" (pin_numbers hide) (pin_names (offset 0.762) hide) (in_bom yes) (on_board yes)
       (property "Reference" "TP" (at 0 6.858 0)
@@ -1524,6 +1532,11 @@
   (wire (pts (xy 120.65 57.15) (xy 132.08 57.15))
     (stroke (width 0) (type default))
     (uuid fe7829b1-ffd1-41ed-952d-195f08fcf62e)
+  )
+
+  (text "USB interface" (at 179.07 173.99 0)
+    (effects (font (size 5 5)) (justify left bottom))
+    (uuid 2d59656b-0405-40e7-9be0-265d8517ad0a)
   )
 
   (label "UART0_TXD" (at 241.3 68.58 0) (fields_autoplaced)

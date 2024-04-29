@@ -4,6 +4,14 @@
 
   (paper "A4")
 
+  (title_block
+    (title "Test benches for microcontroller kits")
+    (date "2023")
+    (rev "v0.1")
+    (company "Company: VUT Brno")
+    (comment 1 "Author: Ivo Zaludek")
+  )
+
   (lib_symbols
     (symbol "Device:R" (pin_numbers hide) (pin_names (offset 0)) (in_bom yes) (on_board yes)
       (property "Reference" "R" (at 2.032 0 90)
@@ -922,6 +930,11 @@
   (wire (pts (xy 102.87 137.16) (xy 102.87 158.75))
     (stroke (width 0) (type default))
     (uuid fbb26164-dde2-40ee-a0dd-19a0ccae6975)
+  )
+
+  (text "ATmega328P module" (at 177.8 173.99 0)
+    (effects (font (size 5 5)) (justify left bottom))
+    (uuid 60f144bf-115b-4037-8ce0-ca7f3c64543d)
   )
 
   (label "D16" (at 168.91 86.36 0) (fields_autoplaced)

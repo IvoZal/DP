@@ -4,6 +4,14 @@
 
   (paper "A4")
 
+  (title_block
+    (title "Test benches for microcontroller kits")
+    (date "2023")
+    (rev "v0.1")
+    (company "Company: VUT Brno")
+    (comment 1 "Author: Ivo Zaludek")
+  )
+
   (lib_symbols
     (symbol "Connector:AVR-ISP-6" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
       (property "Reference" "J" (at -6.35 11.43 0)
@@ -1861,6 +1869,11 @@
   (bus (pts (xy 158.75 74.93) (xy 158.75 77.47))
     (stroke (width 0) (type default))
     (uuid ff974f19-7f1d-49ba-84b5-2ba6814a5026)
+  )
+
+  (text "ATmega2561 MCU" (at 177.8 173.99 0)
+    (effects (font (size 5 5)) (justify left bottom))
+    (uuid 0a16f9ea-3c2e-429b-a38a-e71de4132e61)
   )
 
   (label "DUT_D3" (at 102.87 92.71 0) (fields_autoplaced)

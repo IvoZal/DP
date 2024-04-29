@@ -4,6 +4,14 @@
 
   (paper "A4")
 
+  (title_block
+    (title "Test benches for microcontroller kits")
+    (date "2023")
+    (rev "v0.1")
+    (company "Company: VUT Brno")
+    (comment 1 "Author: Ivo Zaludek")
+  )
+
   (lib_symbols
   )
 
@@ -66,6 +74,11 @@
   (wire (pts (xy 148.59 33.02) (xy 191.77 33.02))
     (stroke (width 0) (type default))
     (uuid f51639a5-bef3-48aa-b892-ff5f67cb7590)
+  )
+
+  (text "Schematic overview" (at 177.8 173.99 0)
+    (effects (font (size 5 5)) (justify left bottom))
+    (uuid a59e5c8f-3706-4c68-a871-6619bbd2fa88)
   )
 
   (sheet (at 97.79 24.13) (size 50.8 80.01) (fields_autoplaced)
