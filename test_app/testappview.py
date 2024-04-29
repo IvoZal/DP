@@ -190,10 +190,10 @@ class DefaultView:
         device_frame = tk.Frame(self.root, bd=3, relief=tk.GROOVE)
         device_frame.grid(column=0, row=7, padx=10, pady=5, sticky=tk.W)
 
-        test_label = tk.Label(device_frame, text="Vyberte, ktere moduly testovat:", font=("Arial",14))
+        test_label = tk.Label(device_frame, text="Vyberte, které moduly testovat:", font=("Arial",14))
         test_label.grid(column=0,row=7, sticky=tk.W, padx=5, pady=5)
 
-        result_label = tk.Label(device_frame, text="Vysledky testu:", font=("Arial",14))
+        result_label = tk.Label(device_frame, text="Výsledky testů:", font=("Arial",14))
         result_label.grid(column=1, row=7, sticky=tk.W, padx=50, pady=5)  
 
         result_label = tk.Label(device_frame, text="Chybová hláška:", font=("Arial",14))
